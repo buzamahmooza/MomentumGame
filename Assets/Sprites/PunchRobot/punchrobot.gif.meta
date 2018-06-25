@@ -1,0 +1,3278 @@
+fileFormatVersion: 2
+guid: a84c22a5e94b47d4f8028adfbbd8b7f8
+timeCreated: 1496424782
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: punchrobot_0
+    21300002: punchrobot_1
+    21300004: punchrobot_2
+    21300006: punchrobot_3
+    21300008: punchrobot_4
+    21300010: punchrobot_5
+    21300012: punchrobot_6
+    21300014: punchrobot_7
+    21300016: punchrobot_8
+    21300018: punchrobot_9
+    21300020: punchrobot_10
+    21300022: punchrobot_11
+    21300024: punchrobot_12
+    21300026: punchrobot_13
+    21300028: punchrobot_14
+    21300030: punchrobot_15
+    21300032: punchrobot_16
+    21300034: punchrobot_17
+    21300036: punchrobot_18
+    21300038: punchrobot_19
+    21300040: punchrobot_20
+    21300042: punchrobot_21
+    21300044: punchrobot_22
+    21300046: punchrobot_23
+    21300048: punchrobot_24
+    21300050: punchrobot_25
+    21300052: punchrobot_26
+    21300054: punchrobot_27
+    21300056: punchrobot_28
+    21300058: punchrobot_29
+    21300060: punchrobot_30
+    21300062: punchrobot_31
+    21300064: punchrobot_32
+    21300066: punchrobot_33
+    21300068: punchrobot_34
+    21300070: punchrobot_35
+    21300072: punchrobot_36
+    21300074: punchrobot_37
+    21300076: punchrobot_38
+    21300078: punchrobot_39
+    21300080: punchrobot_40
+    21300082: punchrobot_41
+    21300084: punchrobot_42
+    21300086: punchrobot_43
+    21300088: punchrobot_44
+    21300090: punchrobot_45
+    21300092: punchrobot_46
+    21300094: punchrobot_47
+    21300096: punchrobot_48
+    21300098: punchrobot_49
+    21300100: punchrobot_50
+    21300102: punchrobot_51
+    21300104: punchrobot_52
+    21300106: punchrobot_53
+    21300108: punchrobot_54
+    21300110: punchrobot_55
+    21300112: punchrobot_56
+    21300114: punchrobot_57
+    21300116: punchrobot_58
+    21300118: punchrobot_59
+    21300120: punchrobot_60
+    21300122: punchrobot_61
+    21300124: punchrobot_62
+    21300126: punchrobot_63
+    21300128: punchrobot_64
+    21300130: punchrobot_65
+    21300132: punchrobot_66
+    21300134: punchrobot_67
+    21300136: punchrobot_68
+    21300138: punchrobot_69
+    21300140: punchrobot_70
+    21300142: punchrobot_71
+    21300144: punchrobot_72
+    21300146: punchrobot_73
+    21300148: punchrobot_74
+    21300150: punchrobot_75
+    21300152: punchrobot_76
+    21300154: punchrobot_77
+    21300156: punchrobot_78
+    21300158: punchrobot_79
+    21300160: punchrobot_80
+    21300162: punchrobot_81
+    21300164: punchrobot_82
+    21300166: punchrobot_83
+    21300168: punchrobot_84
+    21300170: punchrobot_85
+    21300172: punchrobot_86
+    21300174: punchrobot_87
+    21300176: punchrobot_88
+    21300178: punchrobot_89
+    21300180: punchrobot_90
+    21300182: punchrobot_91
+    21300184: punchrobot_92
+    21300186: punchrobot_93
+    21300188: punchrobot_94
+    21300190: punchrobot_95
+    21300192: punchrobot_96
+    21300194: punchrobot_97
+    21300196: punchrobot_98
+    21300198: punchrobot_99
+    21300200: punchrobot_100
+    21300202: punchrobot_101
+    21300204: punchrobot_102
+    21300206: punchrobot_103
+    21300208: punchrobot_104
+    21300210: punchrobot_105
+    21300212: punchrobot_106
+    21300214: punchrobot_107
+    21300216: punchrobot_108
+    21300218: punchrobot_109
+    21300220: punchrobot_110
+    21300222: punchrobot_111
+    21300224: punchrobot_112
+    21300226: punchrobot_113
+    21300228: punchrobot_114
+    21300230: punchrobot_115
+    21300232: punchrobot_116
+    21300234: punchrobot_117
+    21300236: punchrobot_118
+    21300238: punchrobot_119
+    21300240: punchrobot_120
+    21300242: punchrobot_121
+    21300244: punchrobot_122
+    21300246: punchrobot_123
+    21300248: punchrobot_124
+    21300250: punchrobot_125
+    21300252: punchrobot_126
+    21300254: punchrobot_127
+    21300256: punchrobot_128
+    21300258: punchrobot_129
+    21300260: punchrobot_130
+    21300262: punchrobot_131
+    21300264: punchrobot_132
+    21300266: punchrobot_133
+    21300268: punchrobot_134
+    21300270: punchrobot_135
+    21300272: punchrobot_136
+    21300274: punchrobot_137
+    21300276: punchrobot_138
+    21300278: punchrobot_139
+    21300280: punchrobot_140
+    21300282: punchrobot_141
+    21300284: punchrobot_142
+    21300286: punchrobot_143
+    21300288: punchrobot_144
+    21300290: punchrobot_145
+    21300292: punchrobot_146
+    21300294: punchrobot_147
+    21300296: punchrobot_148
+    21300298: punchrobot_149
+    21300300: punchrobot_150
+    21300302: punchrobot_151
+    21300304: punchrobot_152
+    21300306: punchrobot_153
+    21300308: punchrobot_154
+    21300310: punchrobot_155
+    21300312: punchrobot_156
+    21300314: punchrobot_157
+    21300316: punchrobot_158
+    21300318: punchrobot_159
+    21300320: punchrobot_160
+    21300322: punchrobot_161
+    21300324: punchrobot_162
+    21300326: punchrobot_163
+    21300328: punchrobot_164
+    21300330: punchrobot_165
+    21300332: punchrobot_166
+    21300334: punchrobot_167
+    21300336: punchrobot_168
+    21300338: punchrobot_169
+    21300340: punchrobot_170
+    21300342: punchrobot_171
+    21300344: punchrobot_172
+    21300346: punchrobot_173
+    21300348: punchrobot_174
+    21300350: punchrobot_175
+    21300352: punchrobot_176
+    21300354: punchrobot_177
+    21300356: punchrobot_178
+    21300358: punchrobot_179
+    21300360: punchrobot_180
+    21300362: punchrobot_181
+    21300364: punchrobot_182
+    21300366: punchrobot_183
+    21300368: punchrobot_184
+    21300370: punchrobot_185
+    21300372: punchrobot_186
+    21300374: punchrobot_187
+    21300376: punchrobot_188
+    21300378: punchrobot_189
+    21300380: punchrobot_190
+    21300382: punchrobot_191
+    21300384: punchrobot_192
+    21300386: punchrobot_193
+    21300388: punchrobot_194
+    21300390: punchrobot_195
+    21300392: punchrobot_196
+    21300394: punchrobot_197
+    21300396: punchrobot_198
+    21300398: punchrobot_199
+    21300400: punchrobot_200
+    21300402: punchrobot_201
+    21300404: punchrobot_202
+    21300406: punchrobot_203
+    21300408: punchrobot_204
+    21300410: punchrobot_205
+    21300412: punchrobot_206
+    21300414: punchrobot_207
+    21300416: punchrobot_208
+    21300418: punchrobot_209
+    21300420: punchrobot_210
+    21300422: punchrobot_211
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: -1
+    mipBias: -1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: iPhone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: punchrobot_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1663
+        width: 62
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_1
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 1663
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_2
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 1663
+        width: 66
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_3
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 1663
+        width: 68
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_4
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 1663
+        width: 70
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_5
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1663
+        width: 70
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_6
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 1663
+        width: 68
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_7
+      rect:
+        serializedVersion: 2
+        x: 490
+        y: 1663
+        width: 66
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_8
+      rect:
+        serializedVersion: 2
+        x: 557
+        y: 1663
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_9
+      rect:
+        serializedVersion: 2
+        x: 625
+        y: 1663
+        width: 62
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_10
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 1599
+        width: 62
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_11
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 1599
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_12
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 1599
+        width: 62
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_13
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 1599
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_14
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 1598
+        width: 62
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_15
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1598
+        width: 62
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_16
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 1599
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_17
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 1599
+        width: 62
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_18
+      rect:
+        serializedVersion: 2
+        x: 542
+        y: 1599
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_19
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 1599
+        width: 62
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_20
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 1533
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_21
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 1533
+        width: 67
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_22
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 1533
+        width: 65
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_23
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 1533
+        width: 63
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_24
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 1533
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_25
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1533
+        width: 63
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_26
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 1533
+        width: 63
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_27
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 1533
+        width: 65
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_28
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 1533
+        width: 67
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_29
+      rect:
+        serializedVersion: 2
+        x: 617
+        y: 1533
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_30
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 1470
+        width: 70
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_31
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1470
+        width: 70
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_32
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 1345
+        width: 62
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_33
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 1407
+        width: 60
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_34
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 1407
+        width: 63
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_35
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 1407
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_36
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 1407
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_37
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1407
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_38
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 1407
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_39
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 1407
+        width: 63
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_40
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 1407
+        width: 60
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_41
+      rect:
+        serializedVersion: 2
+        x: 611
+        y: 1345
+        width: 62
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_42
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 1345
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_43
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 1345
+        width: 63
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_44
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 1345
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_45
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 1345
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_46
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1345
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_47
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 1345
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_48
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 1345
+        width: 63
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_49
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 1345
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_50
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 1275
+        width: 64
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_51
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_52
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_53
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_54
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 1274
+        width: 65
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_55
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1274
+        width: 65
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_56
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_57
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_58
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 1274
+        width: 64
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_59
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 1275
+        width: 64
+        height: 68
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_60
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 1205
+        width: 59
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_61
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 1205
+        width: 59
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_62
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 1205
+        width: 65
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_63
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 1205
+        width: 64
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_64
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 1205
+        width: 64
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_65
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1205
+        width: 64
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_66
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 1205
+        width: 64
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_67
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 1205
+        width: 65
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_68
+      rect:
+        serializedVersion: 2
+        x: 546
+        y: 1205
+        width: 59
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_69
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 1205
+        width: 59
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_70
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 1142
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_71
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 1142
+        width: 61
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_72
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1142
+        width: 61
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_73
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 1142
+        width: 64
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_74
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 1079
+        width: 77
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_75
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 1079
+        width: 60
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_76
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_77
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_78
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_79
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_80
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_81
+      rect:
+        serializedVersion: 2
+        x: 473
+        y: 1079
+        width: 62
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_82
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 1079
+        width: 60
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_83
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 1079
+        width: 77
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_84
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 1016
+        width: 63
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_85
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 1016
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_86
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 1016
+        width: 89
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_87
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 1016
+        width: 91
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_88
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1016
+        width: 91
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_89
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 1016
+        width: 89
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_90
+      rect:
+        serializedVersion: 2
+        x: 530
+        y: 1016
+        width: 68
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_91
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 1016
+        width: 63
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_92
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 951
+        width: 82
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_93
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 951
+        width: 83
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_94
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 951
+        width: 84
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_95
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 951
+        width: 79
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_96
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 951
+        width: 79
+        height: 63
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_97
+      rect:
+        serializedVersion: 2
+        x: 425
+        y: 951
+        width: 84
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_98
+      rect:
+        serializedVersion: 2
+        x: 511
+        y: 951
+        width: 83
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_99
+      rect:
+        serializedVersion: 2
+        x: 596
+        y: 951
+        width: 82
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_100
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 898
+        width: 75
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_101
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 898
+        width: 75
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_102
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 838
+        width: 63
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_103
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_104
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_105
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_106
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_107
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_108
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_109
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_110
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 838
+        width: 61
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_111
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 838
+        width: 63
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_112
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 776
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_113
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 777
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_114
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 777
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_115
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 776
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_116
+      rect:
+        serializedVersion: 2
+        x: 12
+        y: 714
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_117
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 714
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_118
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 714
+        width: 65
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_119
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 714
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_120
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 714
+        width: 65
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_121
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 714
+        width: 65
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_122
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 714
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_123
+      rect:
+        serializedVersion: 2
+        x: 478
+        y: 714
+        width: 65
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_124
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 714
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_125
+      rect:
+        serializedVersion: 2
+        x: 612
+        y: 714
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_126
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 653
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_127
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 653
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_128
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 653
+        width: 63
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_129
+      rect:
+        serializedVersion: 2
+        x: 215
+        y: 653
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_130
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 654
+        width: 63
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_131
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 654
+        width: 63
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_132
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 653
+        width: 62
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_133
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 653
+        width: 63
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_134
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 653
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_135
+      rect:
+        serializedVersion: 2
+        x: 607
+        y: 653
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_136
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 593
+        width: 65
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_137
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 593
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_138
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 593
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_139
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 593
+        width: 67
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_140
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 593
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_141
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 593
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_142
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 593
+        width: 67
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_143
+      rect:
+        serializedVersion: 2
+        x: 482
+        y: 593
+        width: 66
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_144
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 593
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_145
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 593
+        width: 65
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_146
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 531
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_147
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 531
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_148
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 531
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_149
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 531
+        width: 65
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_150
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 531
+        width: 64
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_151
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 531
+        width: 65
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_152
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 472
+        width: 71
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_153
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 472
+        width: 71
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_154
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 472
+        width: 72
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_155
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 472
+        width: 65
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_156
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 472
+        width: 65
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_157
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 472
+        width: 72
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_158
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 472
+        width: 71
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_159
+      rect:
+        serializedVersion: 2
+        x: 561
+        y: 472
+        width: 71
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_160
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 389
+        width: 69
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_161
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 386
+        width: 59
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_162
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 383
+        width: 74
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_163
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 382
+        width: 76
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_164
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 382
+        width: 76
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_165
+      rect:
+        serializedVersion: 2
+        x: 423
+        y: 383
+        width: 74
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_166
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 386
+        width: 59
+        height: 84
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_167
+      rect:
+        serializedVersion: 2
+        x: 562
+        y: 389
+        width: 69
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_168
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 291
+        width: 92
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_169
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 291
+        width: 88
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_170
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 292
+        width: 56
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_171
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 296
+        width: 68
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_172
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 296
+        width: 68
+        height: 78
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_173
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 292
+        width: 56
+        height: 89
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_174
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 291
+        width: 88
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_175
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 291
+        width: 92
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_176
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 237
+        width: 88
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_177
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 237
+        width: 87
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_178
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 236
+        width: 87
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_179
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 236
+        width: 87
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_180
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 237
+        width: 87
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_181
+      rect:
+        serializedVersion: 2
+        x: 526
+        y: 237
+        width: 88
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_182
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 179
+        width: 72
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_183
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 179
+        width: 80
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_184
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 179
+        width: 84
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_185
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 179
+        width: 84
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_186
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 179
+        width: 80
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_187
+      rect:
+        serializedVersion: 2
+        x: 513
+        y: 179
+        width: 72
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_188
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 119
+        width: 67
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_189
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_190
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_191
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_192
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_193
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_194
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_195
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_196
+      rect:
+        serializedVersion: 2
+        x: 548
+        y: 119
+        width: 66
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_197
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 119
+        width: 67
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_198
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 59
+        width: 78
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_199
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 59
+        width: 78
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_200
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 59
+        width: 78
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_201
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 59
+        width: 73
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_202
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 59
+        width: 73
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_203
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 59
+        width: 78
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_204
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 59
+        width: 78
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_205
+      rect:
+        serializedVersion: 2
+        x: 582
+        y: 59
+        width: 78
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_206
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 1
+        width: 78
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_207
+      rect:
+        serializedVersion: 2
+        x: 182
+        y: 1
+        width: 78
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_208
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 1
+        width: 78
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_209
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 1
+        width: 78
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_210
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 1
+        width: 78
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: punchrobot_211
+      rect:
+        serializedVersion: 2
+        x: 510
+        y: 1
+        width: 78
+        height: 55
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    outline: []
+    physicsShape: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
