@@ -11,6 +11,7 @@ public class FloatingText : MonoBehaviour
 
     [SerializeField] private float duration = 2;
     [SerializeField] [Range(0, 1)] private float smooth = 0.5f;
+    [SerializeField] float defaultBounceSpeed = 3;
 
     private void Awake() {
         text = GetComponentInChildren<Text>();
@@ -21,7 +22,7 @@ public class FloatingText : MonoBehaviour
         Destroy(gameObject, 10);
     }
     public void InitBounceDmg(int damageValue) {
-        Init(damageValue + "", 5 * (UnityEngine.Random.insideUnitSphere + Vector3.up), true);
+        Init(damageValue + "", defaultBounceSpeed * (UnityEngine.Random.insideUnitSphere + Vector3.up), true);
         gameObject.transform.localScale *= 0.6f;
     }
     public void InitFloatingScore(int scoreValue) {

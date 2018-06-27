@@ -8,15 +8,12 @@ public class HealthScript : MonoBehaviour
 {
     public const float HEALTH_REGENERATION_PERIOD = 1.0f;
 
-    
+
     public GameObject healthBar, deathEffects;
-    [HideInInspector]
-    public bool isDead = false;
+    [HideInInspector] public bool isDead = false;
     [SerializeField] public int currentHealth;
 
     // To be set in inspector
-    [SerializeField] private Color damageColor = Color.red;
-    [SerializeField] private float hurtDamageThreshold = 10;
 
     [SerializeField] protected bool regenerateHealth = false;
     [SerializeField] protected bool flashColorWhenDamage = true;
@@ -24,19 +21,25 @@ public class HealthScript : MonoBehaviour
     [SerializeField] protected bool destroyOnDeath = false;
     [SerializeField] protected int startHealth = 100;
     [SerializeField] protected float fallDamageModifier = 0.5f;
-    [SerializeField] protected AudioClip hurtAudioClip;
-    [SerializeField] protected AudioClip deathAudioClip;
+    [SerializeField]
+    protected AudioClip
+        hurtAudioClip,
+        deathAudioClip;
 
-    private Slider healthSlider;
-    private SpriteRenderer rend;
-    private AudioSource audioSource;
-    private Animator m_Anim;
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] private float hurtDamageThreshold = 10;
+    [SerializeField] private float regenAmount = 0.01f;
 
-    private Color originalColor;
+    protected SpriteRenderer rend;
+    protected Slider healthSlider;
+    protected AudioSource audioSource;
+    protected Color originalColor;
+
+    private Animator _anim;
 
     public void Awake() {
         //gameObject.AddComponent<ScriptedHealthBar>();
-        if (GetComponent<Animator>() != null) m_Anim = GetComponent<Animator>();
+        if (GetComponent<Animator>() != null) _anim = GetComponent<Animator>();
         rend = GetComponent<SpriteRenderer>();
         // If GetSource() is null, then add a source
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
@@ -75,8 +78,8 @@ public class HealthScript : MonoBehaviour
     /// <summary> Plays the hurt animation (if any), color flashes red, plays hurt sound. </summary>
     private void Hurt() {
         audioSource.PlayOneShot(hurtAudioClip);
-        if (m_Anim != null && !isDead)
-            m_Anim.SetTrigger("Hurt");
+        if (_anim != null && !isDead)
+            _anim.SetTrigger("Hurt");
         if (flashColorWhenDamage)
             rend.color = damageColor;
     }
@@ -96,11 +99,11 @@ public class HealthScript : MonoBehaviour
 
     public virtual void Die() {
         //Debug.Log(gameObject.name + " died");
-        if(deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
+        if (deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
         if (!isDead) { // If this is the first time this method is called
                        // Make death effects, sounds, and animation
             if (deathEffects != null) Instantiate(deathEffects, transform.position, Quaternion.identity);
-            if (m_Anim != null) m_Anim.SetTrigger("Die");
+            if (_anim != null) _anim.SetTrigger("Die");
             if (audioSource != null) audioSource.Play();
         }
         currentHealth = 0;
@@ -136,7 +139,7 @@ public class HealthScript : MonoBehaviour
     }
     /// <summary> If not yet reached max health, increment by 1% of the starting health </summary>
     private void RegenerateHealth() {
-        currentHealth += (currentHealth < startHealth) ? (int) (0.01f * startHealth) : 0;
+        currentHealth += (currentHealth < startHealth) ? (int)(regenAmount * startHealth) : 0;
         CheckHealth();
     }
 

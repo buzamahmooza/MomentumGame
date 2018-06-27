@@ -23,13 +23,16 @@ public class Enemy_Health : HealthScript
     }
 
     public IEnumerator EnumStun(float seconds) {
-        if (!enemyAI) yield return null;
-        print("Enemy:   Oh no! what's going on? I can't see!");
-        enemyAI.enabled = false;
+        if (enemyAI == null) {
+            yield return null;
+        } else {
+            print("Enemy:   Oh no! what's going on? I can't see!");
+            enemyAI.enabled = false;
 
-        yield return new WaitForSeconds(seconds);
-        print("Mwahahaha I can see again! Time to die robot!!");
-        enemyAI.enabled = true;
+            yield return new WaitForSeconds(seconds);
+            print("Mwahahaha I can see again! Time to die robot!!");
+            enemyAI.enabled = true;
+        }
     }
 
     private void FixedUpdate() {

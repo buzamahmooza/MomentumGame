@@ -801,7 +801,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db591c6f3b0a002409eeccbd5857368d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reachedSlamPeak: 0
+  HasReachedSlamPeak: 0
   slamLundgeVelocity: 5
   punchAttackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
   dashAttackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
@@ -822,8 +822,8 @@ MonoBehaviour:
   upwardModifier: 1
   explosionMask:
     serializedVersion: 2
-    m_Bits: 2048
-  dashAttackSpeedFactor: 1.3
+    m_Bits: 6144
+  dashAttackSpeedFactor: 1.39
 --- !u!114 &114309661591157806
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -840,8 +840,6 @@ MonoBehaviour:
     type: 2}
   isDead: 0
   currentHealth: 0
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
-  hurtDamageThreshold: 10
   regenerateHealth: 1
   flashColorWhenDamage: 1
   useHealthbar: 1
@@ -850,6 +848,8 @@ MonoBehaviour:
   fallDamageModifier: 0.5
   hurtAudioClip: {fileID: 0}
   deathAudioClip: {fileID: 0}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  hurtDamageThreshold: 10
 --- !u!114 &114454820563067926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -882,7 +882,7 @@ MonoBehaviour:
       type: 2}
     projectileSpeed: 20
     rpm: 70
-    damage: 25
+    damage: 7
     wiggleShootOffset: 0.12
     randomShootAngle: 10
     cameraKickback: 0.062
@@ -959,6 +959,7 @@ MonoBehaviour:
   speedLimit: {x: 20, y: 20}
   moveSpeed: 5
   jumpForce: 400
+  animationSpeedFactor: 0.8
   wallSlideSpeedMax: 1
   fallMultiplier: 1
   lowJumpMultiplier: 1.5

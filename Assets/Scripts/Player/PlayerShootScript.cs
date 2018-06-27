@@ -95,7 +95,7 @@ public class PlayerShootScript : MonoBehaviour
 
             Quaternion rotation = Quaternion.LookRotation(Quaternion.Euler(0, 0, Random.Range(-CurrentWeaponStats.randomShootAngle, CurrentWeaponStats.randomShootAngle)) * shootDirection);
             GameObject projectile = Instantiate(CurrentWeaponStats.projectilePrefab, shootPosition, rotation, this.transform) as GameObject;
-            projectile.GetComponent<BulletScript>().damageAmount = CurrentWeaponStats.damage;
+            projectile.GetComponent<BulletScript>().damageAmount = Mathf.RoundToInt(CurrentWeaponStats.damage*Random.Range(0.85f, 1.2f));
             projectile.GetComponent<Rigidbody2D>().velocity = shootDirection * CurrentWeaponStats.projectileSpeed;
 
             rb.AddForce(-shootDirection * kickbackForce * Time.fixedDeltaTime, ForceMode2D.Impulse);

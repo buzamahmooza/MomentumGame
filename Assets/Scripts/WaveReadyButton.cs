@@ -16,12 +16,14 @@ public class WaveReadyButton : Interactable
 
     private void Start() {
         var interactable = GetComponent<Interactable>();
+        sr.sprite = spriteNotPressed;
         print("Interactable:    " + interactable);
     }
 
-    public override void OnInteract() {
+    protected override void DoInteraction() {
         sr.sprite = spritePressed;
         ar.Play();
+        GetComponent<Interactable>().enabled = false;
     }
 
     public override string GetPrompt() {

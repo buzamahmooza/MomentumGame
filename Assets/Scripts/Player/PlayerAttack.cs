@@ -201,8 +201,7 @@ public class PlayerAttack : MonoBehaviour
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         Vector3 explosionPos = transform.position;
-        Collider2D[] colliders = Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask);
-        foreach (Collider2D hit in colliders) {
+        foreach (var hit in Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask)) {
             print(hit.name + " is supposed to take damage");
 
             Enemy_Health enemyHealth = hit.gameObject.GetComponent<Enemy_Health>();
@@ -214,7 +213,6 @@ public class PlayerAttack : MonoBehaviour
             Rigidbody2D otherRb = hit.GetComponent<Rigidbody2D>();
 
             StartCoroutine(enemyHealth.EnumStun(2));
-            enemyHealth.EnumStun(2);
 
             float distance = Vector2.Distance(transform.position, hit.gameObject.transform.position);
             if (otherRb != null)

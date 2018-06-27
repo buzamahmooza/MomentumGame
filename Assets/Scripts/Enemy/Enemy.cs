@@ -95,9 +95,10 @@ public class Enemy : MonoBehaviour
         transform.localScale = theScale;
 
         //Flip healthbar
-        Vector3 healthBarScale = GetComponent<Enemy_Health>().healthBar.transform.localScale;
+        var healthBar = GetComponent<Enemy_Health>().healthBar;
+        Vector3 healthBarScale = healthBar.transform.localScale;
         healthBarScale.x = -1 * (healthBarScale.x);
-        GetComponent<Enemy_Health>().healthBar.transform.localScale = healthBarScale;
+        healthBar.transform.localScale = healthBarScale;
     }
 
     private void UpdateAnimParams() {
