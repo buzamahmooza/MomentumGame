@@ -179,7 +179,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 0.81
-  m_Text: "Version 0.5.1\n\nControls:\nASDW /ArrowKeys:\t\tmove.\nSpaceBar/ Up:\t\t\t\tjump/
+  m_Text: "Version 0.5.2\n\nControls:\nASDW /ArrowKeys:\t\tmove.\nSpaceBar/ Up:\t\t\t\tjump/
     DoubleJump\nF: \t\t\t\t\t\t\t\t\tAttack\n(Attack+\u2193: Slam attack, Attack+side:
     DashAttack).\nR: Restart"
 --- !u!222 &13652940
@@ -584,29 +584,14 @@ Prefab:
       propertyPath: m_RootOrder
       value: 5
       objectReference: {fileID: 0}
-    - target: {fileID: 1051513968227620, guid: d058761270e995649a2ad65d8b3eee65, type: 2}
-      propertyPath: m_Name
-      value: DoomEnemy
-      objectReference: {fileID: 0}
     - target: {fileID: 114034303712787916, guid: d058761270e995649a2ad65d8b3eee65,
         type: 2}
       propertyPath: target
       value: 
       objectReference: {fileID: 1764314514}
-    - target: {fileID: 212838427104788920, guid: d058761270e995649a2ad65d8b3eee65,
-        type: 2}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212838427104788920, guid: d058761270e995649a2ad65d8b3eee65,
-        type: 2}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 212838427104788920, guid: d058761270e995649a2ad65d8b3eee65,
-        type: 2}
-      propertyPath: m_Color.b
-      value: 1
+    - target: {fileID: 1051513968227620, guid: d058761270e995649a2ad65d8b3eee65, type: 2}
+      propertyPath: m_Name
+      value: DoomEnemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d058761270e995649a2ad65d8b3eee65, type: 2}

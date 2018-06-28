@@ -79,6 +79,7 @@ public class PlayerMove : MonoBehaviour
     private void Start() {
         m_DefaultAnimSpeed = _anim.speed;
         minDashAttackSpeedThr = moveSpeed * 0.5f;
+        gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
     private void Update() {

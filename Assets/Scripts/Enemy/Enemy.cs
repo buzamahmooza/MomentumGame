@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
         m_Anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerGrappleScript = GameManager.Player.GetComponent<GrappleHookDJ>();
+
+        gameObject.layer = LayerMask.NameToLayer("Enemy");
     }
 
     private void Update() {

@@ -188,6 +188,7 @@ public class PlayerAttack : MonoBehaviour
     public void ReachedSlamPeak() {
         HasReachedSlamPeak = true;
         _anim.speed = 0;
+        gameObject.layer = LayerMask.NameToLayer("PlayerIgnore");
     }
     public void Attack_Slam() {
         triggers.slamTrigger.enabled = true;
@@ -196,6 +197,7 @@ public class PlayerAttack : MonoBehaviour
         slamming = false;
         _anim.speed = animSpeed;
         triggers.slamTrigger.enabled = false;
+        gameObject.layer = LayerMask.NameToLayer("Player");
         UpdateAnimatorParams();
     }
 

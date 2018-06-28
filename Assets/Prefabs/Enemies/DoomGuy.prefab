@@ -28,7 +28,7 @@ GameObject:
   - component: {fileID: 114034303712787916}
   - component: {fileID: 114952421491946764}
   - component: {fileID: 82150044045662326}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: DoomGuy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4518945598912932}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShootPosition
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -58,7 +58,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4347765705760548}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -73,7 +73,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4332809853392118}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -88,7 +88,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 224527502043292592}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Fill Area
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -104,7 +104,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224607665742828310}
   - component: {fileID: 223150436905654770}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Healthbar canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   m_Component:
   - component: {fileID: 224842724730737838}
   - component: {fileID: 114627290848340368}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: HealthBarSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 224396326767231662}
   - component: {fileID: 222152347552852360}
   - component: {fileID: 114472746202773746}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 224499784458895146}
   - component: {fileID: 222667380530321142}
   - component: {fileID: 114985375992028686}
-  m_Layer: 5
+  m_Layer: 11
   m_Name: Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -169,7 +169,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4628536392986040}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Particle systems
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -396,7 +396,7 @@ MonoBehaviour:
   fMode: 1
   useVelocity: 0
   nextWaypointDistance: 2
-  stopDist: 3
+  stopDist: 2
   mask:
     serializedVersion: 2
     m_Bits: 1024
@@ -423,8 +423,6 @@ MonoBehaviour:
   deathEffects: {fileID: 0}
   isDead: 0
   currentHealth: 0
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
-  hurtDamageThreshold: 10
   regenerateHealth: 0
   flashColorWhenDamage: 1
   useHealthbar: 1
@@ -433,6 +431,9 @@ MonoBehaviour:
   fallDamageModifier: 0.5
   hurtAudioClip: {fileID: 8300000, guid: 5afbc263bd322e14984bf120d8165741, type: 3}
   deathAudioClip: {fileID: 0}
+  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  hurtDamageThreshold: 10
+  regenAmount: 0.01
   scoreValue: 25
   floatingText: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
