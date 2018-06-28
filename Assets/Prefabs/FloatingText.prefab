@@ -159,8 +159,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 0}
   rb: {fileID: 0}
-  duration: 6.62
-  smooth: 0.863
+  duration: 20
+  smooth: 0.351
   defaultBounceSpeed: 4.36
 --- !u!114 &114955964004674684
 MonoBehaviour:

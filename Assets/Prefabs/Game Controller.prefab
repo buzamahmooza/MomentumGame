@@ -115,7 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4998179519759010}
   m_Layer: 0
-  m_Name: Spawn Points
+  m_Name: Spawnpoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -356,6 +356,7 @@ MonoBehaviour:
   useSpawnPointsParent: 1
   maxSpawnedEnemies: 15
   delayBetweenSpawns: {x: 1, y: 6}
+  interactable: {fileID: 0}
 --- !u!114 &114694984503391844
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -367,8 +368,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 440d1e7f64d97874090b9685ddab6fba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slowDownFactor: 0.07
   slowDownLength: 1
+  slowDownFactor: 0.07
+  defaultHitStopDuration: 0.13
 --- !u!114 &114741443700698418
 MonoBehaviour:
   m_ObjectHideFlags: 1

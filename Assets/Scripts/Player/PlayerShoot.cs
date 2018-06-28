@@ -23,15 +23,12 @@ public class PlayerShoot : MonoBehaviour
     public struct WeaponStats
     {
         public GameObject projectilePrefab;
-        public float projectileSpeed, //50
-            rpm; //70
+        public float projectileSpeed; //15
+        public float rpm; //50
         public int damage; //25
-        [Range(0, 0.5f)]
-        public float wiggleShootOffset; //0.12
-        [Range(0, 120)]
-        public float randomShootAngle;  // (in degrees) 10
-        [Range(0, 1)]
-        public float cameraKickback; // 0.1
+        [Range(0, 0.5f)] public float wiggleShootOffset; //0.12
+        [Range(0, 120)] public float randomShootAngle;  // (in degrees) 10
+        [Range(0, 1)] public float cameraKickback; // 0.1
         public AudioClip shootSound;
 
         public WeaponStats(
@@ -64,24 +61,29 @@ public class PlayerShoot : MonoBehaviour
         if (arrow == null) arrow = transform.Find("Arrow Parent").gameObject;
 
     }
-    private void FixedUpdate() {
+    private void Update() {
         if (Input.GetMouseButton(0) || Input.GetAxisRaw("RightTrigger") > 0.5f || Input.GetKey(KeyCode.LeftAlt)) {
             Shoot(aimInput.AimDirection);
         }
-        RotateArrow();
+    }
+
+    private void FixedUpdate() {
         FixShootTiming();
     }
 
+    private void LateUpdate() {
+        RotateArrow();
+    }
+
     private void RotateArrow() {
-        float angle = Vector2.Angle(aimInput.AimDirection, Vector2.right);
         Vector2 d = aimInput.AimDirection * playerMove.FacingRightSign;
-        angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
         arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
     private void FixShootTiming() {
-        m_TimeBetweenShots = Time.deltaTime * 360.0f / CurrentWeaponStats.rpm;
-        m_TimeSinceLastShot += Time.deltaTime;
+        m_TimeBetweenShots = Time.fixedDeltaTime * 360.0f / CurrentWeaponStats.rpm;
+        m_TimeSinceLastShot += Time.fixedDeltaTime;
     }
 
     /// <summary>
@@ -89,24 +91,27 @@ public class PlayerShoot : MonoBehaviour
     /// </summary>
     /// <param name="shootDirection"></param>
     private void Shoot(Vector2 shootDirection) {
-        if (m_TimeSinceLastShot >= m_TimeBetweenShots) {
-            m_TimeSinceLastShot = 0; // reset shoot timer
+        if (!(m_TimeSinceLastShot >= m_TimeBetweenShots)) return;
 
-            Vector2 positionWiggler = (new Vector2(-shootDirection.y, shootDirection.x)).normalized * Random.Range(-CurrentWeaponStats.wiggleShootOffset, CurrentWeaponStats.wiggleShootOffset);
-            Vector2 shootPosition = (Vector2)(shootTransform.position) + positionWiggler;
+        m_TimeSinceLastShot = 0; // reset shoot timer
 
-            audioSource.PlayOneShot(CurrentWeaponStats.shootSound, Random.Range(0.7f, 1.0f));
+        Vector2 positionWiggler = (new Vector2(-shootDirection.y, shootDirection.x)).normalized * Random.Range(-CurrentWeaponStats.wiggleShootOffset, CurrentWeaponStats.wiggleShootOffset);
+        Vector2 shootPosition = (Vector2)(shootTransform.position) + positionWiggler;
 
-            // Create simple rotation which looks where the player is aiming in addition to a wiggle amount of euler angles
-            // How? IDK, just leave it, it works
-            Quaternion rotation = Quaternion.LookRotation(Quaternion.Euler(0, 0, Random.Range(-CurrentWeaponStats.randomShootAngle, CurrentWeaponStats.randomShootAngle)) * shootDirection);
-            GameObject projectile = Instantiate(CurrentWeaponStats.projectilePrefab, shootPosition, rotation, this.transform) as GameObject; // Create bullet
-            projectile.GetComponent<BulletScript>().damageAmount = CurrentWeaponStats.damage; // Set bullet damage
-            projectile.GetComponent<Rigidbody2D>().velocity = shootDirection * CurrentWeaponStats.projectileSpeed; // Set bullet movement
+        audioSource.PlayOneShot(CurrentWeaponStats.shootSound, Random.Range(0.7f, 1.0f));
 
-            rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
-            if (cameraKickback) cameraKickback.DoKickback(-shootDirection * CurrentWeaponStats.cameraKickback);
-        }
+        // Create simple rotation which looks where the player is aiming in addition to a wiggle amount of euler angles
+        // How? IDK, just leave it, it works
+        Quaternion rotation = Quaternion.LookRotation(Quaternion.Euler(0, 0, Random.Range(-CurrentWeaponStats.randomShootAngle, CurrentWeaponStats.randomShootAngle)) * shootDirection);
+        GameObject projectile = Instantiate(CurrentWeaponStats.projectilePrefab, shootPosition, rotation, this.transform) as GameObject; // Create bullet
+
+        // Set bullet damage
+        projectile.GetComponent<BulletScript>().damageAmount = Mathf.RoundToInt(CurrentWeaponStats.damage * Random.Range(0.8f, 1.2f));
+        // Set bullet movement
+        projectile.GetComponent<Rigidbody2D>().velocity = shootDirection * CurrentWeaponStats.projectileSpeed;
+
+        rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        if (cameraKickback) cameraKickback.DoKickback(-shootDirection * CurrentWeaponStats.cameraKickback);
     }
 
     private void SetWeaponStats(WeaponStats newWeaponStats) {

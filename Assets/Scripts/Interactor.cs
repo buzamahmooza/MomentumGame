@@ -7,12 +7,10 @@ using UnityEngine.UI;
 public class Interactor : MonoBehaviour
 {
     private Text promptText;
-    private CapsuleCollider2D capsCol;
     [SerializeField] private LayerMask interactionMask;
 
     private void Awake() {
         promptText = GameObject.Find("Prompt text").GetComponent<Text>();
-        capsCol = GetComponent<CapsuleCollider2D>();
     }
     
 
@@ -35,7 +33,6 @@ public class Interactor : MonoBehaviour
         promptText.enabled = true;
         var interactable = col.gameObject.GetComponent<Interactable>();
         if (interactable == null) {
-            Debug.LogWarning("Interactable is null. " + col.gameObject.name);
             return;
         }
 

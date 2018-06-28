@@ -20,7 +20,12 @@ public class CameraController : MonoBehaviour
     // 
     private Fisheye fisheye;
     [SerializeField] private float fisheyeValue = 0.0f;
+    [SerializeField] [Range(0, 20)] float fisheyeSmooth = 0.3f;
+    private Animator animator;
 
+    private void Awake() {
+        animator = GetComponent<Animator>();
+    }
 
     // Use this for initialization
     private void Start() {
@@ -29,7 +34,6 @@ public class CameraController : MonoBehaviour
         }
 
         fisheye = Camera.main.GetComponent<Fisheye>();
-        fisheye.enabled = false;
 
         zDist = transform.position.z - target.position.z;
         offset = transform.position - target.position;
@@ -44,23 +48,30 @@ public class CameraController : MonoBehaviour
                     Mathf.Clamp(transform.position.y, minCamPos.y, maxCamPos.y),
                     zDist
                 );
-        UpdateFisheye();
+        //UpdateFisheye();
     }
 
     private void UpdateFisheye() {
         // if fisheyeValue ~== zero
-        if (Math.Abs(fisheyeValue) < 0.1f) {
+        if (Math.Abs(fisheyeValue) < 0.01f) {
             // end fisheye
             fisheye.enabled = false;
             fisheyeValue = 0;
         } else {
-            Mathf.Lerp(fisheye.strengthX, fisheyeValue, Time.deltaTime * smooth);
+            Mathf.Lerp(fisheye.strengthX, fisheyeValue, Time.time * fisheyeSmooth);
+            // decrease fisheyeValue
+            fisheyeValue -= Time.deltaTime;
         }
         fisheye.strengthX = fisheyeValue;
         fisheye.strengthY = fisheyeValue;
+
     }
 
     public void GoFisheye(float intensity) {
+        //print("Fisheye");
+        //animator.SetTrigger("Fisheye");
+        //return;
+
         fisheye.enabled = true;
         // reset fields (we don't want a sudden change in lense intensity, so we start from zero and Lerp)
         fisheye.strengthX = 0;

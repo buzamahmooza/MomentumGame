@@ -20,15 +20,12 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] private Vector2 speedLimit;
     [SerializeField] private float moveSpeed = 20;
     [SerializeField] private float jumpForce = 300;
-    /// <summary>
-    /// resolved
-    /// </summary>
-    [SerializeField] private float animationSpeedFactor = 0.8f;
+    /// <summary> resolved, do not touch this </summary>
+    private readonly float animationSpeedCoeff = 0.8f;
     [SerializeField] private float wallSlideSpeedMax = 1;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
-
     public float climbSlideFactor = 0.5f;
     public float k_GroundedRadius = 0.2f; // Radius of the overlap circle to determine if grounded
 
@@ -47,7 +44,6 @@ public class PlayerMove : MonoBehaviour
     private float minDashAttackSpeedThr; // the minimum horizontal speed that the player should be moving in to perform a dash attack
     private bool m_Climb = false;
     private bool m_ReachedJumpPeak = false;
-    private RaycastHit2D hit;
 
     //Components
     public AudioClip footstepSound;
@@ -78,7 +74,7 @@ public class PlayerMove : MonoBehaviour
         aimInput = GetComponent<AimInput>();
         healthScript = GetComponent<HealthScript>();
 
-        statsText = GameObject.Find("StatsText").GetComponent<UnityEngine.UI.Text>();
+        statsText = GameObject.Find("Stats text").GetComponent<UnityEngine.UI.Text>();
     }
     private void Start() {
         m_DefaultAnimSpeed = _anim.speed;
@@ -221,9 +217,9 @@ public class PlayerMove : MonoBehaviour
         if (_anim.GetBool("Slamming") && playerAttack.HasReachedSlamPeak) { //Is using slam_attack and reached peak
             _anim.speed = 0;
         } else if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1) { //walking animation and moving
-            _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedFactor);
+            _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedCoeff);
         } else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1) {            //Airborn animation and moving
-            _anim.speed = Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedFactor * 5f / 8f));
+            _anim.speed = Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedCoeff * 5f / 8f));
         } else {
             _anim.speed = m_DefaultAnimSpeed; //Go back to default speed
             playerAttack.HasReachedSlamPeak = false;

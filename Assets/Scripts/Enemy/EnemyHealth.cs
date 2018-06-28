@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Enemy))]
-public class Enemy_Health : HealthScript
+public class EnemyHealth : HealthScript
 {
     [SerializeField] public int scoreValue = 0;  // assigned in inspector
     [SerializeField] private GameObject floatingText;  // assigned in inspector
@@ -50,12 +50,12 @@ public class Enemy_Health : HealthScript
         GameObject floatingDamageInstance = (Instantiate(this.floatingText, transform.position, Quaternion.identity) as GameObject);
         FloatingText floatingText = floatingDamageInstance.GetComponent<FloatingText>();
         floatingText.InitBounceDmg(damageValue);
-        floatingText.text.color = Color.Lerp(Color.yellow, Color.red, damageValue / startHealth);
+        floatingText.text.color = Color.Lerp(Color.yellow, Color.red, (float)damageValue / startHealth);
     }
 
-    private void CreateFloatingScore(int scoreValue) {
+    private void CreateFloatingScore(int scoreVal) {
         Debug.Assert(floatingText != null);
-        (Instantiate(floatingText, transform.position, Quaternion.identity) as GameObject).GetComponent<FloatingText>().InitFloatingScore(scoreValue);
+        (Instantiate(floatingText, transform.position, Quaternion.identity) as GameObject).GetComponent<FloatingText>().InitFloatingScore(scoreVal);
     }
 
     public override void Die() {

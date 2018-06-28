@@ -114,6 +114,7 @@ GameObject:
   - component: {fileID: 4753084635099810}
   - component: {fileID: 61156517755911178}
   - component: {fileID: 114454820563067926}
+  - component: {fileID: 82850942947690660}
   m_Layer: 10
   m_Name: PunchTrigger
   m_TagString: DamageSource
@@ -212,7 +213,7 @@ GameObject:
   - component: {fileID: 70202507466776246}
   - component: {fileID: 114699972072293624}
   m_Layer: 10
-  m_Name: Interaction
+  m_Name: Interactor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -586,7 +587,7 @@ BoxCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1465681206075296}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -741,6 +742,87 @@ AudioSource:
     m_PostInfinity: 2
     m_RotationOrder: 0
   m_ExtensionPropertyValues: []
+--- !u!82 &82850942947690660
+AudioSource:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1465681206075296}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0.261
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  m_ExtensionPropertyValues: []
 --- !u!95 &95195585535978316
 Animator:
   serializedVersion: 3
@@ -786,10 +868,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jitter: {x: 0.2, y: 0.09}
+  attackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
+  damageAmount: 26
+  deactivateOnContact: 1
+  explosive: 0
+  hitStop: 0
+  fisheye: 0
+  slomoFactor: 0.238
   forceAmount: 10
-  shouldDeactivateOnContact: 0
-  jitter: {x: 0.1, y: 0.07}
-  debug: 0
 --- !u!114 &114186185492896904
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -819,7 +906,7 @@ MonoBehaviour:
     slamTrigger: {fileID: 61039051020386856}
     dashAttackTrigger: {fileID: 61110167375158322}
   explosionRadius: 2
-  upwardModifier: 1
+  upwardModifier: 1.73
   explosionMask:
     serializedVersion: 2
     m_Bits: 6144
@@ -850,6 +937,7 @@ MonoBehaviour:
   deathAudioClip: {fileID: 0}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   hurtDamageThreshold: 10
+  regenAmount: 0.01
 --- !u!114 &114454820563067926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -861,10 +949,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceAmount: 6
-  shouldDeactivateOnContact: 1
   jitter: {x: 0.2, y: 0.09}
-  debug: 0
+  attackSound: {fileID: 8300000, guid: f93bc16fa84571648904d10e9c988b76, type: 3}
+  damageAmount: 24
+  deactivateOnContact: 1
+  explosive: 0
+  hitStop: 0.07
+  fisheye: 0
+  slomoFactor: 1
+  forceAmount: 6
 --- !u!114 &114474211987748190
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -877,17 +970,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrow: {fileID: 1296357248080018}
+  kickbackForceMplier: 10
   CurrentWeaponStats:
     projectilePrefab: {fileID: 1030791354745356, guid: edc38b6320e62834db5b125e239111eb,
       type: 2}
-    projectileSpeed: 20
-    rpm: 70
+    projectileSpeed: 15
+    rpm: 50
     damage: 7
     wiggleShootOffset: 0.12
     randomShootAngle: 10
-    cameraKickback: 0.062
+    cameraKickback: 0.1
     shootSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
-  kickbackForce: 25
   shootTransform: {fileID: 4258803662780948}
 --- !u!114 &114501295167312770
 MonoBehaviour:
@@ -959,7 +1052,6 @@ MonoBehaviour:
   speedLimit: {x: 20, y: 20}
   moveSpeed: 5
   jumpForce: 400
-  animationSpeedFactor: 0.8
   wallSlideSpeedMax: 1
   fallMultiplier: 1
   lowJumpMultiplier: 1.5
@@ -997,10 +1089,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceAmount: 5
-  shouldDeactivateOnContact: 1
-  jitter: {x: 0, y: 0}
-  debug: 0
+  jitter: {x: 0.2, y: 0.09}
+  attackSound: {fileID: 8300000, guid: 518b87c20662fd640997caaaeb67f349, type: 3}
+  damageAmount: 27
+  deactivateOnContact: 1
+  explosive: 1
+  hitStop: 0
+  fisheye: 0.402
+  slomoFactor: 0.447
+  forceAmount: 25
 --- !u!114 &114809542759435404
 MonoBehaviour:
   m_ObjectHideFlags: 1

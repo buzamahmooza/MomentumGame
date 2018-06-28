@@ -52,6 +52,6 @@ public class DoomEnemy : Enemy
         // = BulletScript.MakeBullet(shootPosition, Quaternion.LookRotation(shootDirection), gameObject);
         projectile.GetComponent<Rigidbody2D>().velocity = shootDirection.normalized * projectileSpeed;
 
-        GetComponent<AudioSource>().PlayOneShot(attackSound, UnityEngine.Random.Range(0.7f, 1f));
+        audioSource.PlayOneShot(attackSound, UnityEngine.Random.Range(0.7f, 1f));
     }
 }

@@ -16,12 +16,12 @@ public class PlayerAttack : MonoBehaviour
     private bool slamming = false, punching = false;
 
     // This is just to make the members collapsable in the inspector
-    [Serializable] private struct Triggers { public BoxCollider2D punchTrigger, slamTrigger, dashAttackTrigger; }
+    [Serializable] private struct Triggers { public Collider2D punchTrigger, slamTrigger, dashAttackTrigger; }
     [SerializeField] private Triggers triggers;
     [SerializeField]
     [Range(0.5f, 10)]
     private float explosionRadius = 2,
-    upwardModifier = 1;
+        upwardModifier = 1;
     [SerializeField] private LayerMask explosionMask;
 
     //BoxCollider2D punchTrigger, slamTrigger, dashAttackTrigger;
@@ -40,8 +40,8 @@ public class PlayerAttack : MonoBehaviour
         _anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
-        if (!triggers.punchTrigger) triggers.punchTrigger = transform.Find("PunchTrigger").GetComponent<BoxCollider2D>();
-        if (!triggers.slamTrigger) triggers.slamTrigger = transform.Find("SlamTrigger").GetComponent<BoxCollider2D>();
+        if (!triggers.punchTrigger) triggers.punchTrigger = transform.Find("PunchTrigger").GetComponent<Collider2D>();
+        if (!triggers.slamTrigger) triggers.slamTrigger = transform.Find("SlamTrigger").GetComponent<Collider2D>();
     }
 
     private void Start() {
@@ -129,23 +129,27 @@ public class PlayerAttack : MonoBehaviour
         if (col.Equals(triggers.punchTrigger)) {
             audioSource.PlayOneShot(punchAttackSound);
             damageAmount = punchDamage;
+            GameManager.TimeManager.DoHitStop(0.15f);
         }// Slam
         else if (col.Equals(triggers.slamTrigger)) {
             CreateSlamExplosion();
             GameManager.TimeManager.DoSlowMotion();
             audioSource.PlayOneShot(slamAttackSound);
+            GameManager.CameraController.GoFisheye(0.5f);
             damageAmount = slamDamage;
         }// Dash
         else if (col.Equals(triggers.dashAttackTrigger)) {
             audioSource.PlayOneShot(dashAttackSound);
+            if (rb.velocity.magnitude > 2)
+                GameManager.TimeManager.DoSlowMotion();
             damageAmount = dashDamage;
         } else {
             Debug.LogWarning("The attack collider is not one of the known colliders");
         }
 
-        HealthScript health_Script = other.gameObject.GetComponent<HealthScript>();
-        if (health_Script != null)
-            health_Script.TakeDamage(damageAmount);
+        var otherHealth = other.gameObject.GetComponent<HealthScript>();
+        if (otherHealth != null)
+            otherHealth.TakeDamage(damageAmount);
     }
 
     /// <summary>
@@ -195,16 +199,16 @@ public class PlayerAttack : MonoBehaviour
         UpdateAnimatorParams();
     }
 
-    private void CreateSlamExplosion() {
+    public void CreateSlamExplosion() {
         Instantiate(slamExplosionObj, triggers.slamTrigger.bounds.center + Vector3.back, Quaternion.identity);
         float landingSpeed = -rb.velocity.y;
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
-        Vector3 explosionPos = transform.position;
+        var explosionPos = transform.position;
         foreach (var hit in Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask)) {
             print(hit.name + " is supposed to take damage");
 
-            Enemy_Health enemyHealth = hit.gameObject.GetComponent<Enemy_Health>();
+            var enemyHealth = hit.gameObject.GetComponent<EnemyHealth>();
             if (!enemyHealth) {
                 print("enemyHealth not found on " + hit.name);
                 continue;

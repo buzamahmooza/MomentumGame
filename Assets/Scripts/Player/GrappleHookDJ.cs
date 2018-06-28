@@ -59,7 +59,7 @@ public class GrappleHookDJ : MonoBehaviour
         }
 
         //If reached target
-        if (Vector2.Distance(transform.position, target) < 0.5f)
+        if (!m_Pulling && Vector2.Distance(transform.position, target) < 0.5f)
             EndGrapple();
         // if released input
         if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift)) && releaseGrappleOnInputRelease)

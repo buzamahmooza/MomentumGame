@@ -18,7 +18,7 @@ public class AimInput : MonoBehaviour
     private PlayerMove playerMove;
 
 
-    private void Start() {
+    private void Awake() {
         playerMove = GameManager.Player.GetComponent<PlayerMove>();
     }
 

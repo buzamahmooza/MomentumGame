@@ -40,11 +40,7 @@ public class EnemySpawner : MonoBehaviour
         }
         audioSource = GetComponent<AudioSource>();
     }
-    private float SpawnDelay {
-        get {
-            return Random.Range(delayBetweenSpawns.x, delayBetweenSpawns.y);
-        }
-    }
+    private float SpawnDelay { get { return Random.Range(delayBetweenSpawns.x, delayBetweenSpawns.y); } }
 
     // Use this for initialization
     private void Start() {
@@ -54,15 +50,16 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy() {
-        if (player == null || player.GetComponent<HealthScript>().isDead || // if player is dead
-            maxSpawnedEnemies <= GameObject.FindGameObjectsWithTag("Enemy").Length || // or too many enemies exist
-            remainingWaveSize <= 0)
+        if (player == null || GameManager.PlayerHealth.isDead || // if player is dead
+            maxSpawnedEnemies <= GameObject.FindGameObjectsWithTag("Enemy").Length // or too many enemies exist
+            )
             return;
 
         GameObject enemy = enemies[(int)Random.Range(0, enemies.Length)]; //choose random enemy type
-        Transform spawnPoint = spawnPoints[(int)Random.Range(0, spawnPoints.Length)]; //choose random spawnpoint
+        Transform spawnTransform = spawnPoints[(int)Random.Range(0, spawnPoints.Length)]; //choose random spawnpoint
         audioSource.Play();
-        Instantiate(enemy, spawnPoint.position, Quaternion.identity);
+        Instantiate(enemy, spawnTransform.position, Quaternion.identity);
+
         totalSpawnedFromStart++;
         remainingWaveSize--;
 
@@ -70,15 +67,15 @@ public class EnemySpawner : MonoBehaviour
             Invoke("SpawnEnemy", SpawnDelay);
         } else {
             //wave ended
-            interactable.GetComponent<Interactable>().enabled = true;
+            interactable.enabled = true;
         }
     }
 
     public void SpawnWave() {
         Debug.Log("SpawnWave()");
         // do not spawn next wave until current wave is over
-        if (remainingWaveSize > 0 && GameObject.FindGameObjectsWithTag("Enemy").Length == 0)
-            return;
+        //if (remainingWaveSize > 0 && GameObject.FindGameObjectsWithTag("Enemy").Length != 0)
+        //    return;
         SpawnWave(10, maxSpawnedEnemies);
     }
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies) {

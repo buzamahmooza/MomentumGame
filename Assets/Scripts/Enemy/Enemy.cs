@@ -3,41 +3,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Enemy_Health))]
+// Note: Object must be spawned facing to the Right!
+
+[RequireComponent(typeof(EnemyHealth))]
 public class Enemy : MonoBehaviour
 {
 
-    // Note: Object must spawn facing to the Right!
 
-    // Components
-    private Animator m_Anim;
-    private Rigidbody2D rb;
-
-    private AudioSource audioSource;
-    public AudioClip attackSound;
-
-    [Range(1, 50)] public float awarenessRadius = 10;
-    [Range(1, 50)] public float attackRadius = 5;
-    [Range(30, 360)] public float visionAngle = 100;
+    [SerializeField] protected AudioClip attackSound;
+    [SerializeField] [Range(1, 50)] protected float awarenessRadius = 10;
+    [SerializeField] [Range(1, 50)] protected float attackRadius = 5;
+    [SerializeField] [Range(30, 360)] public float visionAngle = 100;
     [SerializeField] private LayerMask playerMask;
+    [SerializeField] protected float timeBetweenAttacks = 2f;
+    [SerializeField] protected float movementSpeed = 2;
+
+    [HideInInspector] public bool m_Attacking = false;
+    protected float timeSinceLastAttack = 0;
+    protected bool m_CanAttack = true;
 
     private bool m_Aware = false;
     private bool m_InAttackRange = false;
 
-    public float timeBetweenAttacks = 2f;
-    public float movementSpeed = 2;
-    public bool m_Attacking = false;
-    protected float timeSinceLastAttack = 0;
-    protected bool m_CanAttack = true;
-
-    private Vector3 mLastPosition;          //experimental
-    private EnemyAI enemyAI;
+    // Components
+    GrappleHookDJ playerGrappleScript;
+    protected Animator m_Anim;
+    protected Rigidbody2D rb;
+    protected AudioSource audioSource;
+    protected EnemyAI enemyAI;
 
     public virtual void Awake() {
         enemyAI = GetComponent<EnemyAI>();
         audioSource = GetComponent<AudioSource>();
         m_Anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        playerGrappleScript = GameManager.Player.GetComponent<GrappleHookDJ>();
     }
 
     private void Update() {
@@ -95,7 +95,7 @@ public class Enemy : MonoBehaviour
         transform.localScale = theScale;
 
         //Flip healthbar
-        var healthBar = GetComponent<Enemy_Health>().healthBar;
+        var healthBar = GetComponent<EnemyHealth>().healthBar;
         Vector3 healthBarScale = healthBar.transform.localScale;
         healthBarScale.x = -1 * (healthBarScale.x);
         healthBar.transform.localScale = healthBarScale;
@@ -125,7 +125,6 @@ public class Enemy : MonoBehaviour
 
     public bool GrappledByPlayer {
         get {
-            GrappleScript playerGrappleScript = GameManager.Player.GetComponent<GrappleScript>();
             return playerGrappleScript != null && gameObject == playerGrappleScript.grabbedObj;
         }
     }

@@ -22,7 +22,7 @@ public class FloatingText : MonoBehaviour
         Destroy(gameObject, 10);
     }
     public void InitBounceDmg(int damageValue) {
-        Init(damageValue + "", defaultBounceSpeed * (UnityEngine.Random.insideUnitSphere + Vector3.up), true);
+        Init(damageValue + "", defaultBounceSpeed * (UnityEngine.Random.insideUnitCircle + Vector2.up), true);
         gameObject.transform.localScale *= 0.6f;
     }
     public void InitFloatingScore(int scoreValue) {

@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
 
     // todo: add fields that these properties encapsulate, only benefit will be performance
     public static GameObject Player { get { return GameObject.FindWithTag("Player"); } }
+    public static Rigidbody2D PlayerRb { get { return Player.GetComponent<Rigidbody2D>(); } }
     public static PlayerHealth PlayerHealth { get { return Player == null ? null : Player.GetComponent<PlayerHealth>(); } }
     public static bool PlayerIsDead { get { return PlayerHealth.isDead; } }
     public static CameraShake CameraShake { get { return Camera.main.GetComponent<CameraShake>(); } }

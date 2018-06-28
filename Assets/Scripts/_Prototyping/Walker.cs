@@ -43,7 +43,7 @@ public class Walker : MonoBehaviour
     private CircleCollider2D circle;
     [HideInInspector] public Rigidbody2D rb;
     private Animator m_Anim;
-    private GrappleScript grapple;
+    private GrappleHookDJ grapple;
     private AudioSource audioSource;
     public AudioClip footstepSound;
     private PlayerAttack attackScript;
@@ -62,7 +62,7 @@ public class Walker : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         m_Anim = GetComponent<Animator>();
         circle = GetComponent<CircleCollider2D>();
-        grapple = GetComponent<GrappleScript>();
+        grapple = GetComponent<GrappleHookDJ>();
         attackScript = GetComponent<PlayerAttack>();
 
         m_CeilingCheck = transform.Find("CeilingCheck");
