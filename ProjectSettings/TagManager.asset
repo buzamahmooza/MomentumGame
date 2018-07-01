@@ -17,14 +17,14 @@ TagManager:
   - UI
   - 
   - 
-  - Environment
+  - 
   - Floor
   - Player
   - Enemy
   - Object
   - Interaction
   - PlayerIgnore
-  - 
+  - EnemyIgnore
   - 
   - 
   - 
