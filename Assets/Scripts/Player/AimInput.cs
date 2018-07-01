@@ -5,7 +5,7 @@ using UnityEngine;
 using InControl;
 
 [RequireComponent(typeof(PlayerMove))]
-public class AimInput : MonoBehaviour
+public class AimInput : Targeting
 {
 
     public GameObject arrow;
@@ -23,7 +23,7 @@ public class AimInput : MonoBehaviour
     }
 
     private void FixedUpdate() {
-        CheckInputDevice();
+        RecheckInputDevice();
         lastMousePos = MousePos;
 
         //switch to mouse if mouse pressed:
@@ -31,18 +31,19 @@ public class AimInput : MonoBehaviour
             Debug.Log("Mouse button pressed, switching to mouse control");
             usingMouse = true;
             usingJoystick = false;
+        } else if (Input.GetKey(KeyCode.LeftShift)) {
+            usingMouse = false;
         }
-
-        //Debug.Log("AimDirection: " + AimDirection);
     }
-
-
-    public Vector2 AimDirection {
+    
+    /// <summary>
+    /// Returns an aimDirection as a normalized Vector2
+    /// </summary>
+    /// <returns>Returns an aimDirection as a normalized Vector2</returns>
+    public override Vector2 AimDirection {
         get {
-            Vector2 aimDir = new Vector2();
-
             // Using joystick, if there is input
-            aimDir = RightJoystick;
+            Vector2 aimDir = RightJoystick;
             if (usingJoystick && Mathf.Abs(aimDir.magnitude) > 0.1f) {
                 // ~Debug.Log("Using controller aiming, aimDirection = " + aimDir);
                 return (aimDir.normalized);
@@ -50,8 +51,7 @@ public class AimInput : MonoBehaviour
 
             //Using mouse
             else if (usingMouse) {
-                Vector2 returnVector = MousePos - (Vector2)GameManager.Player.transform.position;
-                return returnVector.normalized;
+                return (MousePos - (Vector2)GameManager.Player.transform.position).normalized;
             }
             // Using Movement aiming
             else {
@@ -66,18 +66,16 @@ public class AimInput : MonoBehaviour
                 // If input is too little, just aim where player is facing
                 else {
                     //Debug.Log("Using facingDir, moveInput is SMALLER than 0.1");
-                    return (Vector2.right * playerMove.FacingRightSign);
+                    return (Vector2.right * playerMove.FacingSign);
                 }
             }
         }
     }
 
-
     /// <summary>
     /// Checks which device should be used as aim input (Mouse or Joystick) and updates fields
     /// </summary>
-    private void CheckInputDevice() {
-
+    private void RecheckInputDevice() {
         float mouseDisp = Vector3.Distance(MousePos, lastMousePos);
         if (debugMousePosition) Debug.Log("mouseDisp: " + mouseDisp);
 
@@ -106,7 +104,6 @@ public class AimInput : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// Returns mouse position as Vector2 in world space
     /// </summary>
@@ -127,7 +124,7 @@ public class AimInput : MonoBehaviour
     /// returns joystick right stick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    private Vector2 RightJoystick {
+    private static Vector2 RightJoystick {
         get {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.RightStickX, inputDevice.RightStickY);
@@ -139,7 +136,7 @@ public class AimInput : MonoBehaviour
     /// Returns the left stick joystick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    private Vector2 LeftJoystick {
+    private static Vector2 LeftJoystick {
         get {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.LeftStickX, inputDevice.LeftStickY);
@@ -152,12 +149,12 @@ public class AimInput : MonoBehaviour
     /// </summary>
     /// <param name="rawAxis"></param>
     /// <returns>Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis</returns>
-    private Vector2 InputGetAxisVector {
+    private static Vector2 InputGetAxisVector {
         get {
             return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         }
     }
-    private Vector2 InputGetAxisRawVector {
+    private static Vector2 InputGetAxisRawVector {
         get {
             return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }

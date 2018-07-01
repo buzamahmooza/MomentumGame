@@ -124,7 +124,7 @@ public class EnemyAI_Original : MonoBehaviour
         pathIsEnded = false;
 
         if (stopDist > Vector3.Distance(transform.position, target.position) || player) {
-            //Direction to target
+            //Direction to Target
             Vector3 targetDir = (target.position - transform.position).normalized;
             return;
         }
@@ -149,7 +149,7 @@ public class EnemyAI_Original : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (enemyScript != null && enemyScript.Aware)
+        if (enemyScript != null && enemyScript.IsAware)
             Gizmos.color = Color.red;
         else Gizmos.color = Color.blue;
 

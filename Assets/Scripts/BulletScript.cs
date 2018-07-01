@@ -44,7 +44,7 @@ public class BulletScript : MonoBehaviour
         if (other.gameObject == parent) // prevent damaging the shooter
             return;
 
-        HealthScript otherHealth = other.gameObject.GetComponent<HealthScript>();
+        Health otherHealth = other.gameObject.GetComponent<Health>();
         if (otherHealth) {
             // if it's the same type as the shooter, do damage
             if (!other.gameObject.CompareTag(parent.tag) || damageShootersWithSameTag)

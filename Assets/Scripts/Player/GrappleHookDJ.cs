@@ -11,19 +11,19 @@ public class GrappleHookDJ : MonoBehaviour
     [HideInInspector] public Vector3 target;
 
     // assigned in the Inspector
-    [SerializeField] private Transform gun;
-    [SerializeField] private LayerMask mask;
-    [SerializeField] private float speed = 5;
-    [SerializeField] private float maxGrappleRange = 300;
-    [SerializeField] private bool releaseGrappleOnInputRelease = true;
+    [SerializeField] Transform gun;
+    [SerializeField] LayerMask mask;
+    [SerializeField] float speed = 5;
+    [SerializeField] float maxGrappleRange = 300;
+    [SerializeField] bool releaseGrappleOnInputRelease = true;
 
-    private Vector3 targetPointOffset;
-    private AimInput aimInput;
-    private Animator m_Anim;
-    private PlayerMove playerMove;
-    private LineRenderer lr;
-    private DistanceJoint2D joint;
-    private float maxDistance = 10.0f;
+    Vector3 targetPointOffset;
+    AimInput aimInput;
+    Animator m_Anim;
+    PlayerMove playerMove;
+    LineRenderer lr;
+    DistanceJoint2D joint;
+    float maxDistance = 10.0f;
 
     public Vector3 AnchorVec3 {
         get {
@@ -58,7 +58,7 @@ public class GrappleHookDJ : MonoBehaviour
             EndGrapple();
         }
 
-        //If reached target
+        //If reached Target
         if (!m_Pulling && Vector2.Distance(transform.position, target) < 0.5f)
             EndGrapple();
         // if released input
@@ -70,7 +70,7 @@ public class GrappleHookDJ : MonoBehaviour
         foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, aimInput.AimDirection, maxGrappleRange, mask)) {
             bool grappleConditions = hit && hit.collider != null &&
                                      hit.collider.gameObject != gameObject;
-            bool pullConditions = hit.collider.gameObject.GetComponent<HealthScript>() != null &&
+            bool pullConditions = hit.collider.gameObject.GetComponent<Health>() != null &&
                                   hit.collider.attachedRigidbody != null;
 
             if (m_Anim.GetBool("Slamming")) continue; //  not allowed to grapple while slamming
@@ -101,7 +101,7 @@ public class GrappleHookDJ : MonoBehaviour
 
     private void RenderLine() {
         lr.SetPosition(0, gun.position);
-        Vector2 endVec = (m_Pulling ? (Vector2)(grabbedObj.transform.position + targetPointOffset) : joint.connectedAnchor);
+        Vector2 endVec = m_Pulling ? (Vector2)(grabbedObj.transform.position + targetPointOffset) : joint.connectedAnchor;
         lr.SetPosition(1, endVec);
     }
 
@@ -140,6 +140,11 @@ public class GrappleHookDJ : MonoBehaviour
         joint.connectedBody = otherRigidbody;
 
         if (otherRigidbody) {
+            // if player is facing a direction other than that of the otherRigidbody, Flip()
+            bool otherIsToTheRight = otherRigidbody.gameObject.transform.position.x > transform.position.x;
+            if (otherIsToTheRight ^ playerMove.FacingRight) {
+                playerMove.Flip();
+            }
             CloseDistance();
             RenderLine();
         } else if (!otherRigidbody) {
@@ -159,7 +164,7 @@ public class GrappleHookDJ : MonoBehaviour
         lr.enabled = false;
         m_Flying = false;
         m_Pulling = false;
-        playerMove.blockMoveInput = false;
+        playerMove.BlockMoveInput = false;
         target = transform.position;
         grabbedObj = null;
     }

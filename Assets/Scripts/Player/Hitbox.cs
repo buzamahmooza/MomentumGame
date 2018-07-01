@@ -25,8 +25,8 @@ public class Hitbox : MonoBehaviour
 
 
     private void Awake() {
-        attackScript = transform.GetComponentInParent<PlayerAttack>();
-        trigger = gameObject.GetComponent<Collider2D>();
+        attackScript = GetComponentInParent<PlayerAttack>();
+        trigger = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
         trigger.enabled = false;
     }
@@ -36,9 +36,8 @@ public class Hitbox : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        var otherHealth = other.gameObject.GetComponent<HealthScript>();
-
-        if (other.attachedRigidbody) {
+        var otherHealth = other.gameObject.GetComponent<Health>();
+        if (other.gameObject.layer.CompareTo(LayerMask.NameToLayer("Ignore Raycast")) != 0 && other.attachedRigidbody) {
             Vector3 forceVec = other.transform.position - transform.parent.transform.position;
             other.attachedRigidbody.AddForce(forceAmount * (forceVec.normalized + Vector3.up * 0.7f), ForceMode2D.Impulse);
 
@@ -49,7 +48,7 @@ public class Hitbox : MonoBehaviour
             if (attackSound) audioSource.PlayOneShot(attackSound);
             if (otherHealth) otherHealth.TakeDamage(Mathf.RoundToInt(damageAmount * speedMult));
             if (hitStop > 0) GameManager.TimeManager.DoHitStop(hitStop * speedMult);
-            if (fisheye > 0) GameManager.CameraController.GoFisheye(fisheye);
+            if (fisheye > 0) GameManager.CameraController.DoFisheye(fisheye);
             if (slomoFactor < 1) {
                 Debug.Log("DoSlowMotion:    " + slomoFactor);
                 GameManager.TimeManager.DoSlowMotion(slomoFactor / speedMult);
@@ -59,7 +58,7 @@ public class Hitbox : MonoBehaviour
 
             GameManager.CameraShake.DoJitter(jitter.x * 0.5f * speedMult, jitter.y);
 
-            Debug.Log("Attacked " + other.gameObject.name);
+            //Debug.Log("Attacked " + other.gameObject.name);
         }
 
         if (deactivateOnContact && otherHealth) {

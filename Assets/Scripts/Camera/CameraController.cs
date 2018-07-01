@@ -25,15 +25,15 @@ public class CameraController : MonoBehaviour
 
     private void Awake() {
         animator = GetComponent<Animator>();
+        fisheye = Camera.main.GetComponent<Fisheye>();
     }
 
     // Use this for initialization
     private void Start() {
         if (!target) {
-            target = GameObject.FindGameObjectsWithTag("Player")[0].transform;
+            target =GameManager.Player.transform;
         }
 
-        fisheye = Camera.main.GetComponent<Fisheye>();
 
         zDist = transform.position.z - target.position.z;
         offset = transform.position - target.position;
@@ -67,7 +67,7 @@ public class CameraController : MonoBehaviour
 
     }
 
-    public void GoFisheye(float intensity) {
+    public void DoFisheye(float intensity) {
         //print("Fisheye");
         //animator.SetTrigger("Fisheye");
         //return;
@@ -98,6 +98,6 @@ public class CameraController : MonoBehaviour
     }
 
     public Vector3 LookAheadPos {
-        get { return (target.position - transform.position); }
+        get { return target ? (target.position - transform.position) : Vector3.zero; }
     }
 }

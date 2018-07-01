@@ -7,12 +7,12 @@ using System;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Seeker))]
-public class EnemyAI : MonoBehaviour
+[RequireComponent(typeof(Enemy))]
+public class EnemyAI : Targeting
 {
     //The point to move to
     private Vector3 targetPosition;
 
-    public Transform target;
     public float updateDelay = 1f;
 
     private Seeker seeker;
@@ -35,24 +35,25 @@ public class EnemyAI : MonoBehaviour
     private int currentWaypoint = 0;
 
     [SerializeField] private float stopDist = 2f;
-    public LayerMask mask;
 
-    public bool inSight = false;
     public bool followOnGround;
     private Enemy enemyScript;
+    private Targeting targeting;
     private Animator anim;
 
     private bool m_Grounded;
     public LayerMask floorMask;
     public Transform m_GroundCheck;
     private float k_GroundedRadius = .2f;
+
+    // experimental
     public float heightToJump = 1;
     public float angleToJump = 45;
 
-    private float nextPointAngle;
     private Vector3 moveDirection;
 
     private void Awake() {
+        targeting = GetComponent<Targeting>();
         anim = GetComponent<Animator>();
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
@@ -63,7 +64,7 @@ public class EnemyAI : MonoBehaviour
     public void Start() {
         if (!TargetExists()) return;
 
-        targetPosition = target.position;
+        targetPosition = Target.position;
         //stopDist = enemyScript.awarenessRadius * 0.75f;
         //Start a new path to the targetPosition, return the result to the OnPathComplete function
         seeker.StartPath(transform.position, targetPosition, OnPathComplete);
@@ -72,18 +73,15 @@ public class EnemyAI : MonoBehaviour
     }
 
     public void MoveAlongPath() {
-        if (!enemyScript.m_Attacking && !enemyScript.Dead) {
+        if (!enemyScript.m_Attacking && !enemyScript.health.IsDead) {
             ApproachTarget();
         }
     }
 
     public bool CalculateWaypoint() {
-        if (target == null) {
-            GameObject go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null) target = go.transform;
-        }
-        if (target == null) return false;
-        targetPosition = target.position;
+        CheckTarget();
+        if (Target == null) return false;
+        targetPosition = Target.position;
 
 
         //We have no path to move after yet
@@ -99,10 +97,9 @@ public class EnemyAI : MonoBehaviour
             return false;
         }
         pathIsEnded = false;
-        inSight = false;
 
         // If not yet reached
-        if ((stopDist > Vector3.Distance(transform.position, target.position) && TargetExists()))
+        if ((stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists()))
             return false;
 
         if (anim != null) anim.SetBool("Walk", true);
@@ -118,6 +115,14 @@ public class EnemyAI : MonoBehaviour
         return true;
     }
 
+    private void CheckTarget() {
+        Transform tr = targeting.Target;
+        if (tr != null) Target = tr.transform;
+
+        //GameObject go = GameObject.FindGameObjectWithTag("Player");
+        //if (go != null) Target = go.transform;
+    }
+
     private void ApproachTarget() {
         bool result = CalculateWaypoint();
         if (!result) { // if result is false, just stop moving
@@ -129,10 +134,12 @@ public class EnemyAI : MonoBehaviour
         Vector3 dir = moveDirection * speed * Time.fixedDeltaTime;
 
         Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
-        Debug.DrawLine(transform.position, target.position, Color.red);
+        Debug.DrawLine(transform.position, Target.position, Color.red);
 
         if (useVelocity) rb.velocity = dir;
         else rb.AddForce(dir * 10, fMode);
+
+        enemyScript._move = dir.x;
 
         // Jump
         //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);
@@ -142,12 +149,13 @@ public class EnemyAI : MonoBehaviour
 
     private IEnumerator UpdatePath() {
         if (TargetExists()) {
-            targetPosition = target.position;
+            targetPosition = Target.position;
 
             //Start a new path to the targetPosition, return the result to the OnPathComplete function
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
 
-            if (updateDelay != 0) yield return new WaitForSeconds(updateDelay);
+            if (updateDelay > 0)
+                yield return new WaitForSeconds(updateDelay);
             StartCoroutine("UpdatePath");
         }
     }
@@ -160,20 +168,16 @@ public class EnemyAI : MonoBehaviour
     }
 
     private void OnDrawGizmosSelected() {
-        Gizmos.color = enemyScript && enemyScript.Aware ? Color.red : Color.blue;
+        Gizmos.color = enemyScript && enemyScript.IsAware ? Color.red : Color.blue;
         Gizmos.DrawWireSphere(transform.position, stopDist);
     }
     /// <summary>
     /// 
     /// </summary>
-    /// <returns>returns true if there is a target</returns>
+    /// <returns>returns true if there is a Target</returns>
     private bool TargetExists() {
-        if (target == null) {
-            GameObject go = GameObject.FindGameObjectWithTag("Player");
-            if (go != null)
-                target = go.transform;
-        }
-        if (target == null) {
+        CheckTarget();
+        if (Target == null) {
             Debug.Log("Target is null");
             return false;
         }
@@ -182,15 +186,8 @@ public class EnemyAI : MonoBehaviour
 
     public bool Grounded {
         get {
-            // If player is not moving vertically
-            //if (Mathf.Abs(rb.velocity.y) < 0.1) {
-            //	m_Grounded = true;
-            //	return m_Grounded;
-            //}
-            Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask);
-
             m_Grounded = false;
-            foreach (Collider2D col in colliders) {
+            foreach (Collider2D col in Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask)) {
                 if (col.gameObject == gameObject) break;
                 else m_Grounded = true;
             }

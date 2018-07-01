@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(Collider2D))]
 public class Interactor : MonoBehaviour
 {
-    private Text promptText;
+    [SerializeField] private Text promptText;
     [SerializeField] private LayerMask interactionMask;
 
     private void Awake() {
-        promptText = GameObject.Find("Prompt text").GetComponent<Text>();
+        if (!promptText) promptText = GameObject.Find("Interaction prompt text").GetComponent<Text>();
     }
-    
+
 
     private void OnTriggerStay2D(Collider2D col) {
         var interactable = col.gameObject.GetComponent<Interactable>();
