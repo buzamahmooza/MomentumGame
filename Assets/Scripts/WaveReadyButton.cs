@@ -20,6 +20,12 @@ public class WaveReadyButton : Interactable
         print("Interactable:    " + interactable);
     }
 
+    void OnDisable() {
+    }
+    void OnEnable() {
+        sr.sprite = spriteNotPressed;
+    }
+
     protected override void DoInteraction() {
         sr.sprite = spritePressed;
         ar.Play();

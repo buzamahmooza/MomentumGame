@@ -20,10 +20,10 @@ public class EnemySpawner : MonoBehaviour
     private Transform[] spawnPoints;
     private GameObject player;
     private AudioSource audioSource;
-    private int remainingWaveSize = 20;
+    private int remainingWaveSize = 0;
     private int totalSpawnedFromStart = 0;
 
-
+    // subscribe / unsubscribe to the interaction event
     private void OnEnable() {
         if (interactable != null)
             interactable.InteractEvent += SpawnWave;
@@ -50,10 +50,11 @@ public class EnemySpawner : MonoBehaviour
     }
 
     private void SpawnEnemy() {
-        if (player == null || GameManager.PlayerHealth.isDead || // if player is dead
+        if (player == null || GameManager.PlayerHealth.IsDead || // if player is dead
             maxSpawnedEnemies <= GameObject.FindGameObjectsWithTag("Enemy").Length // or too many enemies exist
-            )
+        ) {
             return;
+        }
 
         GameObject enemy = enemies[(int)Random.Range(0, enemies.Length)]; //choose random enemy type
         Transform spawnTransform = spawnPoints[(int)Random.Range(0, spawnPoints.Length)]; //choose random spawnpoint
@@ -67,18 +68,24 @@ public class EnemySpawner : MonoBehaviour
             Invoke("SpawnEnemy", SpawnDelay);
         } else {
             //wave ended
-            interactable.enabled = true;
+            WaveEnd();
         }
     }
 
+    private void WaveEnd() {
+        print("WaveEnd()");
+        if (interactable)
+            interactable.enabled = true;
+    }
+
     public void SpawnWave() {
-        Debug.Log("SpawnWave()");
         // do not spawn next wave until current wave is over
-        //if (remainingWaveSize > 0 && GameObject.FindGameObjectsWithTag("Enemy").Length != 0)
-        //    return;
+        if (remainingWaveSize > 0 && GameObject.FindGameObjectsWithTag("Enemy").Length != 0)
+            return;
         SpawnWave(10, maxSpawnedEnemies);
     }
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies) {
+        Debug.Log("SpawnEnemy(waveSize = " + waveSize + ", newMaxSpawnedEnemies = " + newMaxSpawnedEnemies + ")");
         this.maxSpawnedEnemies = newMaxSpawnedEnemies;
         this.remainingWaveSize = waveSize;
         Invoke("SpawnEnemy", 0);
