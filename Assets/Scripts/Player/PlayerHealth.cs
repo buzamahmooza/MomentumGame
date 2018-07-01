@@ -12,7 +12,7 @@ public class PlayerHealth : Health
         base.Die();
         if (PlayerDeathEvent != null)
             PlayerDeathEvent();
-        GetComponent<PlayerMove>().blockMoveInput = true;
+        GetComponent<PlayerMove>().BlockMoveInput = true;
         print(gameObject.name + " died");
         gameObject.SetActive(false);
     }

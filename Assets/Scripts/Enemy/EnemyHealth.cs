@@ -18,25 +18,13 @@ public class EnemyHealth : Health
     }
 
     public override void TakeDamage(int damageAmount) {
+        if (IsDead) return;
         base.TakeDamage(damageAmount);
         CreateFloatingDamage(damageAmount);
     }
 
-    public IEnumerator EnumStun(float seconds) {
-        if (enemyAI == null) {
-            print("EnumStun():  enemyAI is null");
-            yield return null;
-        } else {
-            print("Enemy:   Oh no! what's going on? I can't see!");
-            enemyAI.enabled = false;
-
-            yield return new WaitForSeconds(seconds);
-            print("Mwahahaha I can see again! Time to die robot!!");
-            enemyAI.enabled = true;
-        }
-    }
-
     private void FixedUpdate() {
+        // just destroy the enemy if he's way too far from the player
         if (Vector3.Distance(transform.position, player.transform.position) > 300) {
             Destroy(this.gameObject);
         }
@@ -75,7 +63,8 @@ public class EnemyHealth : Health
 
             // Add force up to give a nice effect
             if (rb) {
-                //rb.velocity = Vector2.zero; // override physics
+                // override physics
+                //rb.velocity = Vector2.zero;
                 rb.AddForce(Vector2.up * 6 * rb.mass, ForceMode2D.Impulse);
             }
         }
@@ -83,7 +72,6 @@ public class EnemyHealth : Health
         gameObject.layer = LayerMask.NameToLayer("EnemyIgnore");
 
         // disable colliders (so it would go through the floor and fall out of the map)
-        //GetComponent<Collider2D>().enabled = false;
         base.Die();
 
         //GrappleHookDJ grappleScript = player.GetComponent<GrappleHookDJ>();

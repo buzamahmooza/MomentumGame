@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,12 +34,14 @@ public class Health : MonoBehaviour
     protected Slider healthSlider;
     protected AudioSource audioSource;
     protected Color originalColor;
+    protected Walker walker;
 
     private Animator _anim;
 
     protected virtual void Awake() {
         //gameObject.AddComponent<ScriptedHealthBar>();
         _anim = GetComponent<Animator>();
+        walker = GetComponent<Walker>();
         rend = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         // If GetSource() is null, then add a source
@@ -68,7 +71,8 @@ public class Health : MonoBehaviour
     }
 
     public virtual void TakeDamage(int damageAmount) {
-        if (IsDead) return;
+        if (IsDead)
+            return;
 
         Hurt();
         //Debug.Log("Take damage " + gameObject.name);
@@ -84,6 +88,22 @@ public class Health : MonoBehaviour
             _anim.SetTrigger("Hurt");
         if (flashColorWhenDamage)
             rend.color = damageColor;
+    }
+
+    public void Stun(float seconds) {
+        StartCoroutine(EnumStun(seconds));
+    }
+    public IEnumerator EnumStun(float seconds) {
+        if (!walker || !walker.BlockMoveInput) {
+            yield return null;
+        } else {
+            Debug.Log(gameObject.name + ":   Oh no! what's going on? I can't see!");
+            walker.BlockMoveInput = false;
+
+            yield return new WaitForSeconds(seconds);
+            Debug.Log(gameObject.name + ": Mwahahaha I can see again! Time to die robot!!");
+            walker.BlockMoveInput = true;
+        }
     }
     public float CheckHealth() {
         if (CurrentHealth <= 0 || IsDead)

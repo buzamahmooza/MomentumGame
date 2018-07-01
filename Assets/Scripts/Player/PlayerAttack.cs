@@ -129,9 +129,9 @@ public class PlayerAttack : MonoBehaviour
     /// <returns></returns>
     private System.Collections.IEnumerator BlockInput(float blockInputDuration) {
         //Debug.Log("BlockInput for "+blockInputDuration+" seconds");
-        playerMove.blockMoveInput = true;
+        playerMove.BlockMoveInput = true;
         yield return new WaitForSeconds(blockInputDuration);
-        playerMove.blockMoveInput = false;
+        playerMove.BlockMoveInput = false;
     }
 
 
@@ -180,7 +180,7 @@ public class PlayerAttack : MonoBehaviour
         foreach (var hit in Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask)) {
             print(hit.name + " is supposed to take damage");
             // TODO: change EnemyHealth to Health, also add stun to Health class
-            var enemyHealth = hit.gameObject.GetComponent<EnemyHealth>();
+            var enemyHealth = hit.gameObject.GetComponent<Health>();
             if (!enemyHealth) {
                 print("enemyHealth not found on " + hit.name);
                 continue;
@@ -206,7 +206,7 @@ public class PlayerAttack : MonoBehaviour
         triggers.dashAttackTrigger.enabled = false;
         _anim.SetBool("DashAttack", false);
         punching = false;
-        playerMove.blockMoveInput = false;
+        playerMove.BlockMoveInput = false;
     }
 
     private void UpdateAnimatorParams() {

@@ -7,7 +7,7 @@ using UnityEditor;
 //{
 //    public override void OnInspectorGUI()
 //    {
-//        LevelScript myTarget = (LevelScript)target;
+//        LevelScript myTarget = (LevelScript)Target;
 
 //        myTarget.experience = EditorGUILayout.IntField("Experience", myTarget.experience);
 //        EditorGUILayout.LabelField("Level", myTarget.Level.ToString());
