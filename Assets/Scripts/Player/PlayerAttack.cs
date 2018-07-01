@@ -18,10 +18,8 @@ public class PlayerAttack : MonoBehaviour
     // This is just to make the members collapsable in the inspector
     [Serializable] private struct Triggers { public Collider2D punchTrigger, slamTrigger, dashAttackTrigger; }
     [SerializeField] private Triggers triggers;
-    [SerializeField]
-    [Range(0.5f, 10)]
-    private float explosionRadius = 2,
-        upwardModifier = 1;
+    [SerializeField] [Range(0.5f, 10f)] private float explosionRadius = 2;
+    [SerializeField] [Range(0f, 10f)] private float upwardModifier = 1;
     [SerializeField] private LayerMask explosionMask;
 
     //BoxCollider2D punchTrigger, slamTrigger, dashAttackTrigger;
@@ -33,6 +31,7 @@ public class PlayerAttack : MonoBehaviour
     private float animSpeed = 1;
     [SerializeField]
     private float dashAttackSpeedFactor = 1.5f;
+
 
     private void Awake() {
         playerMove = GetComponent<PlayerMove>();
@@ -123,35 +122,6 @@ public class PlayerAttack : MonoBehaviour
         UpdateAnimatorParams();
     }
 
-    public void DoAttackStuff(Collider2D col, Collider2D other) {
-        int damageAmount = 0;
-        // Punch
-        if (col.Equals(triggers.punchTrigger)) {
-            audioSource.PlayOneShot(punchAttackSound);
-            damageAmount = punchDamage;
-            GameManager.TimeManager.DoHitStop(0.15f);
-        }// Slam
-        else if (col.Equals(triggers.slamTrigger)) {
-            CreateSlamExplosion();
-            GameManager.TimeManager.DoSlowMotion();
-            audioSource.PlayOneShot(slamAttackSound);
-            GameManager.CameraController.GoFisheye(0.5f);
-            damageAmount = slamDamage;
-        }// Dash
-        else if (col.Equals(triggers.dashAttackTrigger)) {
-            audioSource.PlayOneShot(dashAttackSound);
-            if (rb.velocity.magnitude > 2)
-                GameManager.TimeManager.DoSlowMotion();
-            damageAmount = dashDamage;
-        } else {
-            Debug.LogWarning("The attack collider is not one of the known colliders");
-        }
-
-        var otherHealth = other.gameObject.GetComponent<HealthScript>();
-        if (otherHealth != null)
-            otherHealth.TakeDamage(damageAmount);
-    }
-
     /// <summary>
     /// Does not allow player to move for a given time in seconds, to block during an animation use the anim.GetCurrentAnimatorClipInfo(0).GetLength(0) to get the time of the animation
     /// </summary>
@@ -203,13 +173,13 @@ public class PlayerAttack : MonoBehaviour
 
     public void CreateSlamExplosion() {
         Instantiate(slamExplosionObj, triggers.slamTrigger.bounds.center + Vector3.back, Quaternion.identity);
-        float landingSpeed = -rb.velocity.y;
+        float landingSpeed = Mathf.Abs(rb.velocity.y);
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         var explosionPos = transform.position;
         foreach (var hit in Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask)) {
             print(hit.name + " is supposed to take damage");
-
+            // TODO: change EnemyHealth to Health, also add stun to Health class
             var enemyHealth = hit.gameObject.GetComponent<EnemyHealth>();
             if (!enemyHealth) {
                 print("enemyHealth not found on " + hit.name);
@@ -221,11 +191,10 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(enemyHealth.EnumStun(2));
 
             float distance = Vector2.Distance(transform.position, hit.gameObject.transform.position);
-            if (otherRb != null)
-                otherRb.AddForce(
-                        new Vector2(playerMove.FacingRightSign, upwardModifier) * (landingSpeed / distance),
-                        ForceMode2D.Impulse
-                    );
+            if (otherRb) otherRb.AddForce(
+                new Vector2(playerMove.FacingSign, upwardModifier) * (landingSpeed / distance),
+                ForceMode2D.Impulse
+            );
         }
 
     }
@@ -266,7 +235,7 @@ public class PlayerAttack : MonoBehaviour
 
             if (colliderConditions) {
                 Debug.Log(col.gameObject.name + " trigger ACTUALLY collided with other object. Name: " + col.gameObject.name + ", Layer: " + LayerMask.LayerToName(col.gameObject.layer));
-                //Vector2 forceDir = Vector2.right * Mathf.Abs(trigBounds.center.x - col.attachedRigidbody.centerOfMass.x) * playerMove.FacingRightSign;
+                //Vector2 forceDir = Vector2.right * Mathf.Abs(trigBounds.center.x - col.attachedRigidbody.centerOfMass.x) * playerMove.FacingSign;
                 
 				hasCollided = true;
             }
