@@ -12,6 +12,6 @@ public class Music : MonoBehaviour
 
     // Use this for initialization
     void Start() {
-        audioSource.time = 50;
+        //audioSource.time = 50;
     }
 }

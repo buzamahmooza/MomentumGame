@@ -644,7 +644,7 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.06, y: 0.16}
-  m_Size: {x: 0.88, y: 1.01}
+  m_Size: {x: 1.11, y: 1.35}
   m_Direction: 0
 --- !u!70 &70727726912498206
 CapsuleCollider2D:
@@ -851,7 +851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f6ce28e10c0124482a8351343fc8ce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  arrow: {fileID: 0}
+  arrow: {fileID: 1296357248080018}
   mouseMoveThreshold: 0.3
   JoystickThreshold: 0.2
   debugMousePosition: 0
@@ -925,19 +925,19 @@ MonoBehaviour:
   healthBar: {fileID: 1287926828942094}
   deathEffects: {fileID: 1786255796667864, guid: 448bfefac1a48d94583f96f89b94ce52,
     type: 2}
-  isDead: 0
-  currentHealth: 0
+  IsDead: 0
+  CurrentHealth: 0
   regenerateHealth: 1
   flashColorWhenDamage: 1
   useHealthbar: 1
   destroyOnDeath: 0
-  startHealth: 2000
+  maxHealth: 1500
   fallDamageModifier: 0.5
   hurtAudioClip: {fileID: 0}
   deathAudioClip: {fileID: 0}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   hurtDamageThreshold: 10
-  regenAmount: 0.01
+  regenPercent: 0.01
 --- !u!114 &114454820563067926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -971,6 +971,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrow: {fileID: 1296357248080018}
   kickbackForceMplier: 10
+  aimInput: {fileID: 0}
   CurrentWeaponStats:
     projectilePrefab: {fileID: 1030791354745356, guid: edc38b6320e62834db5b125e239111eb,
       type: 2}
@@ -978,7 +979,7 @@ MonoBehaviour:
     rpm: 50
     damage: 7
     wiggleShootOffset: 0.12
-    randomShootAngle: 10
+    randomShootAngle: 13.8
     cameraKickback: 0.1
     shootSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
   shootTransform: {fileID: 4258803662780948}
@@ -1062,8 +1063,8 @@ MonoBehaviour:
   m_FacingRight: 1
   m_HasDoubleJump: 1
   blockMoveInput: 0
-  footstepSound: {fileID: 8300000, guid: 1cc71bc4c10c73146b69b9356e8a9117, type: 3}
   rb: {fileID: 50305008224959004}
+  footstepSound: {fileID: 8300000, guid: 1cc71bc4c10c73146b69b9356e8a9117, type: 3}
 --- !u!114 &114699972072293624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1075,6 +1076,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 184eb184e08b9ed4ea78807cb2bd4c0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptText: {fileID: 0}
   interactionMask:
     serializedVersion: 2
     m_Bits: 8192
@@ -1096,8 +1098,8 @@ MonoBehaviour:
   explosive: 1
   hitStop: 0
   fisheye: 0.402
-  slomoFactor: 0.447
-  forceAmount: 25
+  slomoFactor: 0.054
+  forceAmount: 19.32
 --- !u!114 &114809542759435404
 MonoBehaviour:
   m_ObjectHideFlags: 1
