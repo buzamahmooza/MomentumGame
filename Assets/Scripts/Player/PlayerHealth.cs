@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHealth : HealthScript
+public class PlayerHealth : Health
 {
     public event Action PlayerDeathEvent;
 
