@@ -227,7 +227,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1067021827862482}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.233, y: 0.039, z: 0}
+  m_LocalPosition: {x: -0.28, y: 0.012, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4027353813878278}
@@ -348,7 +348,7 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
-    m_RotationOrder: 4
+    m_RotationOrder: 0
   reverbZoneMixCustomCurve:
     serializedVersion: 2
     m_Curve:
@@ -390,17 +390,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55484e22c42fdeb43859b7c861914173, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  Target: {fileID: 0}
   updateDelay: 0.1
   speed: 1.5
   fMode: 1
   useVelocity: 0
   nextWaypointDistance: 2
   stopDist: 2
-  mask:
-    serializedVersion: 2
-    m_Bits: 1024
-  inSight: 0
   followOnGround: 1
   floorMask:
     serializedVersion: 2
@@ -421,21 +417,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   healthBar: {fileID: 1123226677973996}
   deathEffects: {fileID: 0}
-  isDead: 0
-  currentHealth: 0
+  IsDead: 0
+  CurrentHealth: 0
   regenerateHealth: 0
   flashColorWhenDamage: 1
   useHealthbar: 1
   destroyOnDeath: 0
-  startHealth: 100
+  maxHealth: 100
   fallDamageModifier: 0.5
   hurtAudioClip: {fileID: 8300000, guid: 5afbc263bd322e14984bf120d8165741, type: 3}
   deathAudioClip: {fileID: 0}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   hurtDamageThreshold: 10
-  regenAmount: 0.01
+  regenPercent: 0.01
   scoreValue: 25
-  floatingText: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
+  floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
 --- !u!114 &114472746202773746
 MonoBehaviour:
@@ -475,13 +471,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f1af58b9385b046838a8782b929597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attackSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
-  awarenessRadius: 10
-  attackRadius: 5.2
-  visionAngle: 30
-  playerMask:
+  floorMask:
     serializedVersion: 2
-    m_Bits: 1024
+    m_Bits: 512
+  control_AirControl: 0
+  control_CanDoubleJump: 0
+  control_facesAimDirection: 0
+  moveSpeed: 20
+  jumpForce: 300
+  wallSlideSpeedMax: 1
+  k_GroundedRadius: 0.2
+  FacingRight: 1
+  m_Grounded: 1
+  m_Jump: 0
+  m_HasDoubleJump: 1
+  blockMoveInput: 0
+  _move: 0
+  rb: {fileID: 0}
+  health: {fileID: 0}
+  footstepSound: {fileID: 0}
+  attackSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
+  awarenessRadius: 10.2
+  attackRadius: 6.8
+  visionAngle: 52.7
   timeBetweenAttacks: 3
   movementSpeed: 2
   m_Attacking: 0
@@ -632,7 +644,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300054, guid: 83dde9b5e38aab44f99331f3d382d1da, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 1
+  m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1.28, y: 1.28}
