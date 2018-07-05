@@ -11,14 +11,15 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] float kickbackForceMplier = 10;
 
     [SerializeField] AimInput aimInput;
-    [SerializeField] WeaponStats CurrentWeaponStats = new WeaponStats(
-        projectilePrefab: null, 
-        projectileSpeed: 15, 
-        rpm: 50, 
-        cameraKickback: 25, 
-        wiggleShootOffset: 0.12f, 
-        randomShootAngle: 15, 
-        damage: 7, 
+    [SerializeField]
+    WeaponStats CurrentWeaponStats = new WeaponStats(
+        projectilePrefab: null,
+        projectileSpeed: 15,
+        rpm: 50,
+        cameraKickback: 25,
+        wiggleShootOffset: 0.12f,
+        randomShootAngle: 15,
+        damage: 7,
         shootSound: null
     );
     [SerializeField] Transform shootTransform;
@@ -77,12 +78,16 @@ public class PlayerShoot : MonoBehaviour
 
     }
     private void Update() {
-        if (Input.GetMouseButton(0) || Input.GetAxisRaw("RightTrigger") > 0.5f || Input.GetKey(KeyCode.LeftControl)) {
+        if (Input.GetMouseButton(0) || Input.GetAxisRaw("RightTrigger") > 0.5f || Input.GetKey(KeyCode.LeftControl) || AimInput.RightJoystick.magnitude > 0.1f) {
             Vector2 shootDirection = aimInput.AimDirection;
-            if (m_TimeSinceLastShot >= m_TimeBetweenShots) {
-                m_TimeSinceLastShot = 0; // reset shoot timer
-                Shoot(shootDirection);
-            }
+            ShootIfAllowed(shootDirection);
+        }
+    }
+
+    public void ShootIfAllowed(Vector2 shootDirection) {
+        if (m_TimeSinceLastShot >= m_TimeBetweenShots) {
+            m_TimeSinceLastShot = 0; // reset shoot timer
+            Shoot(shootDirection);
         }
     }
 

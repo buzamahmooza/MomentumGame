@@ -12,8 +12,10 @@ public class PlayerHealth : Health
         base.Die();
         if (PlayerDeathEvent != null)
             PlayerDeathEvent();
-        GetComponent<PlayerMove>().BlockMoveInput = true;
-        print(gameObject.name + " died");
+        base.walker.BlockMoveInput = true;
+        var restartText = GameObject.Find("RestartText").GetComponent<Text>();
+        if (restartText) restartText.enabled = true;
+        Debug.Log(gameObject.name + " died");
         gameObject.SetActive(false);
     }
 }

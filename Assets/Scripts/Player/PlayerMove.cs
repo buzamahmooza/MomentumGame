@@ -17,6 +17,8 @@ public class PlayerMove : Walker
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
 
+    protected float momentum = 1;
+
     /// <summary> Storing the default animation speed, so that we can go back to it after changing it. </summary>
     private float minDashAttackSpeedThr; // the minimum horizontal speed that the player should be moving in to perform a dash attack
 
@@ -37,13 +39,11 @@ public class PlayerMove : Walker
         gameObject.layer = LayerMask.NameToLayer("Player");
     }
 
-    void Start() {
-    }
 
     private void Update() {
         //Get jump input
         if (!m_Jump && !_anim.GetBool("Slamming")) {
-            m_Jump = InputManager.ActiveDevice.Action1 || CrossPlatformInputManager.GetButtonDown("Jump");
+            m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
         }
 
         //If not slamming, update where player is facing
@@ -78,15 +78,27 @@ public class PlayerMove : Walker
             rb.velocity += gravityV2 * (lowJumpMultiplier);
         }
     }
+
+    public void AddMomentum(float momentumAdded) {
+        if (momentumAdded < 0) {
+            Debug.LogError("AddMomentum() cannot accept negative value: " + momentumAdded);
+            return;
+        }
+        momentum += momentumAdded;
+        Debug.Log("Momentum is now: " + momentumAdded);
+    }
     // TODO: when wallclimbing, if input_Y is max (1), player will not slide (stay hanging on the wall)
 
     /// <summary>
     /// If you want to modify any movements or Rigidbody forces/velocity do that here,
     /// otherwise your changes will be immediately overriden by this method as the velocity is modified directly. </summary>
     private void Move() {
+        if (_anim.GetBool("DashAttack"))
+            return;
+        var crossPlatformInput = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
         if (!BlockMoveInput)
             if (control_AirControl || Grounded)
-                _move = CrossPlatformInputManager.GetAxis("Horizontal") * moveSpeed;
+                _move = crossPlatformInput.x * moveSpeed * momentum;
 
         // If reached jump peak
         if (Mathf.Approximately(rb.velocity.y, 0) && !Grounded)
@@ -101,7 +113,7 @@ public class PlayerMove : Walker
                 // limit wallslide speed
                 if (rb.velocity.y < -wallSlideSpeedMax) {
                     rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeedMax);
-                } else if (CrossPlatformInputManager.GetAxis("Vertical") > 0.5f) {
+                } else if (crossPlatformInput.y > 0.5f) {
                     print("trying to resist wall slide");
                 }
             }
@@ -154,12 +166,13 @@ public class PlayerMove : Walker
             _anim.speed = 0;
         } else if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1) { //walking animation and moving
             _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedCoeff);
-        } else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1) {            //Airborn animation and moving
+        } else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1) { //Airborn animation and moving
             _anim.speed = Mathf.Abs(Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedCoeff * 5f / 8f)));
         } else {
             _anim.speed = m_DefaultAnimSpeed; //Go back to default speed
             playerAttack.HasReachedSlamPeak = false;
         }
+        _anim.speed *= momentum;
     }
 
     public bool CanDashAttack { get { return Mathf.Abs(rb.velocity.x) > minDashAttackSpeedThr; } }
@@ -189,7 +202,6 @@ public class PlayerMove : Walker
         }
     }
 
-
     private void Debug_UpdateStats() {
         statsText.text =
               "\nHSpeed: " + rb.velocity.x
@@ -204,4 +216,5 @@ public class PlayerMove : Walker
             + "\nJump: " + m_Jump
             + "\nGrappling: " + grapple.m_Flying;
     }
+
 }

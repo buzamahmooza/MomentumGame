@@ -34,7 +34,7 @@ public class Walker : MonoBehaviour
 
     /// <summary> Storing the default animation speed, so that we can go back to it after changing it. </summary>
     protected float m_DefaultAnimSpeed;
-    public float _move = 0;
+    [HideInInspector] public float _move = 0;
     protected float m_lastGroundSpeed = 0;
     protected bool m_Climb = false;
     protected bool m_ReachedJumpPeak = false;
@@ -42,6 +42,7 @@ public class Walker : MonoBehaviour
     //Components
     [HideInInspector]
     public Rigidbody2D rb;
+    [HideInInspector]
     public Health health;
     [SerializeField]
     protected AudioClip footstepSound;
@@ -76,6 +77,11 @@ public class Walker : MonoBehaviour
         if (!m_ClimbCheck) m_ClimbCheck = transform.Find("ClimbCheck");
         if (!m_GroundCheck) m_GroundCheck = transform.Find("GroundCheck");
 
+        if (!m_CeilingCheck) m_CeilingCheck = transform;
+        if (!m_ClimbCheck) m_ClimbCheck = transform;
+        if (!m_GroundCheck) m_GroundCheck = transform;
+
+
         m_DefaultAnimSpeed = _anim.speed;
 
         Debug.Assert(targeting != null, "targeting!=null");
@@ -86,7 +92,7 @@ public class Walker : MonoBehaviour
     /// <summary>
     /// If you want to modify any movements or Rigidbody forces/velocity do that here, otherwise your changes will be immediately overriden by this method as the velocity is modified directly
     /// </summary>
-    protected void Move(Vector2 input, bool jump) {
+    public void Move(Vector2 input, bool jump) {
         if (!BlockMoveInput)
             if (control_AirControl || Grounded) {
                 _move = input.x * moveSpeed;
@@ -167,9 +173,8 @@ public class Walker : MonoBehaviour
     }
     public bool Wallcheck {
         get {
-            if (_anim.GetBool("Slamming")) return false;
-
-            return m_Climb = Physics2D.Raycast(m_ClimbCheck.position, transform.right, k_GroundedRadius, floorMask);
+            m_Climb = Physics2D.Raycast(m_ClimbCheck.position, transform.right, k_GroundedRadius, floorMask);
+            return m_Climb;
         }
         set { m_Climb = value; }
     }
@@ -220,14 +225,16 @@ public class Walker : MonoBehaviour
             // If input is opposite to where player is facing, Flip()
             if (control_facesAimDirection) {
                 // If should face the AimDirection
-                float aimDirX = targeting.AimDirection.x;
-                if (FacingRight && aimDirX < 0) Flip(); // If aimDirX is left and facing right, Flip()
-                else if (!FacingRight && aimDirX > 0) Flip(); // If aimDirX is right and facing left, Flip()
+                FaceDirection(targeting.AimDirection.x);;
             } else {
-                if (_move > 0 && !FacingRight) Flip();
-                else if (_move < 0 && FacingRight) Flip();
+                FaceDirection(_move);
             }
         }
+    }
+
+    protected void FaceDirection(float directionX) {
+        if (FacingRight && directionX < 0) Flip(); // If directionX is left and facing right, Flip()
+        else if (!FacingRight && directionX > 0) Flip(); // If directionX is right and facing left, Flip()
     }
 
     public void PlayFootstepSound() {
