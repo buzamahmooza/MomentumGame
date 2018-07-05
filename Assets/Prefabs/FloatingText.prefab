@@ -161,7 +161,7 @@ MonoBehaviour:
   rb: {fileID: 0}
   duration: 20
   smooth: 0.351
-  defaultBounceSpeed: 4.36
+  defaultBounceSpeed: 9.68
 --- !u!114 &114955964004674684
 MonoBehaviour:
   m_ObjectHideFlags: 1
