@@ -22,7 +22,7 @@ public class FloatingText : MonoBehaviour
         Destroy(gameObject, 10);
     }
     public void InitBounceDmg(int damageValue) {
-        Init(damageValue + "", defaultBounceSpeed * (UnityEngine.Random.insideUnitCircle + Vector2.up), true);
+        Init(damageValue + "", defaultBounceSpeed * damageValue / 50 * (UnityEngine.Random.insideUnitCircle + Vector2.up), true);
         gameObject.transform.localScale *= 0.6f;
     }
     public void InitFloatingScore(int scoreValue) {
@@ -33,7 +33,7 @@ public class FloatingText : MonoBehaviour
     }
     public void Init(string newText, Vector3 movement, bool gravity) {
         text.text = newText;
-
+        
         rb.AddForce(movement, ForceMode2D.Impulse);
         if (!gravity) rb.gravityScale = 0;
         //duration = 5 / Mathf.Sqrt(movement.magnitude);
