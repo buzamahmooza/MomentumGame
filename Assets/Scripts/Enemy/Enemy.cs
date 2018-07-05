@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Note: Object must be spawned facing to the Right!
-
+[RequireComponent(typeof(Health))]
 public class Enemy : Walker
 {
     [SerializeField] protected AudioClip attackSound;
@@ -36,7 +36,6 @@ public class Enemy : Walker
     protected void Start() {
         if (!targeting.Target)
             targeting.Target = GameManager.Player.transform;
-        Debug.Log("targeting.Target = " + targeting.Target);
     }
 
     protected void Update() {
@@ -44,12 +43,12 @@ public class Enemy : Walker
         Debug.Assert(rb != null);
 
         timeSinceLastAttack += Time.deltaTime;
-        Debug.Log(
-            gameObject.name +
-            "\nTarget = " + targeting.Target+
-            "\nTargetIsDead = " + TargetIsDead+
-            "\nIsAware = " + IsAware
-        );
+        if (false) Debug.Log(
+              gameObject.name +
+              "\nTarget = " + targeting.Target +
+              "\nTargetIsDead = " + TargetIsDead +
+              "\nIsAware = " + IsAware
+          );
         if (timeBetweenAttacks < timeSinceLastAttack &&
             InAttackRange && IsAware && !TargetIsDead && !IsGrappled) {
             this.Attack();
@@ -116,7 +115,8 @@ public class Enemy : Walker
 
     public bool IsAware {
         get {
-            return m_Aware = targeting.Target && targeting.AimDirection.magnitude < awarenessRadius;
+            m_Aware = targeting.Target && targeting.AimDirection.magnitude < awarenessRadius;
+            return m_Aware;
         }
         set { m_Aware = value; }
     }

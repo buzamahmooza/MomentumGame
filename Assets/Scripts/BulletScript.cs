@@ -7,9 +7,7 @@ public class BulletScript : MonoBehaviour
 
     [SerializeField] public int damageAmount = 2;
     [SerializeField] private LayerMask destroyMask;
-
-    private Rigidbody2D rb;
-
+    
     //private float reflectDist;
     //[SerializeField] private LayerMask reflectionLayer;
 
@@ -24,7 +22,6 @@ public class BulletScript : MonoBehaviour
     }
 
     private void Awake() {
-        rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, 7);
     }
 

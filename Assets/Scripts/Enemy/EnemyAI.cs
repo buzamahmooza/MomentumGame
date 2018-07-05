@@ -22,9 +22,6 @@ public class EnemyAI : Targeting
     public Path path;
 
     //The AI's speed per second
-    public float speed = 100;
-    public ForceMode2D fMode;
-    public bool useVelocity = false;
 
     private bool pathIsEnded = false;
 
@@ -131,15 +128,12 @@ public class EnemyAI : Targeting
             return;
         }
 
-        Vector3 dir = moveDirection * speed * Time.fixedDeltaTime;
+        Vector3 dir = moveDirection * Time.fixedDeltaTime;
 
         Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
         Debug.DrawLine(transform.position, Target.position, Color.red);
 
-        if (useVelocity) rb.velocity = dir;
-        else rb.AddForce(dir * 10, fMode);
-
-        enemyScript._move = dir.x;
+        enemyScript.Move(dir, false);
 
         // Jump
         //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);

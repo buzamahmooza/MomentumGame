@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     // Use this for initialization
     private void Start() {
         if (!target) {
-            target =GameManager.Player.transform;
+            target = GameManager.Player.transform;
         }
 
 
@@ -68,7 +68,7 @@ public class CameraController : MonoBehaviour
     }
 
     public void DoFisheye(float intensity) {
-        //print("Fisheye");
+        if (!fisheye) { Debug.LogError("Fisheye is null"); return; }
         //animator.SetTrigger("Fisheye");
         //return;
 
