@@ -12,8 +12,11 @@ public class AimInput : Targeting
     public float mouseMoveThreshold = 0.3f,
         JoystickThreshold = 0.2f;
     public bool debugMousePosition = false;
-    [SerializeField] private bool usingJoystick = false;
-    [SerializeField] private bool usingMouse = false;
+    /// <summary>
+    /// Do NOT modify this directly outside the class
+    /// </summary>
+    [SerializeField] public bool usingJoystick = false;
+    [SerializeField] public bool usingMouse = false;
     private Vector2 lastMousePos;
     private PlayerMove playerMove;
 
@@ -31,11 +34,16 @@ public class AimInput : Targeting
             Debug.Log("Mouse button pressed, switching to mouse control");
             usingMouse = true;
             usingJoystick = false;
-        } else if (Input.GetKey(KeyCode.LeftShift)) {
+        }
+        if (Input.GetKey(KeyCode.LeftShift)) {
             usingMouse = false;
         }
+        if (InputManager.ActiveDevice.AnyButton) {
+            usingMouse = false;
+            usingJoystick = true;
+        }
     }
-    
+
     /// <summary>
     /// Returns an aimDirection as a normalized Vector2
     /// </summary>
@@ -55,17 +63,14 @@ public class AimInput : Targeting
             }
             // Using Movement aiming
             else {
-                //Vector2 moveInput = InputGetAxisVector;
                 Vector2 moveInput = InputGetAxisRawVector;
 
                 // If input is large enough
                 if (Mathf.Abs(moveInput.magnitude) > 0.1f) {
-                    //Debug.Log("Using moveInput, moveInput is LARGER than 0.1");
                     return (moveInput.normalized); //Normalized vector
                 }
                 // If input is too little, just aim where player is facing
                 else {
-                    //Debug.Log("Using facingDir, moveInput is SMALLER than 0.1");
                     return (Vector2.right * playerMove.FacingSign);
                 }
             }
@@ -89,13 +94,14 @@ public class AimInput : Targeting
                 usingJoystick = false;
             }
         }
-        if (!usingJoystick)
+        if (!usingJoystick) {
             // Switch to joystick, if there is enough input
-            if (RightJoystick.magnitude > JoystickThreshold || LeftJoystick.magnitude > JoystickThreshold) {
+            if (InputManager.ActiveDevice.AnyButton || RightJoystick.magnitude > JoystickThreshold || LeftJoystick.magnitude > JoystickThreshold) {
                 Debug.Log("Swiching to joystick");
                 usingJoystick = true;
                 usingMouse = false;
             }
+        }
         //Use joystick by default
         if (usingMouse && usingJoystick) {
             Debug.Log("Switched to DEFAULT");
@@ -124,11 +130,10 @@ public class AimInput : Targeting
     /// returns joystick right stick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    private static Vector2 RightJoystick {
+    public static Vector2 RightJoystick {
         get {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.RightStickX, inputDevice.RightStickY);
-            //return (new Vector2(Input.GetAxisRaw("HorizontalTurn"), Input.GetAxisRaw("VerticalTurn")));
         }
     }
 
@@ -136,7 +141,7 @@ public class AimInput : Targeting
     /// Returns the left stick joystick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    private static Vector2 LeftJoystick {
+    public static Vector2 LeftJoystick {
         get {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.LeftStickX, inputDevice.LeftStickY);
@@ -149,12 +154,12 @@ public class AimInput : Targeting
     /// </summary>
     /// <param name="rawAxis"></param>
     /// <returns>Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis</returns>
-    private static Vector2 InputGetAxisVector {
+    public static Vector2 InputGetAxisVector {
         get {
             return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         }
     }
-    private static Vector2 InputGetAxisRawVector {
+    public static Vector2 InputGetAxisRawVector {
         get {
             return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }

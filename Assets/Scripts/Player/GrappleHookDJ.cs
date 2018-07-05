@@ -45,7 +45,7 @@ public class GrappleHookDJ : MonoBehaviour
     }
 
     private void Update() {
-        if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1)) && !m_Flying)
+        if (InputPressed && !m_Flying)
             FindTarget();
 
         if (m_Flying) {
@@ -62,8 +62,19 @@ public class GrappleHookDJ : MonoBehaviour
         if (!m_Pulling && Vector2.Distance(transform.position, target) < 0.5f)
             EndGrapple();
         // if released input
-        if ((Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift)) && releaseGrappleOnInputRelease)
+        if (InputReleased && releaseGrappleOnInputRelease)
             EndGrapple();
+    }
+
+    private bool InputPressed {
+        get {
+            return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1) || Input.GetAxisRaw("LeftTrigger") > 0.5f;
+        }
+    }
+    private bool InputReleased {
+        get {
+            return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift) || aimInput.usingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
+        }
     }
 
     private void FindTarget() {
@@ -107,6 +118,7 @@ public class GrappleHookDJ : MonoBehaviour
 
     private void CloseDistance() {
         Vector2 inputVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
+
         Vector2 grappleDir = (m_Flying ? (joint.connectedAnchor) :
                                  m_Pulling ? (Vector2)(joint.connectedBody.gameObject.transform.position) :
                                  Vector2.zero
@@ -117,7 +129,7 @@ public class GrappleHookDJ : MonoBehaviour
         float smoother = speed * Time.deltaTime / Vector2.Distance(AnchorVec3, target);
 
         float newDistance = m_Flying ?  // if flying, make the newDistance depend on the input
-                joint.distance - dot * speed * Time.deltaTime * (m_Pulling ? -1 : 1) :/*invert controls if pulling objects*/
+                Mathf.Lerp(joint.distance - dot * speed * Time.deltaTime * (m_Pulling ? -1 : 1), 0, smoother) :/*invert controls if pulling objects*/
                 Mathf.Lerp(joint.distance, 0, smoother) // else if pulling, always pull (keep decreasing the distance)
         ;
 

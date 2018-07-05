@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using InControl;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(Collider2D))]
 public class Interactor : MonoBehaviour
@@ -24,7 +26,7 @@ public class Interactor : MonoBehaviour
         promptText.enabled = true;
         promptText.text = interactable.GetPrompt();
         StartCoroutine(WaitAndDisableText(3));
-        if (Input.GetButtonDown("Fire1")) {
+        if (CrossPlatformInputManager.GetButtonDown("Fire1") || InputManager.ActiveDevice.Action3.IsPressed) {
             interactable.OnInteract();
             DisableText();
         }
