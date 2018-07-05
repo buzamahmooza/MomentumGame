@@ -1,4 +1,5 @@
 ﻿using System;
+using InControl;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
@@ -7,16 +8,15 @@ public class PlayerAttack : MonoBehaviour
 {
     public bool HasReachedSlamPeak = false;
 
-    [SerializeField] private float slamLundgeVelocity = 5;
-    [SerializeField] private AudioClip punchAttackSound, dashAttackSound, slamAttackSound;
+    [SerializeField] private AudioClip dashAttackSound, slamAttackSound;
     [SerializeField] private GameObject slamExplosionObj;
     [SerializeField] private LayerMask punchLayer;
 
-    [SerializeField] private int slamDamage = 40, punchDamage = 25, dashDamage = 20;
-    private bool slamming = false, punching = false;
+    private bool slam = false,
+        punch = false;
 
     // This is just to make the members collapsable in the inspector
-    [Serializable] private struct Triggers { public Collider2D punchTrigger, slamTrigger, dashAttackTrigger; }
+    [Serializable] private struct Triggers { public Collider2D punchTrigger, slamTrigger, dashAttackTrigger, uppercutTrigger; }
     [SerializeField] private Triggers triggers;
     [SerializeField] [Range(0.5f, 10f)] private float explosionRadius = 2;
     [SerializeField] [Range(0f, 10f)] private float upwardModifier = 1;
@@ -32,6 +32,9 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField]
     private float dashAttackSpeedFactor = 1.5f;
 
+    private bool uppercut = false;
+    [SerializeField] private float uppercutForce = 1f;
+
 
     private void Awake() {
         playerMove = GetComponent<PlayerMove>();
@@ -39,24 +42,60 @@ public class PlayerAttack : MonoBehaviour
         _anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
+        if (explosionMask == 0) explosionMask = LayerMask.NameToLayer("Enemy") +
+                                               LayerMask.NameToLayer("Object");
+
         if (!triggers.punchTrigger) triggers.punchTrigger = transform.Find("PunchTrigger").GetComponent<Collider2D>();
         if (!triggers.slamTrigger) triggers.slamTrigger = transform.Find("SlamTrigger").GetComponent<Collider2D>();
+        if (!triggers.uppercutTrigger) triggers.uppercutTrigger = transform.Find("UppercutTrigger").GetComponent<Collider2D>();
+        if (!triggers.dashAttackTrigger) triggers.dashAttackTrigger = transform.Find("DashAttackTrigger").GetComponent<Collider2D>();
+
     }
 
     private void Start() {
+        print("explosionMask = " + explosionMask.value);
         triggers.slamTrigger.enabled = false;
         triggers.dashAttackTrigger.enabled = false;
         triggers.punchTrigger.enabled = false;
+        triggers.dashAttackTrigger.enabled = false;
+
         animSpeed = _anim.speed;
         Debug.Assert(triggers.slamTrigger && triggers.punchTrigger);
     }
 
     private void Update() {
+        if (false) Debug.Log(
+            "\n A = " + InputManager.ActiveDevice.Action1.IsPressed +
+            "\n B =" + InputManager.ActiveDevice.Action2.IsPressed +
+            "\n X =" + InputManager.ActiveDevice.Action3.IsPressed +
+            "\n Y =" + InputManager.ActiveDevice.Action4.IsPressed
+        );
+
         // Get input if there is no action to disturb
-        if (!(punching || slamming)) {
-            if (AttackInput) {
-                //AttackAutoSelector();
-                SelectAttackBasedOnInput();
+        if (!uppercut && !punch && !slam) {
+            uppercut = punch = slam = false;
+            var input = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"), CrossPlatformInputManager.GetAxisRaw("Vertical"));
+            var attackDown = Input.GetKeyDown(KeyCode.F) || InputManager.ActiveDevice.Action3.IsPressed;
+
+            if (!_anim.GetBool("DashAttack")) {
+                // If airborn and pressing down, SlamAttack
+                if (AttackInput && input.y < -0.5f && Mathf.Abs(input.x) < 0.5) {
+                    slam = true;
+                }
+                // If DashAttack conditions are met, DashAttack!
+                else if (attackDown && playerMove.Grounded && playerMove.CanDashAttack && Mathf.Abs(input.x) > 0.1f &&
+                         !_anim.GetBool("DashAttack")) {
+                    playerMove.rb.AddForce(Vector2.right * rb.velocity.x * Time.deltaTime * dashAttackSpeedFactor, ForceMode2D.Impulse);
+                    _anim.SetBool("DashAttack", true);
+                    // Block input for dashattack animation length
+                    StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
+                } else if (AttackInput && input.y > 0.5f && Mathf.Abs(input.x) < 0.5) { //uppercut
+                    uppercut = true;
+                    _anim.SetTrigger("Uppercut");
+                } else if (AttackInput) {
+                    // otherwise just do a boring-ass punch...
+                    punch = true;
+                }
             }
         }
 
@@ -68,42 +107,16 @@ public class PlayerAttack : MonoBehaviour
     }
 
     private static bool AttackInput {
-        get { return Input.GetButton("Fire1") || Input.GetKeyDown(KeyCode.Joystick1Button18); }
+        get { return Input.GetButton("Fire1") || Input.GetKey(KeyCode.Joystick1Button18) || InputManager.ActiveDevice.Action3.IsPressed; }
     }
 
-    private void SelectAttackBasedOnInput() {
-        punching = slamming = false;
-        if (_anim.GetBool("DashAttack")) return;
-
-        // If airborn and pressing down, SlamAttack
-        if (CrossPlatformInputManager.GetAxisRaw("Vertical") < 0) {
-            slamming = true;
-        }
-        // If DashAttack conditions are met, DashAttack!
-        else if (playerMove.Grounded &&
-                playerMove.CanDashAttack &&
-                (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Joystick1Button18)) &&
-                Mathf.Abs(CrossPlatformInputManager.GetAxisRaw("Horizontal")) > 0.1f &&
-                !_anim.GetBool("DashAttack")
-                ) {
-            playerMove.rb.velocity = new Vector2(rb.velocity.x * dashAttackSpeedFactor, playerMove.rb.velocity.y);
-            _anim.SetBool("DashAttack", true);
-            // Block input for dashattack animation length
-            StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
-        } else  // otherwise just do a boring-ass punch...
-          {
-            punching = true;
-        }
-
-        UpdateAnimatorParams();
-    }
     /// <summary> @Deprecated </summary>
     private void SelectAttackBasedOnPlayerSituation() {
-        punching = slamming = false;
+        punch = slam = false;
 
         // If airborn and pressing down, SlamAttack
         if (!playerMove.Grounded /*&& CrossPlatformInputManager.GetAxisRaw("Vertical") < 0*/)
-            slamming = true;
+            slam = true;
         // If grounded
         else if (playerMove.Grounded) {
             // If DashAttack conditions are met, DashAttack!
@@ -115,7 +128,7 @@ public class PlayerAttack : MonoBehaviour
             }
             // otherwise just do a boring-ass punch...
             else if (_anim.GetFloat("Speed") < 0.1f) {
-                punching = true;
+                punch = true;
             }
         }
 
@@ -147,12 +160,23 @@ public class PlayerAttack : MonoBehaviour
     /// Closes the punch interval
     /// </summary>
     public void Attack_PunchEnd() {
-        punching = false;
+        punch = false;
         triggers.punchTrigger.enabled = false;
     }
     public void PunchCompleted() {
-        punching = false;
+        punch = false;
         UpdateAnimatorParams();
+    }
+
+
+    public void UppercutStart() {
+        triggers.uppercutTrigger.enabled = true;
+        rb.AddForce(Vector2.up * uppercutForce, ForceMode2D.Impulse);
+    }
+    public void UppercutCompleted() {
+        print("UppercutCompleted()");
+        uppercut = false;
+        triggers.uppercutTrigger.enabled = false;
     }
 
     public void ReachedSlamPeak() {
@@ -164,7 +188,7 @@ public class PlayerAttack : MonoBehaviour
         triggers.slamTrigger.enabled = true;
     }
     public void SlamEnded() {
-        slamming = false;
+        slam = false;
         _anim.speed = animSpeed;
         triggers.slamTrigger.enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Player");
@@ -177,20 +201,18 @@ public class PlayerAttack : MonoBehaviour
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         var explosionPos = transform.position;
-        foreach (var hit in Physics2D.OverlapCircleAll((Vector2)explosionPos, explosionRadius, explosionMask)) {
-            print(hit.name + " is supposed to take damage");
-            // TODO: change EnemyHealth to Health, also add stun to Health class
-            var enemyHealth = hit.gameObject.GetComponent<Health>();
-            if (!enemyHealth) {
-                print("enemyHealth not found on " + hit.name);
+        foreach (var hit in Physics2D.OverlapCircleAll(explosionPos, explosionRadius, explosionMask)) {
+            var otherHealth = hit.gameObject.GetComponent<Health>();
+            if (!otherHealth) {
+                Debug.LogWarning("enemyHealth not found on " + hit.name);
                 continue;
             }
 
-            Rigidbody2D otherRb = hit.GetComponent<Rigidbody2D>();
-
-            StartCoroutine(enemyHealth.EnumStun(2));
+            otherHealth.Stun(2);
 
             float distance = Vector2.Distance(transform.position, hit.gameObject.transform.position);
+            Rigidbody2D otherRb = hit.GetComponent<Rigidbody2D>();
+
             if (otherRb) otherRb.AddForce(
                 new Vector2(playerMove.FacingSign, upwardModifier) * (landingSpeed / distance),
                 ForceMode2D.Impulse
@@ -205,13 +227,13 @@ public class PlayerAttack : MonoBehaviour
     public void DashAttackClose() {
         triggers.dashAttackTrigger.enabled = false;
         _anim.SetBool("DashAttack", false);
-        punching = false;
+        punch = false;
         playerMove.BlockMoveInput = false;
     }
 
     private void UpdateAnimatorParams() {
-        _anim.SetBool("Punching", punching);
-        _anim.SetBool("Slamming", slamming);
+        _anim.SetBool("Punching", punch);
+        _anim.SetBool("Slamming", slam);
     }
 
 
