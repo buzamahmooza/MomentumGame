@@ -5,12 +5,12 @@ public class DoomEnemy : Enemy
 {
     [SerializeField] private GameObject enemyBullet;
     [SerializeField] private Transform shootTransform;
-    [SerializeField] private float burstFireRate = 100;
+    [SerializeField] [Range(1, 400)] private float burstFireRate = 100;
     /// <summary> Wiggling the shoot position of the bullets (so that not all bullets spawn at the same point) </summary>
-    [SerializeField] private float wiggleShootOffset = 0.15f;
-    [SerializeField] private float projectileSpeed = 10;
-    [SerializeField] private int burstSize = 7;
-    [SerializeField] private float timeBetweenShotsInBurst;
+    [SerializeField] [Range(0, 5)] private float wiggleShootOffset = 0.15f;
+    [SerializeField] [Range(1, 50)] private float projectileSpeed = 10;
+    [SerializeField] [Range(1, 50)] private int burstSize = 7;
+    private float timeBetweenShotsInBurst;
 
 
     protected override void Awake() {
