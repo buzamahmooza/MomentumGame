@@ -14,8 +14,6 @@ public class Health : MonoBehaviour
 
     // To be set in inspector
 
-    [SerializeField] protected bool regenerateHealth = false;
-    [SerializeField] protected bool flashColorWhenDamage = true;
     [SerializeField] protected bool useHealthbar = true;
     [SerializeField] protected bool destroyOnDeath = false;
     [SerializeField] protected int maxHealth = 100;
@@ -27,9 +25,9 @@ public class Health : MonoBehaviour
 
     [SerializeField] private Color damageColor = Color.red;
     [SerializeField] private float hurtDamageThreshold = 10;
-    [SerializeField] private float regenPercent = 0.01f;
-    Rigidbody2D rb;
+    [SerializeField] [Range(0, 100)] private float regenPercent = 1f;
 
+    private Rigidbody2D rb;
     protected SpriteRenderer rend;
     protected Slider healthSlider;
     protected AudioSource audioSource;
@@ -57,7 +55,7 @@ public class Health : MonoBehaviour
         }
 
         if (useHealthbar && healthBar != null)
-            InitializeHealthBar();
+            InitHealthBar();
 
         originalColor = rend.color;
         if (gameObject.layer == LayerMask.NameToLayer("Object"))
@@ -86,8 +84,7 @@ public class Health : MonoBehaviour
         audioSource.PlayOneShot(hurtAudioClip);
         if (_anim != null && !IsDead)
             _anim.SetTrigger("Hurt");
-        if (flashColorWhenDamage)
-            rend.color = damageColor;
+        rend.color = damageColor;
     }
 
     public void Stun(float seconds) {
@@ -115,15 +112,15 @@ public class Health : MonoBehaviour
     private void UpdateHealthBar() {
         if (healthSlider != null)
             healthSlider.value = CurrentHealth;
-        else if (useHealthbar)
-            Debug.LogWarning("Healthslider not found for " + gameObject.name);
+        else
+            Debug.LogWarning("Healthslider not found on " + gameObject.name);
     }
 
     public virtual void Die() {
-        //Debug.Log(gameObject.name + " died");
         if (deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
-        if (!IsDead) { // If this is the first time this method is called
-                       // Make death effects, sounds, and animation
+        // If this is the first time this method is called
+        if (!IsDead) {
+            // Make death effects, sounds, and animation
             if (deathEffects) Instantiate(deathEffects, transform.position, Quaternion.identity);
             if (_anim) _anim.SetTrigger("Die");
             if (audioSource) audioSource.Play();
@@ -136,7 +133,7 @@ public class Health : MonoBehaviour
     }
 
     private void LerpColor() {
-        if (!rend.color.Equals(originalColor) && flashColorWhenDamage)
+        if (!rend.color.Equals(originalColor))
             rend.color = Color.Lerp(rend.color, originalColor, Time.deltaTime * 10);
     }
 
@@ -159,7 +156,7 @@ public class Health : MonoBehaviour
     }
     /// <summary> If not yet reached max health, increment by x% of the starting health </summary>
     public void RegenerateHealth() {
-        RegenerateHealth((int)regenPercent * maxHealth);
+        RegenerateHealth((int)(regenPercent / 100) * maxHealth);
     }
     public void RegenerateHealth(int addedHealth) {
         // add regenPercent but not exceding maxHealth
@@ -168,9 +165,10 @@ public class Health : MonoBehaviour
 
     }
 
-    private void InitializeHealthBar() {
-        if (healthBar == null)
-            healthBar = Instantiate(healthBar, transform) as GameObject;
+    private void InitHealthBar() {
+        if (!healthBar)
+            healthBar = Instantiate(healthBar, transform);
         healthSlider = healthBar.transform.GetComponentsInChildren<Slider>()[0];
+        healthSlider.maxValue = maxHealth;
     }
 }

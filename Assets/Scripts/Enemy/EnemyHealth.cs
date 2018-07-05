@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(Enemy))]
 public class EnemyHealth : Health
 {
-    [SerializeField] private int scoreValue = 0;  // assigned in inspector
+    [SerializeField] [Range(0, 100)] private int scoreValue = 0;  // assigned in inspector
     [SerializeField] private GameObject floatingTextPrefab;  // assigned in inspector
     private GameObject player;
     private EnemyAI enemyAI;
@@ -28,10 +28,6 @@ public class EnemyHealth : Health
         if (Vector3.Distance(transform.position, player.transform.position) > 300) {
             Destroy(this.gameObject);
         }
-    }
-
-    private void AddScore(float scoreAmount) {
-        throw new NotImplementedException();
     }
 
     private void CreateFloatingDamage(int damageValue) {

@@ -17,14 +17,24 @@ public class Hitbox : MonoBehaviour
     /// <summary> the time slowdownFactor, smaller means more slo-mo </summary>
     [SerializeField] [Range(0, 1)] float slomoFactor = 0.4f;
     [SerializeField] float forceAmount = 7.0f;
+    /// <summary>
+    /// This influence variable will be used to add custom force to the attack
+    /// A positive X value will add force toward where the player is facing (will push the enemy away).
+    /// </summary>
+    [SerializeField] private Vector2 forceInfluence = new Vector2(0, 0.7f);
+    private static bool slidersEnabled = false;
 
     //components
     Collider2D trigger;
     AudioSource audioSource;
     PlayerAttack attackScript;
 
+    private static int count = 0;
+    private int idx;
+
 
     private void Awake() {
+        idx = count++;
         attackScript = GetComponentInParent<PlayerAttack>();
         trigger = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
@@ -38,11 +48,12 @@ public class Hitbox : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         var otherHealth = other.gameObject.GetComponent<Health>();
         if (other.gameObject.layer.CompareTo(LayerMask.NameToLayer("Ignore Raycast")) != 0 && other.attachedRigidbody) {
-            Vector3 forceVec = other.transform.position - transform.parent.transform.position;
-            other.attachedRigidbody.AddForce(forceAmount * (forceVec.normalized + Vector3.up * 0.7f), ForceMode2D.Impulse);
+            Vector2 forceDir = (other.transform.position - transform.parent.transform.position).normalized;
+            forceInfluence.x *= Mathf.Sign(forceDir.x);
+            other.attachedRigidbody.AddForce(forceAmount * (forceDir + forceInfluence), ForceMode2D.Impulse);
 
-            //attackScript.DoAttackStuff(trigger, other);
-            float speedMult = Mathf.Clamp(Mathf.Log(GameManager.PlayerRb.velocity.magnitude), 1f, 100);
+            float speedMult = Mathf.Clamp(Mathf.Log(GameManager.PlayerRb.velocity.sqrMagnitude), 1f, 100);
+            Debug.Log("speedMult = " + speedMult);
 
             // attack stuff
             if (attackSound) audioSource.PlayOneShot(attackSound);
@@ -56,7 +67,7 @@ public class Hitbox : MonoBehaviour
 
             if (explosive) attackScript.CreateSlamExplosion();
 
-            GameManager.CameraShake.DoJitter(jitter.x * 0.5f * speedMult, jitter.y);
+            GameManager.CameraShake.DoJitter(jitter.x * speedMult, jitter.y);
 
             //Debug.Log("Attacked " + other.gameObject.name);
         }
@@ -67,4 +78,12 @@ public class Hitbox : MonoBehaviour
         }
     }
 
+    void OnGUI() {
+        if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) slidersEnabled = !slidersEnabled;
+        if (!slidersEnabled)
+            return;
+
+        hitStop = GameManager.AddGUISlider(gameObject.name + " hitStop", hitStop, 35 * (1 + idx));
+        slomoFactor = GameManager.AddGUISlider(gameObject.name + " slomoFactor", slomoFactor, Mathf.RoundToInt(35 * (1.5f + idx)));
+    }
 }
