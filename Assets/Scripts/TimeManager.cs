@@ -4,17 +4,20 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-
     [SerializeField]
     float slowDownLength = 2.0f;
     [SerializeField]
     [Range(0.001f, 1)]
-    float
-        slowdownFactor = 0.05f,
+    float slowdownFactor = 0.05f,
         defaultHitStopDuration = 0.05f;
 
+    [SerializeField] private ParticleSystem ps;
     private bool m_SloMo = false;
+    public float hSliderValue = 1000;
 
+    void Awake() {
+        if (!ps) ps = GetComponent<ParticleSystem>();
+    }
 
     public void DoSlowMotion() {
         DoSlowMotion(slowdownFactor);
@@ -45,6 +48,7 @@ public class TimeManager : MonoBehaviour
     // Update is called once per frame
     private void Update() {
         if (m_SloMo) {
+            ps.Emit(1);
             if (Math.Abs((Time.timeScale) - 1) < 0.01f) {
                 ResetTimeScale();
             }
