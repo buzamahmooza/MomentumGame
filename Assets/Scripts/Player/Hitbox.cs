@@ -38,7 +38,7 @@ public class Hitbox : MonoBehaviour
     //components
     public new Collider2D collider2D;
     AudioSource audioSource;
-    PlayerAttack attackScript;
+    PlayerAttack playerAttack;
 
     private static bool guiSlidersEnabled = false;
     private static int guiCount = 0;
@@ -52,7 +52,7 @@ public class Hitbox : MonoBehaviour
 
         if (layerMask.value == 0) // initialize to "Enemy", "EnemyIgnore", "Object" layers
             layerMask.value = 6144;
-        attackScript = GetComponentInParent<PlayerAttack>();
+        playerAttack = GetComponentInParent<PlayerAttack>();
         collider2D = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
         collider2D.enabled = false;
@@ -75,18 +75,24 @@ public class Hitbox : MonoBehaviour
             attackDirection.x *= Mathf.Sign(toTarget.x);
             other.attachedRigidbody.AddForce(toTarget + attackDirection, ForceMode2D.Impulse);
 
+            /**a multiplier that depends on the speed at which the attacker hit*/
             float speedMult = Mathf.Clamp(
                 Mathf.Log( // Log() cuz we don't want to keep dealing more damage the faster you hit, there comes a point where it has to plateau
                     Mathf.Abs(Vector2.Dot(GameManager.PlayerRb.velocity, attackDirection)) // abs() cuz no negatives are allowed in Log()
                 ),
             1f, 50f);
-            if (float.IsNaN(speedMult))
-                speedMult = 1f;
+            // safety check
+            if (float.IsNaN(speedMult)) speedMult = 1f;
+            if (playerAttack.currentCombo != null)
+                speedMult *= Mathf.Log(playerAttack.currentCombo.Count);
             Debug.Log("speedMult = " + speedMult);
 
-            // attack stuff
+            // do attack stuff
             if (otherHealth) otherHealth.TakeDamage(Mathf.RoundToInt(damageAmount * speedMult));
             bool killedOther = !wasDead && otherHealth.IsDead;
+
+            // invoke the hit event
+            if (OnHitEvent != null) OnHitEvent(other.gameObject, speedMult, killedOther);
 
             if (attackSound) audioSource.PlayOneShot(attackSound);
             if (hitStop > 0) {
@@ -106,13 +112,10 @@ public class Hitbox : MonoBehaviour
                 GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
             }
 
-            if (explosive) attackScript.CreateSlamExplosion();
+            if (explosive) playerAttack.CreateSlamExplosion();
 
             GameManager.CameraShake.DoJitter(jitter.x * speedMult, jitter.y);
 
-            // invoke the hit event
-            if (OnHitEvent != null)
-                OnHitEvent(other.gameObject, speedMult, killedOther);
         }
 
         if (deactivateOnContact && otherHealth) {

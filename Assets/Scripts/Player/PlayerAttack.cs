@@ -1,5 +1,7 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Timers;
 using InControl;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
@@ -8,12 +10,13 @@ using UnityStandardAssets.CrossPlatformInput;
 public class PlayerAttack : MonoBehaviour
 {
     public bool HasReachedSlamPeak = false;
+    public ComboInstance currentCombo = null;
 
     [SerializeField] private AudioClip dashAttackSound, slamAttackSound;
     [SerializeField] private GameObject slamExplosionObj = null;
 
     // This is just to make the members collapsable in the inspector
-    [Serializable] private struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
+    [System.Serializable] private struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
     [SerializeField] private Hitboxes hitboxes;
     [SerializeField] [Range(0.5f, 10f)] private float explosionRadius = 2;
     [SerializeField] [Range(0f, 10f)] private float upwardModifier = 1;
@@ -27,7 +30,6 @@ public class PlayerAttack : MonoBehaviour
     private float dashAttackSpeedFactor = 1.5f,
                 uppercutJumpForce = 1f;
     private float animSpeed = 1;
-    private Combo currentCombo = null;
 
     // components
     private Animator _anim;
@@ -57,6 +59,7 @@ public class PlayerAttack : MonoBehaviour
         hitboxes.dashAttackHitbox.enabled = false;
         hitboxes.punchHitbox.enabled = false;
         hitboxes.dashAttackHitbox.enabled = false;
+        hitboxes.uppercutHitbox.enabled = false;
 
         animSpeed = _anim.speed;
         Debug.Assert(hitboxes.slamHitbox && hitboxes.punchHitbox);
@@ -71,14 +74,16 @@ public class PlayerAttack : MonoBehaviour
         hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
     }
     private void OnHitHandler(GameObject go, float speedMult, bool killedOther) {
-        if (currentCombo == null) {
-            currentCombo = new Combo();
+        if (currentCombo == null || currentCombo.HasEnded) {
+            currentCombo = new ComboInstance();
         }
-        
+        currentCombo.IncrementCount();
     }
 
 
     private void Update() {
+        if (currentCombo != null) GameManager.ComboManager.DisplayCombo(currentCombo.HasEnded ? 0 : currentCombo.Count);
+
         // Get input if there is no action to disturb
         if (!uppercut && !punch && !slam) {
             uppercut = punch = slam = false;
@@ -248,23 +253,4 @@ public class PlayerAttack : MonoBehaviour
         return hasCollided;
     }
 */
-}
-
-internal class Combo
-{
-    /// indicates if the combo has already ended
-    public bool HasEnded { get; private set; }
-    /// <summary>
-    /// The combo count of the current instance (each hit in the combo increments the count by one).
-    /// </summary>
-    public int Count { get; private set; }
-
-    public Combo() {
-        HasEnded = false;
-        IncrementCount();
-    }
-
-    public void IncrementCount() {
-        Count++;
-    }
 }
