@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using InControl;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
@@ -9,31 +10,30 @@ public class PlayerAttack : MonoBehaviour
     public bool HasReachedSlamPeak = false;
 
     [SerializeField] private AudioClip dashAttackSound, slamAttackSound;
-    [SerializeField] private GameObject slamExplosionObj;
-    [SerializeField] private LayerMask punchLayer;
-
-    private bool slam = false,
-        punch = false;
+    [SerializeField] private GameObject slamExplosionObj = null;
 
     // This is just to make the members collapsable in the inspector
-    [Serializable] private struct Triggers { public Collider2D punchTrigger, slamTrigger, dashAttackTrigger, uppercutTrigger; }
-    [SerializeField] private Triggers triggers;
+    [Serializable] private struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
+    [SerializeField] private Hitboxes hitboxes;
     [SerializeField] [Range(0.5f, 10f)] private float explosionRadius = 2;
     [SerializeField] [Range(0f, 10f)] private float upwardModifier = 1;
     [SerializeField] private LayerMask explosionMask;
 
-    //BoxCollider2D punchTrigger, slamTrigger, dashAttackTrigger;
+    private bool slam,
+                punch,
+                uppercut;
+
+    [SerializeField]
+    private float dashAttackSpeedFactor = 1.5f,
+                uppercutJumpForce = 1f;
+    private float animSpeed = 1;
+    private Combo currentCombo = null;
+
+    // components
     private Animator _anim;
     private PlayerMove playerMove;
     private AudioSource audioSource;
     private Rigidbody2D rb;
-
-    private float animSpeed = 1;
-    [SerializeField]
-    private float dashAttackSpeedFactor = 1.5f;
-
-    private bool uppercut = false;
-    [SerializeField] private float uppercutForce = 1f;
 
 
     private void Awake() {
@@ -45,32 +45,40 @@ public class PlayerAttack : MonoBehaviour
         if (explosionMask == 0) explosionMask = LayerMask.NameToLayer("Enemy") +
                                                LayerMask.NameToLayer("Object");
 
-        if (!triggers.punchTrigger) triggers.punchTrigger = transform.Find("PunchTrigger").GetComponent<Collider2D>();
-        if (!triggers.slamTrigger) triggers.slamTrigger = transform.Find("SlamTrigger").GetComponent<Collider2D>();
-        if (!triggers.uppercutTrigger) triggers.uppercutTrigger = transform.Find("UppercutTrigger").GetComponent<Collider2D>();
-        if (!triggers.dashAttackTrigger) triggers.dashAttackTrigger = transform.Find("DashAttackTrigger").GetComponent<Collider2D>();
-
+        if (!hitboxes.punchHitbox) hitboxes.punchHitbox = transform.Find("PunchTrigger").GetComponent<Hitbox>();
+        if (!hitboxes.slamHitbox) hitboxes.slamHitbox = transform.Find("SlamTrigger").GetComponent<Hitbox>();
+        if (!hitboxes.uppercutHitbox) hitboxes.uppercutHitbox = transform.Find("UppercutTrigger").GetComponent<Hitbox>();
+        if (!hitboxes.dashAttackHitbox) hitboxes.dashAttackHitbox = transform.Find("DashAttackTrigger").GetComponent<Hitbox>();
     }
 
     private void Start() {
         print("explosionMask = " + explosionMask.value);
-        triggers.slamTrigger.enabled = false;
-        triggers.dashAttackTrigger.enabled = false;
-        triggers.punchTrigger.enabled = false;
-        triggers.dashAttackTrigger.enabled = false;
+        hitboxes.slamHitbox.enabled = false;
+        hitboxes.dashAttackHitbox.enabled = false;
+        hitboxes.punchHitbox.enabled = false;
+        hitboxes.dashAttackHitbox.enabled = false;
 
         animSpeed = _anim.speed;
-        Debug.Assert(triggers.slamTrigger && triggers.punchTrigger);
+        Debug.Assert(hitboxes.slamHitbox && hitboxes.punchHitbox);
+
+        SubscribeToHitEvents();
+    }
+    // TODO: move the effects (screenshake, hitStop and slomo) here rather than having it in HitBox
+    private void SubscribeToHitEvents() {
+        hitboxes.uppercutHitbox.OnHitEvent += OnHitHandler;
+        hitboxes.dashAttackHitbox.OnHitEvent += OnHitHandler;
+        hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
+        hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
+    }
+    private void OnHitHandler(GameObject go, float speedMult, bool killedOther) {
+        if (currentCombo == null) {
+            currentCombo = new Combo();
+        }
+        
     }
 
-    private void Update() {
-        if (false) Debug.Log(
-            "\n A = " + InputManager.ActiveDevice.Action1.IsPressed +
-            "\n B =" + InputManager.ActiveDevice.Action2.IsPressed +
-            "\n X =" + InputManager.ActiveDevice.Action3.IsPressed +
-            "\n Y =" + InputManager.ActiveDevice.Action4.IsPressed
-        );
 
+    private void Update() {
         // Get input if there is no action to disturb
         if (!uppercut && !punch && !slam) {
             uppercut = punch = slam = false;
@@ -79,7 +87,7 @@ public class PlayerAttack : MonoBehaviour
 
             if (!_anim.GetBool("DashAttack")) {
                 // If airborn and pressing down, SlamAttack
-                if (AttackInput && input.y < -0.5f && Mathf.Abs(input.x) < 0.5) {
+                if (AttackInput && input.y <= -0.5f && Mathf.Abs(input.x) <= 0.5) {
                     slam = true;
                 }
                 // If DashAttack conditions are met, DashAttack!
@@ -89,7 +97,7 @@ public class PlayerAttack : MonoBehaviour
                     _anim.SetBool("DashAttack", true);
                     // Block input for dashattack animation length
                     StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
-                } else if (AttackInput && input.y > 0.5f && Mathf.Abs(input.x) < 0.5) { //uppercut
+                } else if (AttackInput && input.y >= 0.5f && Mathf.Abs(input.x) <= 0.5) { //uppercut
                     uppercut = true;
                     _anim.SetTrigger("Uppercut");
                 } else if (AttackInput) {
@@ -108,31 +116,6 @@ public class PlayerAttack : MonoBehaviour
 
     private static bool AttackInput {
         get { return Input.GetButton("Fire1") || Input.GetKey(KeyCode.Joystick1Button18) || InputManager.ActiveDevice.Action3.IsPressed; }
-    }
-
-    /// <summary> @Deprecated </summary>
-    private void SelectAttackBasedOnPlayerSituation() {
-        punch = slam = false;
-
-        // If airborn and pressing down, SlamAttack
-        if (!playerMove.Grounded /*&& CrossPlatformInputManager.GetAxisRaw("Vertical") < 0*/)
-            slam = true;
-        // If grounded
-        else if (playerMove.Grounded) {
-            // If DashAttack conditions are met, DashAttack!
-            if (playerMove.CanDashAttack && !_anim.GetBool("DashAttack")) {
-                playerMove.rb.velocity = new Vector2(rb.velocity.x * dashAttackSpeedFactor, playerMove.rb.velocity.y);
-                _anim.SetBool("DashAttack", true);
-                // Block input for dashattack animation length
-                StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
-            }
-            // otherwise just do a boring-ass punch...
-            else if (_anim.GetFloat("Speed") < 0.1f) {
-                punch = true;
-            }
-        }
-
-        UpdateAnimatorParams();
     }
 
     /// <summary>
@@ -154,14 +137,14 @@ public class PlayerAttack : MonoBehaviour
     /// Opens the punch interval (the active frames where the hitbox is on)
     /// </summary>
     public void Attack_PunchStart() {
-        triggers.punchTrigger.enabled = true;
+        hitboxes.punchHitbox.enabled = true;
     }
     /// <summary>
     /// Closes the punch interval
     /// </summary>
     public void Attack_PunchEnd() {
         punch = false;
-        triggers.punchTrigger.enabled = false;
+        hitboxes.punchHitbox.enabled = false;
     }
     public void PunchCompleted() {
         punch = false;
@@ -170,13 +153,13 @@ public class PlayerAttack : MonoBehaviour
 
 
     public void UppercutStart() {
-        triggers.uppercutTrigger.enabled = true;
-        rb.AddForce(Vector2.up * uppercutForce, ForceMode2D.Impulse);
+        hitboxes.uppercutHitbox.enabled = true;
+        rb.AddForce(Vector2.up * uppercutJumpForce, ForceMode2D.Impulse);
     }
     public void UppercutCompleted() {
         print("UppercutCompleted()");
         uppercut = false;
-        triggers.uppercutTrigger.enabled = false;
+        hitboxes.uppercutHitbox.enabled = false;
     }
 
     public void ReachedSlamPeak() {
@@ -185,18 +168,18 @@ public class PlayerAttack : MonoBehaviour
         gameObject.layer = LayerMask.NameToLayer("PlayerIgnore");
     }
     public void Attack_Slam() {
-        triggers.slamTrigger.enabled = true;
+        hitboxes.slamHitbox.enabled = true;
     }
     public void SlamEnded() {
         slam = false;
         _anim.speed = animSpeed;
-        triggers.slamTrigger.enabled = false;
+        hitboxes.slamHitbox.enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Player");
         UpdateAnimatorParams();
     }
 
     public void CreateSlamExplosion() {
-        Instantiate(slamExplosionObj, triggers.slamTrigger.bounds.center + Vector3.back, Quaternion.identity);
+        Instantiate(slamExplosionObj, hitboxes.slamHitbox.collider2D.bounds.center + Vector3.back, Quaternion.identity);
         float landingSpeed = Mathf.Abs(rb.velocity.y);
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
@@ -211,7 +194,7 @@ public class PlayerAttack : MonoBehaviour
             otherHealth.Stun(2);
 
             float distance = Vector2.Distance(transform.position, hit.gameObject.transform.position);
-            Rigidbody2D otherRb = hit.GetComponent<Rigidbody2D>();
+            var otherRb = hit.GetComponent<Rigidbody2D>();
 
             if (otherRb) otherRb.AddForce(
                 new Vector2(playerMove.FacingSign, upwardModifier) * (landingSpeed / distance),
@@ -222,10 +205,10 @@ public class PlayerAttack : MonoBehaviour
     }
 
     public void DashAttackOpen() {
-        triggers.dashAttackTrigger.enabled = true;
+        hitboxes.dashAttackHitbox.enabled = true;
     }
     public void DashAttackClose() {
-        triggers.dashAttackTrigger.enabled = false;
+        hitboxes.dashAttackHitbox.enabled = false;
         _anim.SetBool("DashAttack", false);
         punch = false;
         playerMove.BlockMoveInput = false;
@@ -265,4 +248,23 @@ public class PlayerAttack : MonoBehaviour
         return hasCollided;
     }
 */
+}
+
+internal class Combo
+{
+    /// indicates if the combo has already ended
+    public bool HasEnded { get; private set; }
+    /// <summary>
+    /// The combo count of the current instance (each hit in the combo increments the count by one).
+    /// </summary>
+    public int Count { get; private set; }
+
+    public Combo() {
+        HasEnded = false;
+        IncrementCount();
+    }
+
+    public void IncrementCount() {
+        Count++;
+    }
 }

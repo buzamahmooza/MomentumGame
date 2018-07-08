@@ -1,9 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class Hitbox : MonoBehaviour
 {
+    /// <summary>
+    /// An event which is called when the hitbox collides<br/>
+    /// <param name="otherGameObject" type="GameObject"></param><br/>
+    /// <param name="speedMult" type="float">the gameObject that was hit</param><br/>
+    /// <param name="killedOther" type="bool">if this hit killed the other gameObject</param><br/>
+    /// </summary>
+    [HideInInspector] public event System.Action<GameObject, float, bool> OnHitEvent;
+
     // assigned in inspector
     [SerializeField] Vector2 jitter = new Vector2(0.2f, 0.09f);
     [SerializeField] AudioClip attackSound;
@@ -16,29 +25,37 @@ public class Hitbox : MonoBehaviour
     [SerializeField] [Range(0, 1)] float fisheye = 0;
     /// <summary> the time slowdownFactor, smaller means more slo-mo </summary>
     [SerializeField] [Range(0, 1)] float slomoFactor = 0.4f;
-    [SerializeField] float forceAmount = 7.0f;
+    /// <summary> the amount of effects modification (such as slomo and hitStop) on the finishing blow </summary>
+    [SerializeField] [Range(1, 10)] float killCoeff = 1.5f;
+
     /// <summary>
     /// This influence variable will be used to add custom force to the attack
     /// A positive X value will add force toward where the player is facing (will push the enemy away).
     /// </summary>
-    [SerializeField] private Vector2 forceInfluence = new Vector2(0, 0.7f);
-    private static bool slidersEnabled = false;
+    [SerializeField] private Vector2 attackDirection = new Vector2(3f, 3f);
+    [SerializeField] private LayerMask layerMask;
 
     //components
-    Collider2D trigger;
+    public new Collider2D collider2D;
     AudioSource audioSource;
     PlayerAttack attackScript;
 
-    private static int count = 0;
-    private int idx;
+    private static bool guiSlidersEnabled = false;
+    private static int guiCount = 0;
+    private int guiIndex;
 
+    void OnEnable() { collider2D.enabled = true; }
+    void OnDisable() { collider2D.enabled = false; }
 
     private void Awake() {
-        idx = count++;
+        guiIndex = guiCount++;
+
+        if (layerMask.value == 0) // initialize to "Enemy", "EnemyIgnore", "Object" layers
+            layerMask.value = 6144;
         attackScript = GetComponentInParent<PlayerAttack>();
-        trigger = GetComponent<Collider2D>();
+        collider2D = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
-        trigger.enabled = false;
+        collider2D.enabled = false;
     }
 
     private void Start() {
@@ -47,43 +64,70 @@ public class Hitbox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) {
         var otherHealth = other.gameObject.GetComponent<Health>();
-        if (other.gameObject.layer.CompareTo(LayerMask.NameToLayer("Ignore Raycast")) != 0 && other.attachedRigidbody) {
-            Vector2 forceDir = (other.transform.position - transform.parent.transform.position).normalized;
-            forceInfluence.x *= Mathf.Sign(forceDir.x);
-            other.attachedRigidbody.AddForce(forceAmount * (forceDir + forceInfluence), ForceMode2D.Impulse);
+        var isInLayerMask = (layerMask.value & 1 << other.gameObject.layer) != 0;
+        Debug.Log("layermask.value=" + layerMask.value);
 
-            float speedMult = Mathf.Clamp(Mathf.Log(GameManager.PlayerRb.velocity.sqrMagnitude), 1f, 100);
+        bool wasDead = otherHealth && otherHealth.IsDead;
+
+        if (isInLayerMask && other.attachedRigidbody) {
+
+            Vector2 toTarget = (other.transform.position - transform.parent.transform.position).normalized;
+            attackDirection.x *= Mathf.Sign(toTarget.x);
+            other.attachedRigidbody.AddForce(toTarget + attackDirection, ForceMode2D.Impulse);
+
+            float speedMult = Mathf.Clamp(
+                Mathf.Log( // Log() cuz we don't want to keep dealing more damage the faster you hit, there comes a point where it has to plateau
+                    Mathf.Abs(Vector2.Dot(GameManager.PlayerRb.velocity, attackDirection)) // abs() cuz no negatives are allowed in Log()
+                ),
+            1f, 50f);
+            if (float.IsNaN(speedMult))
+                speedMult = 1f;
             Debug.Log("speedMult = " + speedMult);
 
             // attack stuff
-            if (attackSound) audioSource.PlayOneShot(attackSound);
             if (otherHealth) otherHealth.TakeDamage(Mathf.RoundToInt(damageAmount * speedMult));
-            if (hitStop > 0) GameManager.TimeManager.DoHitStop(hitStop * speedMult);
-            if (fisheye > 0) GameManager.CameraController.DoFisheye(fisheye);
+            bool killedOther = !wasDead && otherHealth.IsDead;
+
+            if (attackSound) audioSource.PlayOneShot(attackSound);
+            if (hitStop > 0) {
+                var seconds = hitStop * speedMult;
+
+                if (killedOther) seconds *= killCoeff;
+                GameManager.TimeManager.DoHitStop(seconds);
+            }
+
+            if (fisheye > 0) {
+                GameManager.CameraController.DoFisheye(fisheye);
+            }
+
             if (slomoFactor < 1) {
-                Debug.Log("DoSlowMotion:    " + slomoFactor);
-                GameManager.TimeManager.DoSlowMotion(slomoFactor / speedMult);
+                var theSlowdownFactor = slomoFactor / speedMult;
+                if (killedOther) theSlowdownFactor /= killCoeff;
+                GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
             }
 
             if (explosive) attackScript.CreateSlamExplosion();
 
             GameManager.CameraShake.DoJitter(jitter.x * speedMult, jitter.y);
 
-            //Debug.Log("Attacked " + other.gameObject.name);
+            // invoke the hit event
+            if (OnHitEvent != null)
+                OnHitEvent(other.gameObject, speedMult, killedOther);
         }
 
         if (deactivateOnContact && otherHealth) {
-            trigger.enabled = false;
+            collider2D.enabled = false;
             Debug.Log("Punch trigger disabled because it came in contact with " + other.gameObject.name);
         }
     }
 
     void OnGUI() {
-        if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) slidersEnabled = !slidersEnabled;
-        if (!slidersEnabled)
+        if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) guiSlidersEnabled = !guiSlidersEnabled;
+        if (!guiSlidersEnabled)
             return;
 
-        hitStop = GameManager.AddGUISlider(gameObject.name + " hitStop", hitStop, 35 * (1 + idx));
-        slomoFactor = GameManager.AddGUISlider(gameObject.name + " slomoFactor", slomoFactor, Mathf.RoundToInt(35 * (1.5f + idx)));
+        hitStop = GameManager.AddGUISlider(gameObject.name + " hitStop", hitStop, 35 * (1 + guiIndex));
+        slomoFactor = GameManager.AddGUISlider(gameObject.name + " slomoFactor", slomoFactor, Mathf.RoundToInt(35 * (1.5f + guiIndex)));
     }
+
 }
