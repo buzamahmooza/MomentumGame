@@ -24,7 +24,7 @@ public class TimeManager : MonoBehaviour
     }
 
     public void DoSlowMotion(float theSlowdownFactor) {
-        Time.timeScale = theSlowdownFactor;
+        Time.timeScale = Mathf.Clamp(theSlowdownFactor, 0f, 100f);
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         m_SloMo = true;
     }

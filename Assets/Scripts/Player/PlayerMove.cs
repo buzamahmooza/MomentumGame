@@ -70,6 +70,19 @@ public class PlayerMove : Walker
         UpdateAnimatorParams();
     }
 
+    public override void Flip() {
+        base.Flip();
+
+        // if the player is pulling an object, then flipping will move the grabbedObject to that other side as well
+        if (grapple.m_Pulling && grapple.grabbedObj) {
+            // the offset between the player and the grabbedObj
+            var offsetFromGrabbedObj = (grapple.grabbedObj.transform.position - transform.position) * FacingSign;
+            // this check prevents the player from moving enemies that are way too far
+            if (offsetFromGrabbedObj.magnitude < 2)
+                grapple.grabbedObj.transform.position += offsetFromGrabbedObj;
+        }
+    }
+
     private void ModifyGravity() {
         Vector2 gravityV2 = Vector2.up * Physics2D.gravity.y * Time.fixedDeltaTime;
         if (rb.velocity.y < 0.1f) { // if player is falling
@@ -175,7 +188,7 @@ public class PlayerMove : Walker
         _anim.speed *= momentum;
     }
 
-    public bool CanDashAttack { get { return Mathf.Abs(rb.velocity.x) > minDashAttackSpeedThr; } }
+    public bool CanDashAttack { get { return Mathf.Abs(rb.velocity.x) > minDashAttackSpeedThr * momentum; } }
 
     protected override void OnCollisionEnter2D(Collision2D collision) {
         base.OnCollisionEnter2D(collision);

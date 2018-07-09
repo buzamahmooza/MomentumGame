@@ -13,10 +13,6 @@ public class ScoreManager : MonoBehaviour
         UpdateScore();
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
     /// <summary>
     /// Adds the score to the current score value and updates the score text
     /// Also adds momentum with a value of x% of the addedScore

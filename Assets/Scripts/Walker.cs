@@ -104,6 +104,7 @@ public class Walker : MonoBehaviour
 
         // If on the wall
         if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0) {
+            print("on wall");
             // On wall and falling
             if (rb.velocity.y < 0) {
                 m_HasDoubleJump = true;
@@ -162,7 +163,7 @@ public class Walker : MonoBehaviour
         get {
             m_Grounded = false;
             m_Grounded = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask)
-                .Any(col => col.gameObject != gameObject);
+                .Any(col => col.gameObject != gameObject && !col.gameObject.transform.IsChildOf(this.transform));
 
             return m_Grounded;
         }
@@ -173,15 +174,16 @@ public class Walker : MonoBehaviour
     }
     public bool Wallcheck {
         get {
-            m_Climb = Physics2D.Raycast(m_ClimbCheck.position, transform.right, k_GroundedRadius, floorMask);
+            m_Climb = Physics2D.RaycastAll(m_ClimbCheck.position, transform.right, k_GroundedRadius, floorMask)
+                .Any(hit => hit.transform != transform && !hit.transform.IsChildOf(this.transform));
             return m_Climb;
         }
         set { m_Climb = value; }
     }
     /// <summary>
-    /// if player aiming:
-    ///     RIGHT return (1)
-    ///     LEFT return (-1) 
+    /// if aiming
+    ///     RIGHT: return (1),
+    ///     LEFT: return (-1) 
     /// </summary>
     public int FacingSign { get { return FacingRight ? 1 : -1; } }
 
