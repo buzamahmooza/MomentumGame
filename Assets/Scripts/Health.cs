@@ -8,23 +8,20 @@ public class Health : MonoBehaviour
 {
     public const float HEALTH_REGENERATION_PERIOD = 1.0f;
 
+    // To be set in inspector
     public GameObject healthBar, deathEffects;
     [HideInInspector] public bool IsDead = false;
-    [SerializeField] public int CurrentHealth;
-
-    // To be set in inspector
+    [Range(0, 100000f)] public int CurrentHealth;
 
     [SerializeField] protected bool useHealthbar = true;
     [SerializeField] protected bool destroyOnDeath = false;
-    [SerializeField] protected int maxHealth = 100;
-    [SerializeField] protected float fallDamageModifier = 0.5f;
-    [SerializeField]
-    protected AudioClip
-        hurtAudioClip,
-        deathAudioClip;
+    [SerializeField] protected bool autoRegenHealth = false;
+    [SerializeField] [Range(0, 100000f)] protected int maxHealth = 100;
+    [SerializeField] [Range(0, 100)] protected float fallDamageModifier = 0.5f;
+    [SerializeField] protected AudioClip hurtAudioClip, deathAudioClip;
 
     [SerializeField] private Color damageColor = Color.red;
-    [SerializeField] private float hurtDamageThreshold = 10;
+    [SerializeField] private float fallDamageThreshold = 10;
     [SerializeField] [Range(0, 100)] private float regenPercent = 1f;
 
     private Rigidbody2D rb;
@@ -37,31 +34,29 @@ public class Health : MonoBehaviour
     private Animator _anim;
 
     protected virtual void Awake() {
-        //gameObject.AddComponent<ScriptedHealthBar>();
         _anim = GetComponent<Animator>();
         walker = GetComponent<Walker>();
         rend = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        // If GetSource() is null, then add a source
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
     }
 
     private void Start() {
         CurrentHealth = maxHealth;
-        // Initializing the healthbar settings
+
+        if (useHealthbar && healthBar != null)
+            InitHealthBar();
+        // Initializing the healthbar 
         if (healthSlider && useHealthbar) {
             healthSlider.maxValue = maxHealth;
             healthSlider.value = CurrentHealth;
         }
 
-        if (useHealthbar && healthBar != null)
-            InitHealthBar();
-
         originalColor = rend.color;
         if (gameObject.layer == LayerMask.NameToLayer("Object"))
             fallDamageModifier = 0;
-
-        InvokeRepeating("RegenerateHealth", 0, HEALTH_REGENERATION_PERIOD); //Periodically regenerate health
+        if (autoRegenHealth)
+            InvokeRepeating("RegenerateHealth", 0, HEALTH_REGENERATION_PERIOD); //Periodically regenerate health
     }
 
     private void Update() {
@@ -90,7 +85,7 @@ public class Health : MonoBehaviour
     public void Stun(float seconds) {
         StartCoroutine(EnumStun(seconds));
     }
-    public IEnumerator EnumStun(float seconds) {
+    protected IEnumerator EnumStun(float seconds) {
         if (!walker || !walker.BlockMoveInput) {
             yield return null;
         } else {
@@ -102,12 +97,14 @@ public class Health : MonoBehaviour
             walker.BlockMoveInput = true;
         }
     }
-    public float CheckHealth() {
+    /// <summary>
+    /// in charge of updating the healthbar and dying if health is below 0
+    /// </summary>
+    public void CheckHealth() {
         if (CurrentHealth <= 0 || IsDead)
             Die();
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, maxHealth);
         UpdateHealthBar();
-        return CurrentHealth;
     }
     private void UpdateHealthBar() {
         if (healthSlider != null)
@@ -116,16 +113,20 @@ public class Health : MonoBehaviour
             Debug.LogWarning("Healthslider not found on " + gameObject.name);
     }
 
+    /// <summary>
+    /// The die method for the gameObject
+    /// Instantiates deathEffects, plays audio, sets animator trigger ("Die")
+    /// </summary>
     public virtual void Die() {
-        if (deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
         // If this is the first time this method is called
         if (!IsDead) {
             // Make death effects, sounds, and animation
             if (deathEffects) Instantiate(deathEffects, transform.position, Quaternion.identity);
             if (_anim) _anim.SetTrigger("Die");
-            if (audioSource) audioSource.Play();
+            if (deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
         }
         IsDead = true;
+        if (healthBar) healthBar.SetActive(false);
         CurrentHealth = 0;
 
         if (destroyOnDeath)
@@ -145,24 +146,23 @@ public class Health : MonoBehaviour
             if (rb != null && otherRb != null) {
                 float fallDamage = Vector3.Distance(otherRb.velocity * otherRb.mass, rb.velocity * rb.mass) * fallDamageModifier;
 
-                if (fallDamage > hurtDamageThreshold)   // Was the fall hard enough 
-                                                        // this check prevents small falls from affecting
-                                                        // also prevents having many small damages accumulate
-                    TakeDamage((int)fallDamage);
-
-                //print(this.gameObject.name + " took fall damage from " + other.gameObject.name + "\t" + fallDamage);
+                // only take fallDamage if falldamage is big enough
+                // this check prevents small falls from affecting
+                if (fallDamage > fallDamageThreshold)
+                    TakeDamage(Mathf.RoundToInt(fallDamage));
             }
         }
     }
-    /// <summary> If not yet reached max health, increment by x% of the starting health </summary>
+    /// <summary> Increment by x% of the starting health (only if not yet reached max health) </summary>
     public void RegenerateHealth() {
-        RegenerateHealth((int)(regenPercent / 100) * maxHealth);
+        RegenerateHealth(Mathf.RoundToInt(regenPercent / 100 * maxHealth));
     }
+    /// <summary>Add health</summary>
+    /// <param name="addedHealth"></param>
     public void RegenerateHealth(int addedHealth) {
         // add regenPercent but not exceding maxHealth
         CurrentHealth = Mathf.Clamp(CurrentHealth + addedHealth, 0, maxHealth);
         CheckHealth();
-
     }
 
     private void InitHealthBar() {

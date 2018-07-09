@@ -43,7 +43,6 @@ public class EnemyHealth : Health
         Instantiate(floatingTextPrefab, transform.position, Quaternion.identity)
             .GetComponent<FloatingText>()
             .InitFloatingScore(scoreVal);
-        GameManager.ScoreManager.AddScore(scoreVal);
     }
 
     public override void Die() {
@@ -54,6 +53,7 @@ public class EnemyHealth : Health
         if (!IsDead) {
             if (scoreValue > 0) {
                 CreateFloatingScore(scoreValue);
+                GameManager.ScoreManager.AddScore(scoreValue);
                 GameManager.Player.GetComponent<Health>().RegenerateHealth();
             }
 

@@ -43,17 +43,16 @@ public class Enemy : Walker
         Debug.Assert(rb != null);
 
         timeSinceLastAttack += Time.deltaTime;
-        if (false) Debug.Log(
-              gameObject.name +
-              "\nTarget = " + targeting.Target +
-              "\nTargetIsDead = " + TargetIsDead +
-              "\nIsAware = " + IsAware
-          );
-        if (timeBetweenAttacks < timeSinceLastAttack &&
-            InAttackRange && IsAware && !TargetIsDead && !IsGrappled) {
-            this.Attack();
-            timeSinceLastAttack = 0;
+
+        if (IsAware) {
+            FaceDirection(targeting.Target.transform.position.x - transform.position.x);
+
+            if (timeBetweenAttacks < timeSinceLastAttack && InAttackRange && !TargetIsDead && !IsGrappled) {
+                this.Attack();
+                timeSinceLastAttack = 0;
+            }
         }
+
         FaceAimDirection();
     }
 

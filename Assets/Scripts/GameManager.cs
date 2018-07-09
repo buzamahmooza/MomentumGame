@@ -10,12 +10,13 @@ public class GameManager : MonoBehaviour
     private static CameraController cameraController;
     [SerializeField] private static TimeManager timeManager;
     [SerializeField] private static ScoreManager scoreManager;
+    public static List<string> logs = new List<string>();
+
 
     // todo: add fields that these properties encapsulate, only benefit will be performance
     public static GameObject Player { get { return GameObject.FindWithTag("Player"); } }
     public static Rigidbody2D PlayerRb { get { return Player.GetComponent<Rigidbody2D>(); } }
     public static PlayerHealth PlayerHealth { get { return Player == null ? null : Player.GetComponent<PlayerHealth>(); } }
-    public static bool PlayerIsDead { get { return PlayerHealth.IsDead; } }
     public static CameraShake CameraShake { get { return Camera.main.GetComponent<CameraShake>(); } }
     public static CameraController CameraController {
         get {
@@ -25,8 +26,13 @@ public class GameManager : MonoBehaviour
     }
     public static TimeManager TimeManager { get { return timeManager = timeManager ?? GameObject.Find("Game Controller").GetComponent<TimeManager>(); } }
 
+    public static ComboManager ComboManager { get { return GameObject.Find("ComboManager").GetComponent<ComboManager>(); } }
+
     public static ScoreManager ScoreManager {
         get { return scoreManager = scoreManager ?? GameObject.Find("Game Controller").GetComponent<ScoreManager>(); }
+    }
+    public static AudioSource AudioSource {
+        get { return GameObject.Find("Game Controller").GetComponent<AudioSource>(); }
     }
 
 
@@ -46,11 +52,17 @@ public class GameManager : MonoBehaviour
         Debug.Assert(Player != null);
         Debug.Assert(PlayerHealth != null);
     }
+    
+
+    private void OnGUI() {
+        GUI.TextArea(new Rect(new Vector2(200, 30), new Vector2(100, 800)), string.Join("\n", logs.ToArray()), new GUIStyle());
+    }
 
     /// <summary>
     /// Adds GUI text and a slider next to the given value,
     /// for this to be responsive, equate the variable to the return of the method
     /// Used for debugging and testing
+    /// Note: Must be called within OnGUI()
     /// </summary>
     /// <example>jumpHeight = AddGUISlider("Jump height: ", jumpHeight);</example>
     /// <param name="text"></param>
