@@ -8,6 +8,7 @@ TagManager:
   - DamageSource
   - DamagePlayer
   - Enemy
+  - Pickup picker
   layers:
   - Default
   - TransparentFX
@@ -25,7 +26,7 @@ TagManager:
   - Interaction
   - PlayerIgnore
   - EnemyIgnore
-  - 
+  - Pickup
   - 
   - 
   - 
