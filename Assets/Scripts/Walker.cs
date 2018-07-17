@@ -18,9 +18,10 @@ public class Walker : MonoBehaviour
     [SerializeField] protected bool control_facesAimDirection = false;
 
     [SerializeField] protected float moveSpeed = 20;
-    [SerializeField] protected float jumpForce = 300;
+    [SerializeField] protected float jumpForce = 8;
     [SerializeField] protected float wallSlideSpeedMax = 1;
-    [SerializeField] protected float k_GroundedRadius = 0.2f; // Radius of the overlap circle to determine if grounded
+    [SerializeField] [Range(0f, 5f)] private float k_WallcheckRaduis = 0.3f;
+    [SerializeField] [Range(0f, 5f)] protected float k_GroundedRadius = 0.08f; // Radius of the overlap circle to determine if grounded
 
     /// <summary> resolved, do not touch this </summary>
     protected readonly float animationSpeedCoeff = 0.8f;
@@ -44,21 +45,20 @@ public class Walker : MonoBehaviour
     public Rigidbody2D rb;
     [HideInInspector]
     public Health health;
-    [SerializeField]
-    protected AudioClip footstepSound;
-    protected Transform m_CeilingCheck;   // A position marking where to check for ceilings
-    protected Transform m_ClimbCheck;
-    protected Transform m_GroundCheck;
+    [SerializeField] protected AudioClip footstepSound;
+    [SerializeField] protected Transform m_CeilingCheck;   // A position marking where to check for ceilings
+    [SerializeField] protected Transform m_ClimbCheck;
+    [SerializeField] protected Transform m_GroundCheck;
     protected Animator _anim;
     protected AudioSource audioSource;
     protected Targeting targeting;
 
     /// <summary>
     /// Set component fields:
-    ///     Targeting
-    ///     AudioSource
-    ///     Rigidbody2D
-    ///     Animator
+    ///     Targeting,
+    ///     AudioSource,
+    ///     Rigidbody2D,
+    ///     Animator,
     ///     Health
     /// </summary>
     protected virtual void Awake() {
@@ -143,7 +143,7 @@ public class Walker : MonoBehaviour
     }
 
     protected void Jump() {
-        rb.AddForce(Vector2.up * rb.mass * jumpForce * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        rb.AddForce(Vector2.up * rb.mass * jumpForce, ForceMode2D.Impulse);
     }
 
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
@@ -174,7 +174,7 @@ public class Walker : MonoBehaviour
     }
     public bool Wallcheck {
         get {
-            m_Climb = Physics2D.RaycastAll(m_ClimbCheck.position, transform.right, k_GroundedRadius, floorMask)
+            m_Climb = Physics2D.OverlapCircleAll(m_ClimbCheck.position, k_WallcheckRaduis, floorMask)
                 .Any(hit => hit.transform != transform && !hit.transform.IsChildOf(this.transform));
             return m_Climb;
         }
@@ -227,7 +227,7 @@ public class Walker : MonoBehaviour
             // If input is opposite to where player is facing, Flip()
             if (control_facesAimDirection) {
                 // If should face the AimDirection
-                FaceDirection(targeting.AimDirection.x);;
+                FaceDirection(targeting.AimDirection.x); ;
             } else {
                 FaceDirection(_move);
             }
@@ -241,5 +241,10 @@ public class Walker : MonoBehaviour
 
     public void PlayFootstepSound() {
         //audioSource.PlayOneShot(footstepSound, 0.5f);
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.DrawWireSphere(m_GroundCheck.position, k_GroundedRadius);
+        Gizmos.DrawWireSphere(m_ClimbCheck.position, k_WallcheckRaduis);
     }
 }
