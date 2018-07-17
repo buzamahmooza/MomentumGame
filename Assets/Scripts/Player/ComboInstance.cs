@@ -14,7 +14,6 @@ public class ComboInstance
 
     public ComboInstance() {
         HasEnded = false;
-
         SetTimer();
     }
 
@@ -31,6 +30,7 @@ public class ComboInstance
             Interval = maxTimeBetweenCombos * 1000,
             Enabled = true
         };
+
         // subscribe to the Elapsed event with an anonymous delegate function
         _timer.Elapsed += delegate {
             if (!HasEnded) {
@@ -44,7 +44,6 @@ public class ComboInstance
     public void IncrementCount() {
         if (HasEnded) { Debug.LogWarning("ComboInstance has already ended, you can't change it after that."); return; }
         Count++;
-        Debug.Log("ComboInstance counter = " + Count);
         SetTimer();
     }
 }

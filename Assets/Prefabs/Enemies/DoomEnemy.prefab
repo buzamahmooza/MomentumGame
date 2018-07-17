@@ -429,6 +429,8 @@ MonoBehaviour:
   scoreValue: 25
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
+  healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
+    type: 2}
 --- !u!114 &114472746202773746
 MonoBehaviour:
   m_ObjectHideFlags: 1

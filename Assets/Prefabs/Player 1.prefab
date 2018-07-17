@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 58658097496896834}
   m_Layer: 14
   m_Name: Pickup Magnet
-  m_TagString: Untagged
+  m_TagString: Pickup picker
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -527,7 +527,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1977801595331702}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.19, y: 0, z: 0}
+  m_LocalPosition: {x: 0.226, y: -0.039, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4468733123584784}
@@ -589,7 +589,7 @@ CircleCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_UsedByEffector: 1
+  m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
@@ -1111,10 +1111,10 @@ MonoBehaviour:
   damageAmount: 24
   deactivateOnContact: 1
   explosive: 0
-  hitStop: 0.1
+  hitStop: 0.04
   fisheye: 0
   slomoFactor: 1
-  killCoeff: 1.5
+  killCoeff: 1.98
   attackDirection: {x: 7, y: 2}
   layerMask:
     serializedVersion: 2
@@ -1263,9 +1263,10 @@ MonoBehaviour:
   control_CanDoubleJump: 1
   control_facesAimDirection: 0
   moveSpeed: 5
-  jumpForce: 400
+  jumpForce: 8
   wallSlideSpeedMax: 1
-  k_GroundedRadius: 0.2
+  k_WallcheckRaduis: 0.23
+  k_GroundedRadius: 0.08
   FacingRight: 1
   m_Grounded: 1
   m_Jump: 0
@@ -1274,9 +1275,15 @@ MonoBehaviour:
   rb: {fileID: 50305008224959004}
   health: {fileID: 0}
   footstepSound: {fileID: 8300000, guid: 1cc71bc4c10c73146b69b9356e8a9117, type: 3}
+  m_CeilingCheck: {fileID: 4893099828935228}
+  m_ClimbCheck: {fileID: 4731758866668426}
+  m_GroundCheck: {fileID: 4698830513365926}
   control_PlayerCanDoubleJump: 1
   fallMultiplier: 1
   lowJumpMultiplier: 1.5
+  momentumSlider: {fileID: 0}
+  momentumText: {fileID: 0}
+  walljumpForce: 2.2
 --- !u!114 &114699972072293624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1774,7 +1781,7 @@ AreaEffector2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1662215784886816}
-  m_Enabled: 1
+  m_Enabled: 0
   m_UseColliderMask: 1
   m_ColliderMask:
     serializedVersion: 2
