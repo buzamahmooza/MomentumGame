@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
 using InControl;
@@ -25,18 +26,25 @@ public class PlayerMove : Walker
     //Components
     private GrappleHookDJ grapple;
     private PlayerAttack playerAttack;
-    private UnityEngine.UI.Text statsText;
-
+    private Text statsText;
+    [SerializeField] private Slider momentumSlider;
+    [SerializeField] private Text momentumText;
+    [SerializeField] private float walljumpForce = 1.5f;
 
     protected override void Awake() {
         base.Awake();
         grapple = GetComponent<GrappleHookDJ>();
         playerAttack = GetComponent<PlayerAttack>();
 
-        statsText = GameObject.Find("Stats text").GetComponent<UnityEngine.UI.Text>();
+        statsText = GameObject.Find("Stats text").GetComponent<Text>();
         m_DefaultAnimSpeed = _anim.speed;
         minDashAttackSpeedThr = moveSpeed * 0.5f;
         gameObject.layer = LayerMask.NameToLayer("Player");
+
+        if (momentumSlider)
+            momentumText = momentumSlider.GetComponentInChildren<Text>();
+        momentumSlider.value = momentum;
+        momentumText.text = "Momentum: x" + momentum;
     }
 
 
@@ -99,6 +107,9 @@ public class PlayerMove : Walker
         }
         momentum += momentumAdded;
         Debug.Log("Momentum is now: " + momentumAdded);
+
+        momentumSlider.value = momentum;
+        momentumText.text = "Momentum: x" + momentum;
     }
     // TODO: when wallclimbing, if input_Y is max (1), player will not slide (stay hanging on the wall)
 
@@ -142,10 +153,13 @@ public class PlayerMove : Walker
         // Move horizontally
         rb.velocity = /*grapple.m_Flying? Vector2.zero:*/ new Vector2(_move, rb.velocity.y);
 
+        if (Wallcheck)
+            m_HasDoubleJump = true;
+
         //When to jump
         if (m_Jump) {
-            Wallcheck = false;
-            if (grapple.m_Flying) grapple.EndGrapple();
+            if (grapple.m_Flying)
+                grapple.EndGrapple();
 
             if (Grounded) {
                 m_lastGroundSpeed = _move; //Updating lastGroundSpeed
@@ -153,19 +167,21 @@ public class PlayerMove : Walker
             } else if (Wallcheck) { //If jumping and on the wall:
                 // NOTE: the player has to be facing the wall to wallslide/walljump
                 Debug.Log("Jump off wall");
-                Vector2 jumpOffWallVector = new Vector2(-FacingSign, 1).normalized;
-                Debug.DrawLine(transform.position, transform.position + new Vector3(jumpOffWallVector.x, jumpOffWallVector.y));
-                rb.velocity = jumpOffWallVector * rb.mass * jumpForce * Time.deltaTime;
+                rb.AddForce(Vector2.right * -FacingSign * walljumpForce * jumpForce * rb.mass, ForceMode2D.Impulse);
+                Jump();
                 Flip();
                 m_Jump = false;
             } else if (control_PlayerCanDoubleJump && m_HasDoubleJump) { // Double jump
                 rb.velocity = new Vector2(0, 0); // Resets vertical speed before doubleJump (prevents glitchy jumping)
-
+                print("Double jump");
                 if (!grapple.m_Flying) // if grappling, then the player get's an extra jump, otherwise mark that the doubleJump has been used
                     m_HasDoubleJump = false;
                 Jump();
             }
+
+            Wallcheck = false;
         }
+
         if (!Wallcheck) {
             ModifyGravity();
         }
@@ -217,15 +233,14 @@ public class PlayerMove : Walker
 
     private void Debug_UpdateStats() {
         statsText.text =
-              "\nHSpeed: " + rb.velocity.x
-            + "\nVSpeed: " + rb.velocity.y
+              "\nvelocity: " + rb.velocity
             + "\nHSpeed(Anim): " + _anim.GetFloat("Speed")
             + "\nVSpeed(Anim): " + _anim.GetFloat("VSpeed")
             + "\nlastGroundSpeed: " + m_lastGroundSpeed
             + "\nBlockInput: " + BlockMoveInput
             + "\nDoublejump available? " + m_HasDoubleJump
-            + "\nis Wallcheck " + Wallcheck
-            + "Grounded: " + Grounded
+            + "\nWallcheck: " + Wallcheck
+            + "\nGrounded: " + Grounded
             + "\nJump: " + m_Jump
             + "\nGrappling: " + grapple.m_Flying;
     }
