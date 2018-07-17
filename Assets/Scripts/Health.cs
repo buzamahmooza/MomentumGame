@@ -133,6 +133,7 @@ public class Health : MonoBehaviour
             Destroy(gameObject);
     }
 
+    /// <summary> Transition back to the original color </summary>
     private void LerpColor() {
         if (!rend.color.Equals(originalColor))
             rend.color = Color.Lerp(rend.color, originalColor, Time.deltaTime * 10);
@@ -157,12 +158,13 @@ public class Health : MonoBehaviour
     public void RegenerateHealth() {
         RegenerateHealth(Mathf.RoundToInt(regenPercent / 100 * maxHealth));
     }
-    /// <summary>Add health</summary>
+    /// <summary> Add health </summary>
     /// <param name="addedHealth"></param>
     public void RegenerateHealth(int addedHealth) {
         // add regenPercent but not exceding maxHealth
         CurrentHealth = Mathf.Clamp(CurrentHealth + addedHealth, 0, maxHealth);
         CheckHealth();
+        rend.color = Color.green;
     }
 
     private void InitHealthBar() {

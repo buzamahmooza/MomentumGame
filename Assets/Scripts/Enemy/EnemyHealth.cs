@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = System.Random;
 
 [RequireComponent(typeof(Enemy))]
 public class EnemyHealth : Health
@@ -10,6 +11,7 @@ public class EnemyHealth : Health
     [SerializeField] private GameObject floatingTextPrefab;  // assigned in inspector
     private GameObject player;
     private EnemyAI enemyAI;
+    [SerializeField] private GameObject healthPickup;
 
     protected override void Awake() {
         base.Awake();
@@ -66,6 +68,19 @@ public class EnemyHealth : Health
         }
 
         gameObject.layer = LayerMask.NameToLayer("EnemyIgnore");
+        // explode a random amount of pickups
+        if (healthPickup) {
+            int numberOfPickupsToSpawn = UnityEngine.Random.Range(1, 5);
+            while (numberOfPickupsToSpawn-- > 0) {
+                var pickupInstance = Instantiate(healthPickup, transform.position, Quaternion.identity);
+                var pickupRb = pickupInstance.GetComponent<Rigidbody2D>();
+                var randomVector2 = UnityEngine.Random.insideUnitCircle; randomVector2.y = Mathf.Abs(randomVector2.y);
+                pickupRb.AddForce(randomVector2, ForceMode2D.Impulse);
+                pickupRb.gravityScale = 0.5f;
+            }
+
+            print("numberOfPickupsToSpawn = " + numberOfPickupsToSpawn);
+        }
 
         // disable colliders (so it would go through the floor and fall out of the map)
         base.Die();

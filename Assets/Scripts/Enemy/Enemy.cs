@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 // Note: Object must be spawned facing to the Right!
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(EnemyHealth))]
 public class Enemy : Walker
 {
     [SerializeField] protected AudioClip attackSound;
@@ -74,11 +74,6 @@ public class Enemy : Walker
         _anim.SetTrigger("Attack");
     }
 
-    public void OnGrapple() {
-        //TODO: make IGrappleable interface
-        timeSinceLastAttack = 0;
-    }
-
     private void MoveToTarget(Vector3 targetPos) {
         if (enemyAI.isActiveAndEnabled && enemyAI != null)
             enemyAI.MoveAlongPath();
@@ -102,7 +97,7 @@ public class Enemy : Walker
         }
         set { m_InAttackRange = value; }
     }
-    // TODO: replace this property with a bool field
+
     public bool IsGrappled { get { return playerGrappleScript != null && gameObject == playerGrappleScript.grabbedObj; } }
 
     /// <summary>
