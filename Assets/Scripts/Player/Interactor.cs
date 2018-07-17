@@ -11,6 +11,7 @@ public class Interactor : MonoBehaviour
 {
     [SerializeField] private Text promptText;
     [SerializeField] private LayerMask interactionMask;
+    private IEnumerator disableTextCoroutine;
 
     private void Awake() {
         if (!promptText) promptText = GameObject.Find("Interaction prompt text").GetComponent<Text>();
@@ -25,7 +26,12 @@ public class Interactor : MonoBehaviour
 
         promptText.enabled = true;
         promptText.text = interactable.GetPrompt();
-        StartCoroutine(WaitAndDisableText(3));
+
+        // disable the previouse coroutine, this check prevents flickering text
+        if (disableTextCoroutine != null) StopCoroutine(disableTextCoroutine);
+        disableTextCoroutine = WaitAndDisableText(3);
+        StartCoroutine(disableTextCoroutine);
+
         if (CrossPlatformInputManager.GetButtonDown("Fire1") || InputManager.ActiveDevice.Action3.IsPressed) {
             interactable.OnInteract();
             DisableText();
