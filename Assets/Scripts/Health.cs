@@ -19,6 +19,7 @@ public class Health : MonoBehaviour
     [SerializeField] [Range(0, 100000f)] protected int maxHealth = 100;
     [SerializeField] [Range(0, 100)] protected float fallDamageModifier = 0.5f;
     [SerializeField] protected AudioClip hurtAudioClip, deathAudioClip;
+    [SerializeField] public GameObject floatingTextPrefab;  // assigned in inspector
 
     [SerializeField] private Color damageColor = Color.red;
     [SerializeField] private float fallDamageThreshold = 10;
@@ -63,6 +64,14 @@ public class Health : MonoBehaviour
         LerpColor(); //In case the color flashes red, it has to go back to normal
     }
 
+    protected void CreateFloatingDamage(int damageValue) {
+        Debug.Assert(this.floatingTextPrefab != null);
+        GameObject floatingDamageInstance = Instantiate(this.floatingTextPrefab, transform.position, Quaternion.identity);
+        FloatingText theFloatingText = floatingDamageInstance.GetComponent<FloatingText>();
+        theFloatingText.InitBounceDmg(damageValue);
+        theFloatingText.text.color = Color.Lerp(Color.yellow, Color.red, (float)damageValue / maxHealth);
+    }
+
     public virtual void TakeDamage(int damageAmount) {
         if (IsDead)
             return;
@@ -72,6 +81,7 @@ public class Health : MonoBehaviour
         CurrentHealth -= damageAmount;
         UpdateHealthBar();
         CheckHealth();
+        if (floatingTextPrefab) CreateFloatingDamage(damageAmount);
     }
 
     /// <summary> Plays the hurt animation (if any), color flashes red, plays hurt sound. </summary>
