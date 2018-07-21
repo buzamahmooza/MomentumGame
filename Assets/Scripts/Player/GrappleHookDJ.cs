@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
 
+[RequireComponent(typeof(Shooter))]
 public class GrappleHookDJ : MonoBehaviour
 {
     // Terms:   When I say "grapple", "flying" I mean that the player should grapple toward the object.
@@ -78,7 +79,7 @@ public class GrappleHookDJ : MonoBehaviour
     }
 
     private void FindTarget() {
-        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, aimInput.AimDirection, maxGrappleRange, mask)) {
+        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, playerMove.CrossPlatformInput, maxGrappleRange, mask)) {
             bool grappleConditions = hit && hit.collider != null &&
                                      hit.collider.gameObject != gameObject;
             bool pullConditions = hit.collider.gameObject.GetComponent<Health>() != null &&
@@ -151,7 +152,7 @@ public class GrappleHookDJ : MonoBehaviour
         var otherRigidbody = grabbedObj.GetComponent<Rigidbody2D>();
         joint.connectedBody = otherRigidbody;
 
-        if (otherRigidbody) {
+        if (otherRigidbody && !otherRigidbody.bodyType.Equals(RigidbodyType2D.Static)) {
             // if player is facing a direction other than that of the otherRigidbody, Flip()
             bool otherIsToTheRight = otherRigidbody.gameObject.transform.position.x > transform.position.x;
             if (otherIsToTheRight ^ playerMove.FacingRight) {

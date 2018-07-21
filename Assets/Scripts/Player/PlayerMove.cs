@@ -13,26 +13,30 @@ using Pathfinding;
 
 public class PlayerMove : Walker
 {
+    [SerializeField] GameObject arrow;
     [SerializeField] private bool control_PlayerCanDoubleJump = true;
 
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
+    [SerializeField] private float walljumpForce = 1.5f;
 
     protected float momentum = 1;
-
-    /// <summary> Storing the default animation speed, so that we can go back to it after changing it. </summary>
-    private float minDashAttackSpeedThr; // the minimum horizontal speed that the player should be moving in to perform a dash attack
+    /// <summary>
+    /// the minimum horizontal speed that the player should be moving in to perform a dash attack
+    /// </summary>
+    private float minDashAttackSpeedThr;
 
     //Components
     private GrappleHookDJ grapple;
     private PlayerAttack playerAttack;
     private Text statsText;
+
     [SerializeField] private Slider momentumSlider;
     [SerializeField] private Text momentumText;
-    [SerializeField] private float walljumpForce = 1.5f;
 
     protected override void Awake() {
         base.Awake();
+
         grapple = GetComponent<GrappleHookDJ>();
         playerAttack = GetComponent<PlayerAttack>();
 
@@ -40,6 +44,8 @@ public class PlayerMove : Walker
         m_DefaultAnimSpeed = _anim.speed;
         minDashAttackSpeedThr = moveSpeed * 0.5f;
         gameObject.layer = LayerMask.NameToLayer("Player");
+
+        if (!arrow) arrow = transform.Find("Arrow").gameObject;
 
         if (momentumSlider)
             momentumText = momentumSlider.GetComponentInChildren<Text>();
@@ -76,7 +82,16 @@ public class PlayerMove : Walker
         Debug_UpdateStats();
 
         UpdateAnimatorParams();
+
+        RotateArrow();
     }
+
+    private void RotateArrow() {
+        Vector2 d = targeting.AimDirection * FacingSign;
+        var angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
+        arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+    }
+
 
     public override void Flip() {
         base.Flip();
@@ -110,6 +125,14 @@ public class PlayerMove : Walker
 
         momentumSlider.value = momentum;
         momentumText.text = "Momentum: x" + momentum;
+
+        //creating momentum floatingText
+        if (health.floatingTextPrefab) {
+            GameObject floatingDamageInstance = Instantiate(health.floatingTextPrefab, transform.position, Quaternion.identity);
+            FloatingText floatingText = floatingDamageInstance.GetComponent<FloatingText>();
+            floatingText.Init(string.Format("+{0}mntm", momentumAdded), momentumText.transform);
+            floatingText.text.color = new Color(0, 255, 255, 255);
+        }
     }
     // TODO: when wallclimbing, if input_Y is max (1), player will not slide (stay hanging on the wall)
 
@@ -119,17 +142,16 @@ public class PlayerMove : Walker
     private void Move() {
         if (_anim.GetBool("DashAttack"))
             return;
-        var crossPlatformInput = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
         if (!BlockMoveInput)
             if (control_AirControl || Grounded)
-                _move = crossPlatformInput.x * moveSpeed * momentum;
+                _move = CrossPlatformInput.x * moveSpeed * momentum;
 
         // If reached jump peak
         if (Mathf.Approximately(rb.velocity.y, 0) && !Grounded)
             m_ReachedJumpPeak = true;
 
         // If on the wall
-        if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0) {
+        if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0 && !_anim.GetBool("Slamming")) {
             // On wall and falling
             if (rb.velocity.y < 0) {
                 m_HasDoubleJump = true;
@@ -137,7 +159,7 @@ public class PlayerMove : Walker
                 // limit wallslide speed
                 if (rb.velocity.y < -wallSlideSpeedMax) {
                     rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeedMax);
-                } else if (crossPlatformInput.y > 0.5f) {
+                } else if (CrossPlatformInput.y > 0.5f) {
                     print("trying to resist wall slide");
                 }
             }
@@ -184,6 +206,12 @@ public class PlayerMove : Walker
 
         if (!Wallcheck) {
             ModifyGravity();
+        }
+    }
+
+    public Vector2 CrossPlatformInput {
+        get {
+            return new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
         }
     }
 

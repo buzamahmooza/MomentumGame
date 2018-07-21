@@ -124,6 +124,8 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 9af2c1629b799694c87803b327e6fd73, type: 3}
   magnetSmoother: 0.05
   regenAmount: 20
+  floatingHealthText: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
+    type: 2}
 --- !u!212 &212494364340821704
 SpriteRenderer:
   m_ObjectHideFlags: 1

@@ -89,16 +89,17 @@ public class Hitbox : MonoBehaviour
 
             // do attack stuff
             if (otherHealth) otherHealth.TakeDamage(Mathf.RoundToInt(damageAmount * speedMult));
-            bool killedOther = !wasDead && otherHealth.IsDead;
+            bool isFinalBlow = !wasDead && (otherHealth && otherHealth.IsDead);
 
             // invoke the hit event
-            if (OnHitEvent != null) OnHitEvent(other.gameObject, speedMult, killedOther);
+            if (otherHealth && !otherHealth.IsDead)
+                if (OnHitEvent != null) OnHitEvent(other.gameObject, speedMult, isFinalBlow);
 
             if (attackSound) audioSource.PlayOneShot(attackSound);
             if (hitStop > 0) {
                 var seconds = hitStop * speedMult;
 
-                if (killedOther) seconds *= killCoeff;
+                if (isFinalBlow) seconds *= killCoeff;
                 GameManager.TimeManager.DoHitStop(seconds);
             }
 
@@ -108,7 +109,7 @@ public class Hitbox : MonoBehaviour
 
             if (slomoFactor < 1) {
                 var theSlowdownFactor = slomoFactor / speedMult;
-                if (killedOther) theSlowdownFactor /= killCoeff;
+                if (isFinalBlow) theSlowdownFactor /= killCoeff;
                 GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
             }
 

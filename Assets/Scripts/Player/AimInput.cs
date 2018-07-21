@@ -7,8 +7,6 @@ using InControl;
 [RequireComponent(typeof(PlayerMove))]
 public class AimInput : Targeting
 {
-
-    public GameObject arrow;
     public float mouseMoveThreshold = 0.3f,
         JoystickThreshold = 0.2f;
     public bool debugMousePosition = false;

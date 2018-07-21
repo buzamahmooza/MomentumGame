@@ -59,7 +59,7 @@ public abstract class Pickup : MonoBehaviour
             return;
 
         // use the GameManager to play the sound since the pickup will be destroyed
-        GameManager.AudioSource.PlayOneShot(audioClip);
+        GameManager.AudioSource.PlayOneShot(audioClip, 0.7f);
         picker = col.gameObject;
         OnPickup(picker);
 

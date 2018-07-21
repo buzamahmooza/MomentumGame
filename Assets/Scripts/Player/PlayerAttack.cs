@@ -73,7 +73,7 @@ public class PlayerAttack : MonoBehaviour
         hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
         hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
     }
-    private void OnHitHandler(GameObject go, float speedMult, bool killedOther) {
+    private void OnHitHandler(GameObject go, float speedMult, bool isFinalBlow) {
         if (currentCombo == null || currentCombo.HasEnded) {
             currentCombo = new ComboInstance();
         }
@@ -82,7 +82,8 @@ public class PlayerAttack : MonoBehaviour
 
 
     private void Update() {
-        if (currentCombo != null) GameManager.ComboManager.DisplayCombo(currentCombo.HasEnded ? 0 : currentCombo.Count);
+        if (currentCombo != null)
+            GameManager.ComboManager.DisplayCombo(currentCombo.HasEnded ? 0 : currentCombo.Count);
 
         // Get input if there is no action to disturb
         if (!uppercut && !punch && !slam) {
@@ -93,6 +94,8 @@ public class PlayerAttack : MonoBehaviour
             if (!_anim.GetBool("DashAttack")) {
                 // If airborn and pressing down, SlamAttack
                 if (AttackInput && input.y <= -0.5f && Mathf.Abs(input.x) <= 0.5) {
+                    if (playerMove.Grounded || rb.velocity.y >= -0.5f) // if not already falling, jump
+                        playerMove.Jump();
                     slam = true;
                 }
                 // If DashAttack conditions are met, DashAttack!
@@ -115,8 +118,9 @@ public class PlayerAttack : MonoBehaviour
         UpdateAnimatorParams();
 
         //When landing a slam on the ground, go back to normal animation speed
-        if (_anim.GetBool("Slamming") && playerMove.m_Grounded)
+        if (_anim.GetBool("Slamming") && playerMove.m_Grounded) {
             _anim.speed = animSpeed;
+        }
     }
 
     private static bool AttackInput {

@@ -38,7 +38,7 @@ public class BulletScript : MonoBehaviour
     }
 
     private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject == parent) // prevent damaging the shooter
+        if (transform.IsChildOf(other.gameObject.transform)) // prevent damaging the attacker
             return;
 
         Health otherHealth = other.gameObject.GetComponent<Health>();

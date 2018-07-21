@@ -1,22 +1,20 @@
 ﻿using Pathfinding.Util;
 using UnityEngine;
 
-public class PlayerShoot : MonoBehaviour
+public class Shooter : MonoBehaviour
 {
-    [SerializeField] GameObject arrow;
     /// <summary>
     /// A the amount force of the kickback
     /// this times the mass will be the force of the kickback
     /// </summary>
-    [SerializeField] float kickbackForceMplier = 10;
+    [SerializeField] float kickbackForceMplier = 5;
 
-    [SerializeField] AimInput aimInput;
     [SerializeField]
-    WeaponStats CurrentWeaponStats = new WeaponStats(
+    public WeaponStats CurrentWeaponStats = new WeaponStats(
         projectilePrefab: null,
-        projectileSpeed: 15,
-        rpm: 50,
-        cameraKickback: 25,
+        projectileSpeed: 7,
+        rpm: 300,
+        cameraKickback: 0.1f,
         wiggleShootOffset: 0.12f,
         randomShootAngle: 15,
         damage: 7,
@@ -27,16 +25,15 @@ public class PlayerShoot : MonoBehaviour
     float m_TimeBetweenShots;
     float m_TimeSinceLastShot = 0;
     AudioSource audioSource;
-    PlayerMove playerMove;
-    CameraKickback cameraKickback;
     Rigidbody2D rb;
+    private Targeting targeting;
 
     [System.Serializable]
     public struct WeaponStats
     {
         public GameObject projectilePrefab;
         public float projectileSpeed; //15
-        [Range(0, 1000)]
+        [Range(1, 10000)]
         public float rpm; //50
         public int damage; //25
         [Range(0, 0.5f)]
@@ -68,20 +65,10 @@ public class PlayerShoot : MonoBehaviour
         }
     }
 
-    private void Awake() {
-        playerMove = GetComponent<PlayerMove>();
+    protected virtual void Awake() {
         audioSource = GetComponent<AudioSource>();
-        if (!aimInput) aimInput = GetComponent<AimInput>();
         rb = GetComponent<Rigidbody2D>();
-        cameraKickback = Camera.main.GetComponent<CameraKickback>();
-        if (arrow == null) arrow = transform.Find("Arrow Parent").gameObject;
-
-    }
-    private void Update() {
-        if (Input.GetMouseButton(0) || Input.GetAxisRaw("RightTrigger") > 0.5f || Input.GetKey(KeyCode.LeftControl) || AimInput.RightJoystick.magnitude > 0.1f) {
-            Vector2 shootDirection = aimInput.AimDirection;
-            ShootIfAllowed(shootDirection);
-        }
+        targeting = GetComponent<Targeting>();
     }
 
     public void ShootIfAllowed(Vector2 shootDirection) {
@@ -95,27 +82,19 @@ public class PlayerShoot : MonoBehaviour
         FixShootTiming();
     }
 
-    private void LateUpdate() {
-        RotateArrow();
-    }
-
-    private void RotateArrow() {
-        Vector2 d = aimInput.AimDirection * playerMove.FacingSign;
-        var angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
-        arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
-    }
-
-    private void FixShootTiming() {
+    public void FixShootTiming() {
         m_TimeBetweenShots = Time.fixedDeltaTime * 360.0f / CurrentWeaponStats.rpm;
         m_TimeSinceLastShot += Time.fixedDeltaTime;
     }
 
-    private void Shoot(Vector2 shootDirection) {
+    public virtual void Shoot(Vector2 shootDirection) {
+        shootDirection.Normalize();
         float randomOffset = Random.Range(-CurrentWeaponStats.wiggleShootOffset, CurrentWeaponStats.wiggleShootOffset);
         Vector2 positionWithWiggle = (new Vector2(-shootDirection.y, shootDirection.x)).normalized * randomOffset;
         Vector2 shootPosition = (Vector2)(shootTransform.position) + positionWithWiggle;
 
-        audioSource.PlayOneShot(CurrentWeaponStats.shootSound, Random.Range(0.7f, 1.0f));
+        if (audioSource) audioSource.PlayOneShot(CurrentWeaponStats.shootSound, Random.Range(0.7f, 1.0f));
+        else Debug.LogError("Audio source is not assigned!!");
 
         // Create simple rotation which looks where the player is aiming in addition to a wiggle amount of euler angles
         // How? IDK, just leave it, it works
@@ -131,7 +110,6 @@ public class PlayerShoot : MonoBehaviour
         bulletRb.velocity = Quaternion.Euler(0, 0, randomRotation) * shootDirection * CurrentWeaponStats.projectileSpeed;
 
         rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
-        if (cameraKickback) cameraKickback.DoKickback(-shootDirection * CurrentWeaponStats.cameraKickback);
     }
 
     private void SetWeaponStats(WeaponStats newWeaponStats) {
@@ -140,8 +118,8 @@ public class PlayerShoot : MonoBehaviour
 
     private void OnDrawGizmos() {
         // draw the randomShootAngle lines
-        if (!aimInput) return;
-        var shootDirection = aimInput.AimDirection;
+        if (!targeting) return;
+        var shootDirection = targeting.AimDirection.normalized;
         var positionWithWiggle = new Vector3(-shootDirection.y, shootDirection.x).normalized * CurrentWeaponStats.wiggleShootOffset;
         Vector3 shootPos = shootTransform.position;
         Gizmos.DrawLine(shootPos - positionWithWiggle, Quaternion.Euler(0, 0, -CurrentWeaponStats.randomShootAngle) * shootDirection + shootPos - positionWithWiggle);

@@ -15,7 +15,7 @@ public class Walker : MonoBehaviour
     [SerializeField] protected LayerMask floorMask;
     [SerializeField] protected bool control_AirControl = true;
     [SerializeField] protected bool control_CanDoubleJump = true;
-    [SerializeField] protected bool control_facesAimDirection = false;
+    [SerializeField] protected bool control_facesAimDirection = true;
 
     [SerializeField] protected float moveSpeed = 20;
     [SerializeField] protected float jumpForce = 8;
@@ -142,7 +142,7 @@ public class Walker : MonoBehaviour
         }
     }
 
-    protected void Jump() {
+    public void Jump() {
         rb.AddForce(Vector2.up * rb.mass * jumpForce, ForceMode2D.Impulse);
     }
 
@@ -195,7 +195,7 @@ public class Walker : MonoBehaviour
 
     protected virtual void OnCollisionEnter2D(Collision2D collision) {
         // Play footstep sound, if player falls fast enough
-        if (rb.velocity.y * Time.deltaTime <= 0) {
+        if (rb.velocity.y * Time.deltaTime < 2) {
             audioSource.PlayOneShot(footstepSound, 0.5f);
         }
     }
@@ -222,11 +222,8 @@ public class Walker : MonoBehaviour
     }
     /// <summary> Uses the <code>FacingRight</code> and m_facesAimDirection to Flip the player's direction </summary>
     protected virtual void FaceAimDirection() {
-        // If Player should face the direction of movement,
         if (Grounded || control_AirControl) {
-            // If input is opposite to where player is facing, Flip()
-            if (control_facesAimDirection) {
-                // If should face the AimDirection
+            if (control_facesAimDirection) { // If should face the AimDirection
                 FaceDirection(targeting.AimDirection.x); ;
             } else {
                 FaceDirection(_move);

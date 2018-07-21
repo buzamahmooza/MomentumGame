@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CameraShake : MonoBehaviour
 {
@@ -31,17 +33,19 @@ public class CameraShake : MonoBehaviour
 
     // Update is called once per frame
     private void Jitter(Vector3 influenctVec) {
+        if (m_JitterDuration < 0.1f) {
+            ResetFields();
+            return;
+        }
+
         // Create a target position to aim for
-        m_TargetPos = influenctVec;
+        m_TargetPos = Vector3.ClampMagnitude(influenctVec, 100);
         // Smoothly go to this target position
         transform.localPosition = Vector3.Lerp(transform.localPosition, m_TargetPos, smooth / m_JitterDuration);
-
         // Decrease jitterFactor over time
         m_JitterDuration -= Time.deltaTime;
         // Make sure jitterFactor reaches zero
-        if (m_JitterDuration < 0.1f) {
-            ResetFields();
-        }
+
     }
 
     private void ResetFields() {
@@ -50,13 +54,17 @@ public class CameraShake : MonoBehaviour
         transform.localPosition = startingLocalPosition;
     }
 
-    public void DoJitter(float jitterDurationElement, float jitterFactor) {
+    public void DoJitter(float newJitterDuration, float jitterFactor) {
+        if (float.IsNaN(newJitterDuration)) {
+            newJitterDuration = 0.15f;
+            Debug.LogError("jitterDuration passed isNaN, defaulting to a value of " + newJitterDuration);
+        }
         if (m_Jitter) {
             // ResetFields();
         } else {
             //Debug.Log("Sart jittering");
             m_Jitter = true;
-            m_JitterDuration = jitterDurationElement;
+            m_JitterDuration = newJitterDuration;
             m_JitterRange = jitterFactor;
         }
     }
