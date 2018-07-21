@@ -14,40 +14,36 @@ public class EnemyAI : Targeting
     private Vector3 targetPosition;
 
     public float updateDelay = 1f;
-
-    private Seeker seeker;
-    private Rigidbody2D rb;
-
     //The calculated path
     public Path path;
 
-    //The AI's speed per second
+    [SerializeField] private float stopDist = 2f;
+    [SerializeField] private bool followOnGround = true;
 
-    private bool pathIsEnded = false;
+    public LayerMask floorMask;
+    public Transform m_GroundCheck;
 
     //The max distance from the AI to a waypoint for it to continue to the next waypoint
     public float nextWaypointDistance = 3;
 
+    // experimental
+    [SerializeField] private float heightToJump = 1;
+    [SerializeField] private float angleToJump = 45;
+
+    private bool pathIsEnded = false;
     //The waypoint we are currently moving towards
     private int currentWaypoint = 0;
+    private bool m_Grounded;
+    private readonly float k_GroundedRadius = .2f;
 
-    [SerializeField] private float stopDist = 2f;
+    private Vector3 moveDirection;
 
-    public bool followOnGround;
+    private Seeker seeker;
+    private Rigidbody2D rb;
     private Enemy enemyScript;
     private Targeting targeting;
     private Animator anim;
 
-    private bool m_Grounded;
-    public LayerMask floorMask;
-    public Transform m_GroundCheck;
-    private float k_GroundedRadius = .2f;
-
-    // experimental
-    public float heightToJump = 1;
-    public float angleToJump = 45;
-
-    private Vector3 moveDirection;
 
     protected virtual void Awake() {
         targeting = GetComponent<Targeting>();
@@ -57,7 +53,6 @@ public class EnemyAI : Targeting
         enemyScript = GetComponent<Enemy>();
         m_GroundCheck = transform.Find("GroundCheck");
     }
-
     protected virtual void Start() {
         if (!TargetExists()) return;
 
@@ -66,23 +61,58 @@ public class EnemyAI : Targeting
         //Start a new path to the targetPosition, return the result to the OnPathComplete function
         seeker.StartPath(transform.position, targetPosition, OnPathComplete);
 
-        StartCoroutine("UpdatePath");
+        StartCoroutine(UpdatePath());
     }
 
+
+    /// <summary>
+    /// if (!m_Attacking && !isDead) ApproachTarget();
+    /// </summary>
     public void MoveAlongPath() {
         if (!enemyScript.m_Attacking && !enemyScript.health.IsDead) {
             ApproachTarget();
         }
     }
+    private void ApproachTarget() {
+        bool result = CalculateWaypoint();
+        if (!result) { // if result is false, just stop moving
+            print("CalculateWaypoint result is FALSE :(");
+            moveDirection = Vector3.zero;
+            if (anim) anim.SetBool("Walk", false);
+            return;
+        }
 
+        Vector3 dir = moveDirection * Time.fixedDeltaTime;
+
+        Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
+        Debug.DrawLine(transform.position, Target.position, Color.red);
+
+        print(name + " EnemyAI moving...");
+        enemyScript.Move(dir, false);
+
+        // Jump
+        //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);
+        //if (nextPointAngle < angleToJump && Grounded) {}
+    }
+
+    /// <summary>
+    /// Returns false if target is null or too close
+    /// </summary>
+    /// <returns></returns>
     public bool CalculateWaypoint() {
-        CheckTarget();
-        if (Target == null) return false;
+        if (!TargetExists()) {
+            Debug.LogWarning(name + " Target is null");
+            return false;
+        }
+
         targetPosition = Target.position;
 
 
         //We have no path to move after yet
-        if (path == null) return false;
+        if (path == null) {
+            Debug.LogWarning(name + " path == null");
+            return false;
+        }
 
         // If path ended
         if (currentWaypoint >= path.vectorPath.Count) {
@@ -95,9 +125,11 @@ public class EnemyAI : Targeting
         }
         pathIsEnded = false;
 
-        // If not yet reached
-        if ((stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists()))
+        // If too close
+        if (stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists()) {
+            Debug.Log(name + " reached stopping distance");
             return false;
+        }
 
         if (anim != null) anim.SetBool("Walk", true);
         Vector3 nextWaypoint = path.vectorPath[currentWaypoint] - transform.position;
@@ -112,35 +144,6 @@ public class EnemyAI : Targeting
         return true;
     }
 
-    private void CheckTarget() {
-        Transform tr = targeting.Target;
-        if (tr != null) Target = tr.transform;
-
-        //GameObject go = GameObject.FindGameObjectWithTag("Player");
-        //if (go != null) Target = go.transform;
-    }
-
-    private void ApproachTarget() {
-        bool result = CalculateWaypoint();
-        if (!result) { // if result is false, just stop moving
-            moveDirection = Vector3.zero;
-            if (anim != null) anim.SetBool("Walk", false);
-            return;
-        }
-
-        Vector3 dir = moveDirection * Time.fixedDeltaTime;
-
-        Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
-        Debug.DrawLine(transform.position, Target.position, Color.red);
-
-        enemyScript.Move(dir, false);
-
-        // Jump
-        //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);
-        //if (nextPointAngle < angleToJump && Grounded) {
-        //}
-    }
-
     private IEnumerator UpdatePath() {
         if (TargetExists()) {
             targetPosition = Target.position;
@@ -148,9 +151,8 @@ public class EnemyAI : Targeting
             //Start a new path to the targetPosition, return the result to the OnPathComplete function
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
 
-            if (updateDelay > 0)
-                yield return new WaitForSeconds(updateDelay);
-            StartCoroutine("UpdatePath");
+            if (updateDelay > 0) yield return new WaitForSeconds(updateDelay);
+            StartCoroutine(UpdatePath());
         }
     }
 
@@ -161,16 +163,17 @@ public class EnemyAI : Targeting
         }
     }
 
-    private void OnDrawGizmosSelected() {
-        Gizmos.color = enemyScript && enemyScript.IsAware ? Color.red : Color.blue;
-        Gizmos.DrawWireSphere(transform.position, stopDist);
-    }
     /// <summary>
-    /// 
+    /// returns true if there is a Target
     /// </summary>
     /// <returns>returns true if there is a Target</returns>
     private bool TargetExists() {
-        CheckTarget();
+        Transform tr = targeting.Target;
+        if (tr != null) Target = tr.transform;
+
+        //GameObject go = GameObject.FindGameObjectWithTag("Player");
+        //if (go != null) Target = go.transform;
+
         if (Target == null) {
             Debug.Log("Target is null");
             return false;
@@ -188,5 +191,10 @@ public class EnemyAI : Targeting
             return m_Grounded;
         }
         set { m_Grounded = value; }
+    }
+
+    private void OnDrawGizmosSelected() {
+        Gizmos.color = enemyScript && enemyScript.IsAware ? Color.red : Color.blue;
+        Gizmos.DrawWireSphere(transform.position, stopDist);
     }
 }
