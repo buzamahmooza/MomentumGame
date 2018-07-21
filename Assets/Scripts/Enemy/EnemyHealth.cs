@@ -8,7 +8,6 @@ using Random = System.Random;
 public class EnemyHealth : Health
 {
     [SerializeField] [Range(0, 100)] private int scoreValue = 0;  // assigned in inspector
-    [SerializeField] private GameObject floatingTextPrefab;  // assigned in inspector
     private GameObject player;
     private EnemyAI enemyAI;
     [SerializeField] private GameObject healthPickup;
@@ -18,28 +17,14 @@ public class EnemyHealth : Health
         player = GameManager.Player;
         enemyAI = GetComponent<EnemyAI>();
     }
-
-    public override void TakeDamage(int damageAmount) {
-        if (IsDead) return;
-        base.TakeDamage(damageAmount);
-        CreateFloatingDamage(damageAmount);
-    }
-
+    
     private void FixedUpdate() {
         // just destroy the enemy if he's way too far from the player
         if (Vector3.Distance(transform.position, player.transform.position) > 300) {
             Destroy(this.gameObject);
         }
     }
-
-    private void CreateFloatingDamage(int damageValue) {
-        Debug.Assert(this.floatingTextPrefab != null);
-        GameObject floatingDamageInstance = (Instantiate(this.floatingTextPrefab, transform.position, Quaternion.identity) as GameObject);
-        FloatingText theFloatingText = floatingDamageInstance.GetComponent<FloatingText>();
-        theFloatingText.InitBounceDmg(damageValue);
-        theFloatingText.text.color = Color.Lerp(Color.yellow, Color.red, (float)damageValue / maxHealth);
-    }
-
+    
     private void CreateFloatingScore(int scoreVal) {
         Debug.Assert(floatingTextPrefab != null);
         Instantiate(floatingTextPrefab, transform.position, Quaternion.identity)

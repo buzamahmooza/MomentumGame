@@ -25,6 +25,7 @@ GameObject:
   - component: {fileID: 70269287009526224}
   - component: {fileID: 114104236483136426}
   - component: {fileID: 114619549599589704}
+  - component: {fileID: 114968233174463054}
   - component: {fileID: 114034303712787916}
   - component: {fileID: 114952421491946764}
   - component: {fileID: 82150044045662326}
@@ -443,7 +444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.5441177, g: 0.5441177, b: 0.5441177, a: 1}
+  m_Color: {r: 0.31617647, g: 0.31617647, b: 0.31617647, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -471,13 +472,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   control_AirControl: 1
   control_CanDoubleJump: 1
   control_facesAimDirection: 0
   moveSpeed: 20
   jumpForce: 300
   wallSlideSpeedMax: 1
+  k_WallcheckRaduis: 0.3
   k_GroundedRadius: 0.2
   FacingRight: 1
   m_Grounded: 1
@@ -487,6 +489,9 @@ MonoBehaviour:
   rb: {fileID: 0}
   health: {fileID: 0}
   footstepSound: {fileID: 0}
+  m_CeilingCheck: {fileID: 0}
+  m_ClimbCheck: {fileID: 0}
+  m_GroundCheck: {fileID: 0}
   attackSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
   awarenessRadius: 10
   attackRadius: 5.2
@@ -497,10 +502,8 @@ MonoBehaviour:
   enemyBullet: {fileID: 1260665002527420, guid: e0e79e347687c1d408608d622972b3ab,
     type: 2}
   shootTransform: {fileID: 4518945598912932}
-  burstFireRate: 500
-  wiggleShootOffset: 0.4
-  projectileSpeed: 3.5
   burstSize: 7
+  shooter: {fileID: 114968233174463054}
 --- !u!114 &114627290848340368
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -577,6 +580,29 @@ MonoBehaviour:
     tagsChange: -1
     tagsSet: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+--- !u!114 &114968233174463054
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1051513968227620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b621068f0a90b041918038bb19da1a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kickbackForceMplier: 10
+  CurrentWeaponStats:
+    projectilePrefab: {fileID: 1260665002527420, guid: e0e79e347687c1d408608d622972b3ab,
+      type: 2}
+    projectileSpeed: 2
+    rpm: 437
+    damage: 7
+    wiggleShootOffset: 0.12
+    randomShootAngle: 15
+    cameraKickback: 0
+    shootSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
+  shootTransform: {fileID: 4518945598912932}
 --- !u!114 &114985375992028686
 MonoBehaviour:
   m_ObjectHideFlags: 1

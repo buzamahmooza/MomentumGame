@@ -9,7 +9,7 @@ public class Enemy : Walker
 {
     [SerializeField] protected AudioClip attackSound;
     [SerializeField] [Range(1, 50)] protected float awarenessRadius = 10;
-    [SerializeField] [Range(1, 50)] protected float attackRadius = 5;
+    [SerializeField] [Range(1, 50)] protected float attackRange = 5;
     [SerializeField] [Range(30, 360)] public float visionAngle = 100;
     [SerializeField] protected float timeBetweenAttacks = 2f;
     [SerializeField] protected float movementSpeed = 2;
@@ -18,8 +18,8 @@ public class Enemy : Walker
     protected float timeSinceLastAttack = 0;
     protected bool m_CanAttack = true;
 
-    private bool m_Aware = false;
-    private bool m_InAttackRange = false;
+    protected bool m_Aware = false;
+    protected bool m_InAttackRange = false;
 
     // Components
     GrappleHookDJ playerGrappleScript;
@@ -29,16 +29,15 @@ public class Enemy : Walker
         base.Awake();
         enemyAI = GetComponent<EnemyAI>();
         playerGrappleScript = GameManager.Player.GetComponent<GrappleHookDJ>();
-
         gameObject.layer = LayerMask.NameToLayer("Enemy");
     }
 
-    protected void Start() {
+    protected virtual void Start() {
         if (!targeting.Target)
             targeting.Target = GameManager.Player.transform;
     }
 
-    protected void Update() {
+    protected virtual void Update() {
         if (health.IsDead) return;
         Debug.Assert(rb != null);
 
@@ -56,26 +55,27 @@ public class Enemy : Walker
         FaceAimDirection();
     }
 
-    private void FixedUpdate() {
+    protected virtual void FixedUpdate() {
         if (!health.IsDead && IsAware) {
+            print(gameObject.name + " moving toward target:" + targeting.Target.name);
             MoveToTarget(TargetPosLeveled);
             FaceAimDirection();
         }
     }
 
-    private void LateUpdate() {
+    protected virtual void LateUpdate() {
         UpdateAnimParams();
     }
 
     public virtual void Attack() {
         if (!m_CanAttack) return;
-
+        if (attackSound) audioSource.PlayOneShot(attackSound);
         m_Attacking = true;
         _anim.SetTrigger("Attack");
     }
 
     private void MoveToTarget(Vector3 targetPos) {
-        if (enemyAI.isActiveAndEnabled && enemyAI != null)
+        if (enemyAI != null && enemyAI.isActiveAndEnabled)
             enemyAI.MoveAlongPath();
     }
 
@@ -84,16 +84,14 @@ public class Enemy : Walker
     }
 
 
-    private bool InAttackRange {
+    public bool InAttackRange {
         get {
             m_InAttackRange = false;
             float angle = Vector3.Angle(transform.right * FacingSign, targeting.AimDirection);
 
             //Checks distance and angle
-            if (targeting.AimDirection.magnitude < attackRadius && Mathf.Abs(angle) < visionAngle)
-                m_InAttackRange = true;
+            m_InAttackRange = targeting.AimDirection.magnitude < attackRange && Mathf.Abs(angle) < visionAngle || targeting.AimDirection.magnitude < (attackRange * 0.2f); // the small circlular raduis
             return m_InAttackRange;
-
         }
         set { m_InAttackRange = value; }
     }
@@ -116,13 +114,14 @@ public class Enemy : Walker
     }
     public bool TargetIsDead { get { return targeting.Target && targeting.Target.GetComponent<Health>().IsDead; } }
 
-    private void OnDrawGizmos() {
+    protected virtual void OnDrawGizmos() {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, awarenessRadius);
 
         Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(transform.position, attackRadius);
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * FacingSign * attackRadius + Vector3.up * attackRadius * Mathf.Tan(visionAngle * Mathf.Deg2Rad / 2));
-        Gizmos.DrawLine(transform.position, transform.position + Vector3.right * FacingSign * attackRadius - Vector3.up * attackRadius * Mathf.Tan(visionAngle * Mathf.Deg2Rad / 2));
+        //Gizmos.DrawWireSphere(transform.position, attackRange);
+        Gizmos.DrawLine(transform.position, transform.position + Quaternion.AngleAxis(visionAngle / 2, Vector3.back) * Vector3.right * FacingSign * attackRange);
+        Gizmos.DrawLine(transform.position, transform.position + Quaternion.AngleAxis(visionAngle / 2, Vector3.forward) * Vector3.right * FacingSign * attackRange);
+        Gizmos.DrawWireSphere(transform.position, (attackRange * 0.2f)); // the small circlular raduis
     }
 }

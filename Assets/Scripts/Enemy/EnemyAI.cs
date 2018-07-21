@@ -49,7 +49,7 @@ public class EnemyAI : Targeting
 
     private Vector3 moveDirection;
 
-    private void Awake() {
+    protected virtual void Awake() {
         targeting = GetComponent<Targeting>();
         anim = GetComponent<Animator>();
         seeker = GetComponent<Seeker>();
@@ -58,7 +58,7 @@ public class EnemyAI : Targeting
         m_GroundCheck = transform.Find("GroundCheck");
     }
 
-    public void Start() {
+    protected virtual void Start() {
         if (!TargetExists()) return;
 
         targetPosition = Target.position;
