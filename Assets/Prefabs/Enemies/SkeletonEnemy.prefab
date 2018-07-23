@@ -408,14 +408,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Target: {fileID: 0}
-  updateDelay: 0.1
-  nextWaypointDistance: 2
+  updateDelay: 0.5
   stopDist: 0.5
   followOnGround: 1
   floorMask:
     serializedVersion: 2
     m_Bits: 512
   m_GroundCheck: {fileID: 4332809853392118}
+  nextWaypointDistance: 2
   heightToJump: 1
   angleToJump: 45
 --- !u!114 &114104236483136426
@@ -438,8 +438,8 @@ MonoBehaviour:
   autoRegenHealth: 0
   maxHealth: 100
   fallDamageModifier: 0.5
-  hurtAudioClip: {fileID: 8300000, guid: 5afbc263bd322e14984bf120d8165741, type: 3}
-  deathAudioClip: {fileID: 0}
+  hurtAudioClip: {fileID: 8300000, guid: 57eb84f52305e6e488ebb92db56a6299, type: 3}
+  deathAudioClip: {fileID: 8300000, guid: 9949cccb811bb2e4f8c9f0461839e97c, type: 3}
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
   damageColor: {r: 1, g: 0, b: 0, a: 1}
@@ -448,6 +448,7 @@ MonoBehaviour:
   scoreValue: 25
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
     type: 2}
+  jumpAndPhaseThroughWhenDead: 0
 --- !u!114 &114472746202773746
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -492,7 +493,7 @@ MonoBehaviour:
   control_AirControl: 1
   control_CanDoubleJump: 1
   control_facesAimDirection: 1
-  moveSpeed: 20
+  moveSpeed: 97.34
   jumpForce: 8
   wallSlideSpeedMax: 1
   k_WallcheckRaduis: 0.3
@@ -504,16 +505,15 @@ MonoBehaviour:
   _move: 0
   rb: {fileID: 0}
   health: {fileID: 0}
-  footstepSound: {fileID: 0}
+  footstepSound: {fileID: 8300000, guid: 9e41770558785e448b50f9df45400b1c, type: 3}
   m_CeilingCheck: {fileID: 0}
   m_ClimbCheck: {fileID: 0}
   m_GroundCheck: {fileID: 0}
   attackSound: {fileID: 8300000, guid: 7a8797988e5c7644ebf0fe2c141cf6b4, type: 3}
-  awarenessRadius: 4.6
-  attackRange: 5
+  awarenessRadius: 6
+  attackRange: 3.4
   visionAngle: 135.4
-  timeBetweenAttacks: 0.5
-  movementSpeed: 2
+  timeBetweenAttacks: 2.5
   m_Attacking: 0
   attackHitbox: {fileID: 114659788340162980}
   lungeForce: 2.23
@@ -603,10 +603,8 @@ MonoBehaviour:
       m_Bits: 4294967295
     useGraphRaycasting: 0
   traversableTags: -1
-  traversableTagsCompatibility:
-    tagsChange: -1
-    tagsSet: -1
   tagPenalties: 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  graphMask: -1
 --- !u!114 &114985375992028686
 MonoBehaviour:
   m_ObjectHideFlags: 1

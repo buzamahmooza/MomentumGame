@@ -600,7 +600,7 @@ CircleCollider2D:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1533114883056634}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -1102,6 +1102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HasReachedSlamPeak: 0
+  maxTimeBetweenAttacks: 2
   dashAttackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
   slamAttackSound: {fileID: 8300000, guid: 518b87c20662fd640997caaaeb67f349, type: 3}
   slamExplosionObj: {fileID: 1786255796667864, guid: 448bfefac1a48d94583f96f89b94ce52,
@@ -1258,7 +1259,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   floorMask:
     serializedVersion: 2
-    m_Bits: 4294966217
+    m_Bits: 4294712265
   control_AirControl: 1
   control_CanDoubleJump: 1
   control_facesAimDirection: 0
@@ -1282,9 +1283,9 @@ MonoBehaviour:
   control_PlayerCanDoubleJump: 1
   fallMultiplier: 1
   lowJumpMultiplier: 1.5
+  walljumpForce: 2.2
   momentumSlider: {fileID: 0}
   momentumText: {fileID: 0}
-  walljumpForce: 2.2
 --- !u!114 &114699972072293624
 MonoBehaviour:
   m_ObjectHideFlags: 1
