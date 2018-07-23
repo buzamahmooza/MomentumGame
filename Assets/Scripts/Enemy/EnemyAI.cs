@@ -30,7 +30,7 @@ public class EnemyAI : Targeting
     [SerializeField] private float heightToJump = 1;
     [SerializeField] private float angleToJump = 45;
 
-    private bool pathIsEnded = false;
+    private bool pathHasEnded = false;
     //The waypoint we are currently moving towards
     private int currentWaypoint = 0;
     private bool m_Grounded;
@@ -61,7 +61,7 @@ public class EnemyAI : Targeting
         //Start a new path to the targetPosition, return the result to the OnPathComplete function
         seeker.StartPath(transform.position, targetPosition, OnPathComplete);
 
-        StartCoroutine(UpdatePath());
+        StartCoroutine(UpdatePathWithDelayRecursive());
     }
 
 
@@ -111,19 +111,21 @@ public class EnemyAI : Targeting
         //We have no path to move after yet
         if (path == null) {
             Debug.LogWarning(name + " path == null");
+            UpdatePath();
             return false;
         }
 
         // If path ended
         if (currentWaypoint >= path.vectorPath.Count) {
-            if (pathIsEnded) return false;
             Debug.Log("End Of Path Reached");
+            if (pathHasEnded)
+                return false;
             rb.velocity = new Vector2(0, rb.velocity.y);
 
-            pathIsEnded = true;
+            pathHasEnded = true;
             return false;
         }
-        pathIsEnded = false;
+        pathHasEnded = false;
 
         // If too close
         if (stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists()) {
@@ -144,15 +146,21 @@ public class EnemyAI : Targeting
         return true;
     }
 
-    private IEnumerator UpdatePath() {
+    private IEnumerator UpdatePathWithDelayRecursive() {
+        if (TargetExists()) {
+            UpdatePath();
+
+            if (updateDelay > 0) yield return new WaitForSeconds(updateDelay);
+            StartCoroutine(UpdatePathWithDelayRecursive());
+        }
+    }
+
+    private void UpdatePath() {
         if (TargetExists()) {
             targetPosition = Target.position;
 
             //Start a new path to the targetPosition, return the result to the OnPathComplete function
             seeker.StartPath(transform.position, targetPosition, OnPathComplete);
-
-            if (updateDelay > 0) yield return new WaitForSeconds(updateDelay);
-            StartCoroutine(UpdatePath());
         }
     }
 
