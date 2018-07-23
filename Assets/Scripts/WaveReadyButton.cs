@@ -7,29 +7,26 @@ public class WaveReadyButton : Interactable
     [SerializeField]
     private Sprite spritePressed, spriteNotPressed;
     private SpriteRenderer sr;
-    private AudioSource ar;
+    private AudioSource audioSource;
 
-    private void Awake() {
+    void Awake() {
         sr = GetComponent<SpriteRenderer>();
-        ar = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
-    private void Start() {
-        var interactable = GetComponent<Interactable>();
+    void Start() {
         sr.sprite = spriteNotPressed;
-        print("Interactable:    " + interactable);
     }
 
-    void OnDisable() {
-    }
+    void OnDisable() { }
     void OnEnable() {
         sr.sprite = spriteNotPressed;
     }
 
     protected override void DoInteraction() {
         sr.sprite = spritePressed;
-        ar.Play();
-        GetComponent<Interactable>().enabled = false;
+        audioSource.Play();
+        enabled = false;
     }
 
     public override string GetPrompt() {

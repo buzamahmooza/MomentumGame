@@ -74,6 +74,8 @@ public class EnemySpawner : MonoBehaviour
 
     private void WaveEnd() {
         print("WaveEnd()");
+        // re-enable the interactable
+        interactable.enabled = true;
         if (interactable)
             interactable.enabled = true;
     }
@@ -85,6 +87,9 @@ public class EnemySpawner : MonoBehaviour
         SpawnWave(10, maxSpawnedEnemies);
     }
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies) {
+        // disable the interactable so the player won't be able to spam it
+        interactable.enabled = false;
+
         Debug.Log("SpawnEnemy(waveSize = " + waveSize + ", newMaxSpawnedEnemies = " + newMaxSpawnedEnemies + ")");
         this.maxSpawnedEnemies = newMaxSpawnedEnemies;
         this.remainingWaveSize = waveSize;

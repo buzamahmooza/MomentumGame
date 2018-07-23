@@ -48,7 +48,7 @@ public class BulletScript : MonoBehaviour
                 otherHealth.TakeDamage(damageAmount);
         }
 
-        if (other.gameObject.layer == destroyMask.value) {
+        if (Utils.IsInLayerMask(destroyMask, other.gameObject.layer)) {
             Destroy(gameObject);
         }
     }
