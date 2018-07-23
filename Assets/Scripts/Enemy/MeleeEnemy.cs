@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 /// <summary>
-/// The enemy will lunge once the attack is ready, and then another tiny lunge when the attackOpens just to get closer
+/// The enemy will lunge once the attack is ready,
+/// and then another tiny lunge when the attackOpens just to get closer
 /// </summary>
 public class MeleeEnemy : Enemy
 {
@@ -12,11 +14,10 @@ public class MeleeEnemy : Enemy
     private bool attackReady = false;
     private float meleeRange = 1f;
 
+
     protected override void Awake() {
         base.Awake();
         if (!attackHitbox) attackHitbox = GetComponent<EnemyHitbox>() ?? GetComponentInChildren<EnemyHitbox>();
-
-        print("meleeRange = " + meleeRange);
     }
 
     protected override void Start() {
@@ -26,6 +27,17 @@ public class MeleeEnemy : Enemy
                          Vector2.Distance(attackHitbox.transform.position, transform.position);
         attackHitbox.collider2D.enabled = false;
     }
+
+    protected override void Update() {
+        base.Update();
+
+        // if attack is ready, attack as soon as the player is within melee range
+        if (attackReady && m_Attacking && targeting.AimDirection.magnitude < meleeRange) {
+            attackReady = false;
+            _anim.speed = m_DefaultAnimSpeed;
+        }
+    }
+
 
     /// <summary>
     /// overriding Attack() so it won't play the attack sound
@@ -42,21 +54,13 @@ public class MeleeEnemy : Enemy
     /// <summary>
     /// Jumps to the player direction so he'd get hurt. Just like COD knifing
     /// </summary>
-    private void Lundge(float mult) {
+    /// <param name="mult">Defaults to 1</param>
+    private void Lundge(float mult = 1f) {
         rb.AddForce(targeting.AimDirection * lungeForce * mult * rb.mass, ForceMode2D.Impulse);
     }
 
-    protected override void Update() {
-        base.Update();
-
-        // if attack is ready, attack as soon as the player is within melee range
-        if (attackReady && m_Attacking && targeting.AimDirection.magnitude < meleeRange) {
-            attackReady = false;
-            _anim.speed = m_DefaultAnimSpeed;
-        }
-    }
-
     // called by animationEvents
+
     /// <summary>
     /// Called when the attackIsReady to happen
     /// (for example an enemy raising a sword, when the sword is raised, he's ready to attack)
@@ -64,16 +68,17 @@ public class MeleeEnemy : Enemy
     public void AttackReady() {
         attackReady = true;
         _anim.speed = 0;
-        Lundge(1f);
+        Lundge();
         StartCoroutine(AttackReadyTimeout());
     }
     /// <summary>
-    /// This will get the enemy unstuck from the position of holding his waepon up, waiting for the player to be in range.
-    /// The enemy will only wait so long
+    /// This will get the enemy unstuck from the position of holding his waepon up,
+    /// waiting for the player to be in range.
+    /// The enemy will only wait so long.
     /// </summary>
     /// <returns></returns>
-    IEnumerator AttackReadyTimeout() {
-        yield return new WaitForSeconds(0.6f);
+    IEnumerator AttackReadyTimeout(float seconds = 0.6f) {
+        yield return new WaitForSeconds(seconds);
         attackReady = false;
         _anim.speed = m_DefaultAnimSpeed;
     }
@@ -81,6 +86,14 @@ public class MeleeEnemy : Enemy
         Lundge(0.4f);
         attackHitbox.collider2D.enabled = true;
         if (attackSound) audioSource.PlayOneShot(attackSound);
+        StartCoroutine(Safety_DeactivateHitbox());
+    }
+    IEnumerator Safety_DeactivateHitbox(float seconds=1f) {
+        yield return new WaitForSeconds(seconds);
+        if(m_Attacking) {
+            Debug.LogWarning("Hitbox was on for long, deactivating");
+            CloseHitbox();
+        }
     }
     public void CloseHitbox() {
         attackHitbox.collider2D.enabled = false;
