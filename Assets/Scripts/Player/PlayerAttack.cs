@@ -9,7 +9,7 @@ using UnityStandardAssets.CrossPlatformInput;
 [RequireComponent(typeof(PlayerMove))]
 public class PlayerAttack : MonoBehaviour
 {
-    public bool HasReachedSlamPeak = false;
+    [HideInInspector] public bool HasReachedSlamPeak = false;
     [SerializeField] [Range(0, 4f)] private float maxTimeBetweenAttacks = 2f;
     public ComboInstance currentCombo = null;
 

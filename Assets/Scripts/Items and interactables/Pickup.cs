@@ -13,7 +13,8 @@ public abstract class Pickup : MonoBehaviour
     private new Collider2D collider2D;
     private bool follow = false;
 
-    private void Awake() {
+    private void Awake()
+    {
         collider2D = GetComponent<Collider2D>();
         //if (layerMask.value != 0)
         //    layerMask = LayerMask.NameToLayer("Player");
@@ -24,17 +25,21 @@ public abstract class Pickup : MonoBehaviour
     // you can't pickup the pickup as soon as it spawns, only a moment after.
     // This is so that pickups spawned form enemies will get the chance to appear and be seen by the player,
     // rather than being sucked in in an instant
-    private void Start() {
+    private void Start()
+    {
         Invoke("AllowToFollow", 0.5f);
     }
     // ReSharper disable once UnusedMember.Local
-    private void AllowToFollow() {
+    private void AllowToFollow()
+    {
         follow = true;
         collider2D.isTrigger = true; // prevent getting stuck through walls
     }
 
-    private void LateUpdate() {
-        if (follow && picker != null && collider2D.enabled) {
+    private void LateUpdate()
+    {
+        if (follow && picker != null && collider2D.enabled)
+        {
             GetComponentInChildren<SpriteRenderer>().color = Color.blue;
             // get closer to the target (Lerp between current position and picker position)
             transform.position = Vector2.Lerp(
@@ -45,8 +50,10 @@ public abstract class Pickup : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D col) {
-        if (col.gameObject.CompareTag("Pickup picker")) {
+    private void OnTriggerEnter2D(Collider2D col)
+    {
+        if (col.gameObject.CompareTag("Pickup picker"))
+        {
             picker = col.gameObject;
             GetComponentInChildren<SpriteRenderer>().color = Color.green;
             return;

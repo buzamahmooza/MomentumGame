@@ -19,24 +19,29 @@ public class AimInput : Targeting
     private PlayerMove playerMove;
 
 
-    private void Awake() {
+    private void Awake()
+    {
         playerMove = GameManager.Player.GetComponent<PlayerMove>();
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         RecheckInputDevice();
         lastMousePos = MousePos;
 
         //switch to mouse if mouse pressed:
-        if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) {
+        if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1))
+        {
             //Debug.Log("Mouse button pressed, switching to mouse control");
             usingMouse = true;
             usingJoystick = false;
         }
-        if (Input.GetKey(KeyCode.LeftShift)) {
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
             usingMouse = false;
         }
-        if (InputManager.ActiveDevice.AnyButton) {
+        if (InputManager.ActiveDevice.AnyButton)
+        {
             usingMouse = false;
             usingJoystick = true;
         }
@@ -46,29 +51,36 @@ public class AimInput : Targeting
     /// Returns an aimDirection as a normalized Vector2
     /// </summary>
     /// <returns>Returns an aimDirection as a normalized Vector2</returns>
-    public override Vector2 AimDirection {
-        get {
+    public override Vector2 AimDirection
+    {
+        get
+        {
             // Using joystick, if there is input
             Vector2 aimDir = RightJoystick;
-            if (usingJoystick && Mathf.Abs(aimDir.magnitude) > 0.1f) {
+            if (usingJoystick && Mathf.Abs(aimDir.magnitude) > 0.1f)
+            {
                 // ~Debug.Log("Using controller aiming, aimDirection = " + aimDir);
                 return (aimDir.normalized);
             }
 
             //Using mouse
-            else if (usingMouse) {
+            else if (usingMouse)
+            {
                 return (MousePos - (Vector2)GameManager.Player.transform.position).normalized;
             }
             // Using Movement aiming
-            else {
+            else
+            {
                 Vector2 moveInput = InputGetAxisRawVector;
 
                 // If input is large enough
-                if (Mathf.Abs(moveInput.magnitude) > 0.1f) {
+                if (Mathf.Abs(moveInput.magnitude) > 0.1f)
+                {
                     return (moveInput.normalized); //Normalized vector
                 }
                 // If input is too little, just aim where player is facing
-                else {
+                else
+                {
                     return (Vector2.right * playerMove.FacingSign);
                 }
             }
@@ -78,30 +90,36 @@ public class AimInput : Targeting
     /// <summary>
     /// Checks which device should be used as aim input (Mouse or Joystick) and updates fields
     /// </summary>
-    private void RecheckInputDevice() {
+    private void RecheckInputDevice()
+    {
         float mouseDisp = Vector3.Distance(MousePos, lastMousePos);
         if (debugMousePosition) Debug.Log("mouseDisp: " + mouseDisp);
 
-        if (!usingMouse) {
+        if (!usingMouse)
+        {
             //Switch to mouse
             float camDisp = GameManager.CameraController.LookAheadPos.magnitude;
             float compensatedMouseDisp = Mathf.Abs(mouseDisp) - Mathf.Abs(camDisp);
             // If mousespeed is greater than camSpeed (camera movement causes mouse to move, we want to compensate for this)
-            if (compensatedMouseDisp > mouseMoveThreshold || Input.GetMouseButton(0)) {
+            if (compensatedMouseDisp > mouseMoveThreshold || Input.GetMouseButton(0))
+            {
                 usingMouse = true; Debug.Log("Switch control to using mouse");
                 usingJoystick = false;
             }
         }
-        if (!usingJoystick) {
+        if (!usingJoystick)
+        {
             // Switch to joystick, if there is enough input
-            if (InputManager.ActiveDevice.AnyButton || RightJoystick.magnitude > JoystickThreshold || LeftJoystick.magnitude > JoystickThreshold) {
+            if (InputManager.ActiveDevice.AnyButton || RightJoystick.magnitude > JoystickThreshold || LeftJoystick.magnitude > JoystickThreshold)
+            {
                 Debug.Log("Swiching to joystick");
                 usingJoystick = true;
                 usingMouse = false;
             }
         }
         //Use joystick by default
-        if (usingMouse && usingJoystick) {
+        if (usingMouse && usingJoystick)
+        {
             Debug.Log("Switched to DEFAULT");
             usingMouse = true;
             usingJoystick = false;
@@ -112,8 +130,10 @@ public class AimInput : Targeting
     /// Returns mouse position as Vector2 in world space
     /// </summary>
     /// <returns>Returns mouse position as Vector2 in world space</returns>
-    public static Vector2 MousePos {
-        get {
+    public static Vector2 MousePos
+    {
+        get
+        {
             Camera c = Camera.main;
             float depth;
             if (GameManager.Player)
@@ -128,8 +148,10 @@ public class AimInput : Targeting
     /// returns joystick right stick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    public static Vector2 RightJoystick {
-        get {
+    public static Vector2 RightJoystick
+    {
+        get
+        {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.RightStickX, inputDevice.RightStickY);
         }
@@ -139,8 +161,10 @@ public class AimInput : Targeting
     /// Returns the left stick joystick axies as a Vector2
     /// </summary>
     /// <returns></returns>
-    public static Vector2 LeftJoystick {
-        get {
+    public static Vector2 LeftJoystick
+    {
+        get
+        {
             var inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.LeftStickX, inputDevice.LeftStickY);
             //new Vector2(Input.GetAxisRaw("Horizontal_LS"), Input.GetAxisRaw("Vertical_LS"));
@@ -152,13 +176,17 @@ public class AimInput : Targeting
     /// </summary>
     /// <param name="rawAxis"></param>
     /// <returns>Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis</returns>
-    public static Vector2 InputGetAxisVector {
-        get {
+    public static Vector2 InputGetAxisVector
+    {
+        get
+        {
             return new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
         }
     }
-    public static Vector2 InputGetAxisRawVector {
-        get {
+    public static Vector2 InputGetAxisRawVector
+    {
+        get
+        {
             return new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         }
     }

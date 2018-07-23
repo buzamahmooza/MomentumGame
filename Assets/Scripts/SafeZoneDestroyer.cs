@@ -9,7 +9,8 @@ using UnityEngine;
 public class SafeZoneDestroyer : MonoBehaviour
 {
 
-    private void OnTriggerExit2D(Collider2D collision) {
+    private void OnTriggerExit2D(Collider2D collision)
+    {
         Destroy(collision.gameObject);
         print("Object left the safe zone, destroying object: " + collision.gameObject.name);
     }

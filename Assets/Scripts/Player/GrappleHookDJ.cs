@@ -26,13 +26,16 @@ public class GrappleHookDJ : MonoBehaviour
     DistanceJoint2D joint;
     float maxDistance = 10.0f;
 
-    public Vector3 AnchorVec3 {
-        get {
+    public Vector3 AnchorVec3
+    {
+        get
+        {
             return transform.position + new Vector3(joint.anchor.x, joint.anchor.y, 0);
         }
     }
 
-    private void Awake() {
+    private void Awake()
+    {
         if (mask == 0) mask = LayerMask.NameToLayer("Floor");
         lr = GetComponent<LineRenderer>();
         aimInput = GetComponent<AimInput>();
@@ -45,17 +48,23 @@ public class GrappleHookDJ : MonoBehaviour
         joint.enabled = false;
     }
 
-    private void Update() {
+    private void Update()
+    {
         if (InputPressed && !m_Flying)
             FindTarget();
 
-        if (m_Flying) {
+        if (m_Flying)
+        {
             Fly();
             Debug.DrawLine(AnchorVec3, joint.connectedAnchor, Color.red);
-        } else if (m_Pulling) {
+        }
+        else if (m_Pulling)
+        {
             Pull(grabbedObj);
             Debug.DrawLine(AnchorVec3, joint.connectedBody.gameObject.transform.position, Color.blue);
-        } else {
+        }
+        else
+        {
             EndGrapple();
         }
 
@@ -67,19 +76,25 @@ public class GrappleHookDJ : MonoBehaviour
             EndGrapple();
     }
 
-    private bool InputPressed {
-        get {
+    private bool InputPressed
+    {
+        get
+        {
             return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1) || Input.GetAxisRaw("LeftTrigger") > 0.5f;
         }
     }
-    private bool InputReleased {
-        get {
+    private bool InputReleased
+    {
+        get
+        {
             return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift) || aimInput.usingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
         }
     }
 
-    private void FindTarget() {
-        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, playerMove.CrossPlatformInput, maxGrappleRange, mask)) {
+    private void FindTarget()
+    {
+        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, playerMove.CrossPlatformInput, maxGrappleRange, mask))
+        {
             bool grappleConditions = hit && hit.collider != null &&
                                      hit.collider.gameObject != gameObject;
             bool pullConditions = hit.collider.gameObject.GetComponent<Health>() != null &&
@@ -99,11 +114,14 @@ public class GrappleHookDJ : MonoBehaviour
              */
             targetPointOffset = hit.point - (Vector2)grabbedObj.transform.position;
 
-            if (pullConditions) {
+            if (pullConditions)
+            {
                 m_Pulling = true;
                 joint.connectedAnchor = (Vector2)targetPointOffset;
                 return;
-            } else if (grappleConditions) {
+            }
+            else if (grappleConditions)
+            {
                 joint.connectedAnchor = hit.point /*+ (Vector2)targetPointOffset*/;
                 m_Flying = true;
                 return;
@@ -111,13 +129,15 @@ public class GrappleHookDJ : MonoBehaviour
         }
     }
 
-    private void RenderLine() {
+    private void RenderLine()
+    {
         lr.SetPosition(0, gun.position);
         Vector2 endVec = m_Pulling ? (Vector2)(grabbedObj.transform.position + targetPointOffset) : joint.connectedAnchor;
         lr.SetPosition(1, endVec);
     }
 
-    private void CloseDistance() {
+    private void CloseDistance()
+    {
         Vector2 inputVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
 
         Vector2 grappleDir = (m_Flying ? (joint.connectedAnchor) :
@@ -137,41 +157,50 @@ public class GrappleHookDJ : MonoBehaviour
         joint.distance = Mathf.Clamp(newDistance, 0, maxDistance);
     }
 
-    private void Fly() {
+    private void Fly()
+    {
         joint.enabled = true;
-        if (grabbedObj == null) {
+        if (grabbedObj == null)
+        {
             joint.connectedBody = null;
         }
         CloseDistance();
         RenderLine();
     }
 
-    private void Pull(GameObject obj) {
+    private void Pull(GameObject obj)
+    {
         joint.enabled = true;
 
         var otherRigidbody = grabbedObj ? grabbedObj.GetComponent<Rigidbody2D>() : null;
         joint.connectedBody = otherRigidbody;
 
-        if (otherRigidbody && !otherRigidbody.bodyType.Equals(RigidbodyType2D.Static)) {
+        if (otherRigidbody && !otherRigidbody.bodyType.Equals(RigidbodyType2D.Static))
+        {
             // if player is facing a direction other than that of the otherRigidbody, Flip()
             bool otherIsToTheRight = otherRigidbody.gameObject.transform.position.x > transform.position.x;
-            if (otherIsToTheRight ^ playerMove.FacingRight) {
+            if (otherIsToTheRight ^ playerMove.FacingRight)
+            {
                 playerMove.Flip();
             }
             CloseDistance();
             RenderLine();
-        } else if (!otherRigidbody) {
+        }
+        else if (!otherRigidbody)
+        {
             Debug.LogError("Connected body is null!");
             return;
         }
     }
 
-    private void ConfigureDistance() {
+    private void ConfigureDistance()
+    {
         joint.distance = Vector3.Distance(AnchorVec3, target);
         maxDistance = joint.distance;
     }
 
-    public void EndGrapple() {
+    public void EndGrapple()
+    {
         joint.connectedBody = null;
         joint.enabled = false;
         lr.enabled = false;

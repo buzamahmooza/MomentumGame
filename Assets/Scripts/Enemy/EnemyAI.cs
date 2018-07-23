@@ -45,7 +45,8 @@ public class EnemyAI : Targeting
     private Animator anim;
 
 
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
         targeting = GetComponent<Targeting>();
         anim = GetComponent<Animator>();
         seeker = GetComponent<Seeker>();
@@ -53,7 +54,8 @@ public class EnemyAI : Targeting
         enemyScript = GetComponent<Enemy>();
         m_GroundCheck = transform.Find("GroundCheck");
     }
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         if (!TargetExists()) return;
 
         targetPosition = Target.position;
@@ -68,14 +70,18 @@ public class EnemyAI : Targeting
     /// <summary>
     /// if (!m_Attacking && !isDead) ApproachTarget();
     /// </summary>
-    public void MoveAlongPath() {
-        if (!enemyScript.m_Attacking && !enemyScript.health.IsDead) {
+    public void MoveAlongPath()
+    {
+        if (!enemyScript.m_Attacking && !enemyScript.health.IsDead)
+        {
             ApproachTarget();
         }
     }
-    private void ApproachTarget() {
+    private void ApproachTarget()
+    {
         bool result = CalculateWaypoint();
-        if (!result) { // if result is false, just stop moving
+        if (!result)
+        { // if result is false, just stop moving
             print("CalculateWaypoint result is FALSE :(");
             moveDirection = Vector3.zero;
             if (anim) anim.SetBool("Walk", false);
@@ -99,8 +105,10 @@ public class EnemyAI : Targeting
     /// Returns false if target is null or too close
     /// </summary>
     /// <returns></returns>
-    public bool CalculateWaypoint() {
-        if (!TargetExists()) {
+    public bool CalculateWaypoint()
+    {
+        if (!TargetExists())
+        {
             Debug.LogWarning(name + " Target is null");
             return false;
         }
@@ -109,14 +117,16 @@ public class EnemyAI : Targeting
 
 
         //We have no path to move after yet
-        if (path == null) {
+        if (path == null)
+        {
             Debug.LogWarning(name + " path == null");
             UpdatePath();
             return false;
         }
 
         // If path ended
-        if (currentWaypoint >= path.vectorPath.Count) {
+        if (currentWaypoint >= path.vectorPath.Count)
+        {
             Debug.Log("End Of Path Reached");
             if (pathHasEnded)
                 return false;
@@ -128,7 +138,8 @@ public class EnemyAI : Targeting
         pathHasEnded = false;
 
         // If too close
-        if (stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists()) {
+        if (stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists())
+        {
             Debug.Log(name + " reached stopping distance");
             return false;
         }
@@ -146,8 +157,10 @@ public class EnemyAI : Targeting
         return true;
     }
 
-    private IEnumerator UpdatePathWithDelayRecursive() {
-        if (TargetExists()) {
+    private IEnumerator UpdatePathWithDelayRecursive()
+    {
+        if (TargetExists())
+        {
             UpdatePath();
 
             if (updateDelay > 0) yield return new WaitForSeconds(updateDelay);
@@ -155,8 +168,10 @@ public class EnemyAI : Targeting
         }
     }
 
-    private void UpdatePath() {
-        if (TargetExists()) {
+    private void UpdatePath()
+    {
+        if (TargetExists())
+        {
             targetPosition = Target.position;
 
             //Start a new path to the targetPosition, return the result to the OnPathComplete function
@@ -164,8 +179,10 @@ public class EnemyAI : Targeting
         }
     }
 
-    public void OnPathComplete(Path p) {
-        if (!p.error) {
+    public void OnPathComplete(Path p)
+    {
+        if (!p.error)
+        {
             path = p;
             currentWaypoint = 0; //Reset the waypoint counter
         }
@@ -175,24 +192,29 @@ public class EnemyAI : Targeting
     /// returns true if there is a Target
     /// </summary>
     /// <returns>returns true if there is a Target</returns>
-    private bool TargetExists() {
+    private bool TargetExists()
+    {
         Transform tr = targeting.Target;
         if (tr != null) Target = tr.transform;
 
         //GameObject go = GameObject.FindGameObjectWithTag("Player");
         //if (go != null) Target = go.transform;
 
-        if (Target == null) {
+        if (Target == null)
+        {
             Debug.Log("Target is null");
             return false;
         }
         return true;
     }
 
-    public bool Grounded {
-        get {
+    public bool Grounded
+    {
+        get
+        {
             m_Grounded = false;
-            foreach (Collider2D col in Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask)) {
+            foreach (Collider2D col in Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask))
+            {
                 if (col.gameObject == gameObject) break;
                 else m_Grounded = true;
             }
@@ -201,7 +223,8 @@ public class EnemyAI : Targeting
         set { m_Grounded = value; }
     }
 
-    private void OnDrawGizmosSelected() {
+    private void OnDrawGizmosSelected()
+    {
         Gizmos.color = enemyScript && enemyScript.IsAware ? Color.red : Color.blue;
         Gizmos.DrawWireSphere(transform.position, stopDist);
     }

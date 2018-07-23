@@ -12,21 +12,27 @@ public class CameraKickback : MonoBehaviour
     private bool m_Kickback = false;
     private Vector3 startingLocalPosition;
 
-    private void Start() {
+    private void Start()
+    {
         m_LastSteadyPosition = transform.position;
         startingLocalPosition = transform.localPosition;
     }
 
-    private void LateUpdate() {
-        if (m_Kickback) {
+    private void LateUpdate()
+    {
+        if (m_Kickback)
+        {
             Kickback();
-        } else {
+        }
+        else
+        {
             m_KickbackDuration = DefaultKickbackDuration;
         }
     }
 
     // Update is called once per frame
-    private void Kickback() {
+    private void Kickback()
+    {
         // Create a target position to aim for
         m_TargetPos = m_KickbackDirection;
         // Linearly interpolate to this target position
@@ -38,22 +44,28 @@ public class CameraKickback : MonoBehaviour
 
         // Make sure KickbackFactor reaches zero
 
-        if (m_KickbackDuration <= 0.0f) {
+        if (m_KickbackDuration <= 0.0f)
+        {
             ResetFields();
         }
     }
 
-    private void ResetFields() {
+    private void ResetFields()
+    {
         m_Kickback = false;
         m_KickbackDuration = 0;
         m_KickbackDirection = Vector3.zero;
         m_TargetPos = startingLocalPosition;
     }
 
-    public void DoKickback(Vector3 kickbackDir) {
-        if (m_Kickback) {
+    public void DoKickback(Vector3 kickbackDir)
+    {
+        if (m_Kickback)
+        {
             //ResetFields();
-        } else {
+        }
+        else
+        {
             m_LastSteadyPosition = transform.position;
             m_Kickback = true;
 

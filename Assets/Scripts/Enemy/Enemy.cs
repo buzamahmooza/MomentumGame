@@ -26,28 +26,33 @@ public class Enemy : Walker
     protected EnemyAI enemyAI;
 
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         base.Awake();
         enemyAI = GetComponent<EnemyAI>();
         playerGrappleScript = GameManager.Player.GetComponent<GrappleHookDJ>();
         gameObject.layer = LayerMask.NameToLayer("Enemy");
     }
 
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         if (!targeting.Target)
             targeting.Target = GameManager.Player.transform;
     }
 
-    protected virtual void Update() {
+    protected virtual void Update()
+    {
         if (health.IsDead) return;
         Debug.Assert(rb != null);
 
         timeSinceLastAttack += Time.deltaTime;
 
-        if (IsAware) {
+        if (IsAware)
+        {
             FaceDirection(targeting.Target.transform.position.x - transform.position.x);
 
-            if (timeBetweenAttacks < timeSinceLastAttack && InAttackRange && !TargetIsDead && !IsGrappled) {
+            if (timeBetweenAttacks < timeSinceLastAttack && InAttackRange && !TargetIsDead && !IsGrappled)
+            {
                 this.Attack();
                 timeSinceLastAttack = 0;
             }
@@ -55,39 +60,48 @@ public class Enemy : Walker
 
         FaceAimDirection();
     }
-    protected virtual void FixedUpdate() {
-        if (!health.IsDead && IsAware) {
+    protected virtual void FixedUpdate()
+    {
+        if (!health.IsDead && IsAware)
+        {
             print(gameObject.name + " moving toward target: " + targeting.Target.name);
             MoveToTarget(TargetPosLeveled);
             FaceAimDirection();
         }
     }
-    protected virtual void LateUpdate() {
+    protected virtual void LateUpdate()
+    {
         UpdateAnimParams();
     }
 
 
-    public virtual void Attack() {
+    public virtual void Attack()
+    {
         if (!m_CanAttack) return;
         if (attackSound) audioSource.PlayOneShot(attackSound);
         m_Attacking = true;
         _anim.SetTrigger("Attack");
     }
 
-    private void MoveToTarget(Vector3 targetPos) {
-        if (enemyAI != null && enemyAI.isActiveAndEnabled) {
+    private void MoveToTarget(Vector3 targetPos)
+    {
+        if (enemyAI != null && enemyAI.isActiveAndEnabled)
+        {
             UpdateAnimatorParams();
             enemyAI.MoveAlongPath();
         }
     }
 
-    private void UpdateAnimParams() {
+    private void UpdateAnimParams()
+    {
         _anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
     }
 
 
-    public bool InAttackRange {
-        get {
+    public bool InAttackRange
+    {
+        get
+        {
             m_InAttackRange = false;
             float angle = Vector3.Angle(transform.right * FacingSign, targeting.AimDirection);
 
@@ -103,12 +117,15 @@ public class Enemy : Walker
     /// <summary>
     /// returns player position with the same Y component as this enemy
     /// </summary>
-    protected Vector2 TargetPosLeveled {
+    protected Vector2 TargetPosLeveled
+    {
         get { return new Vector2(targeting.Target.transform.position.x, transform.position.y); }
     }
 
-    public bool IsAware {
-        get {
+    public bool IsAware
+    {
+        get
+        {
             m_Aware = targeting.Target && targeting.AimDirection.magnitude < awarenessRadius;
             return m_Aware;
         }
@@ -116,7 +133,8 @@ public class Enemy : Walker
     }
     public bool TargetIsDead { get { return targeting.Target && targeting.Target.GetComponent<Health>().IsDead; } }
 
-    protected virtual void OnDrawGizmos() {
+    protected virtual void OnDrawGizmos()
+    {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, awarenessRadius);
 

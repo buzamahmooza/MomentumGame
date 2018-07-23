@@ -34,7 +34,8 @@ public class Health : MonoBehaviour
 
     private Animator _anim;
 
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
         _anim = GetComponent<Animator>();
         walker = GetComponent<Walker>();
         rend = GetComponent<SpriteRenderer>();
@@ -42,13 +43,15 @@ public class Health : MonoBehaviour
         audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
     }
 
-    private void Start() {
+    private void Start()
+    {
         CurrentHealth = maxHealth;
 
         if (useHealthbar && healthBar != null)
             InitHealthBar();
         // Initializing the healthbar 
-        if (healthSlider && useHealthbar) {
+        if (healthSlider && useHealthbar)
+        {
             healthSlider.maxValue = maxHealth;
             healthSlider.value = CurrentHealth;
         }
@@ -60,11 +63,13 @@ public class Health : MonoBehaviour
             InvokeRepeating("RegenerateHealth", 0, HEALTH_REGENERATION_PERIOD); //Periodically regenerate health
     }
 
-    private void Update() {
+    private void Update()
+    {
         LerpColor(); //In case the color flashes red, it has to go back to normal
     }
 
-    protected void CreateFloatingDamage(int damageValue) {
+    protected void CreateFloatingDamage(int damageValue)
+    {
         Debug.Assert(this.floatingTextPrefab != null);
         GameObject floatingDamageInstance = Instantiate(this.floatingTextPrefab, transform.position, Quaternion.identity);
         FloatingText theFloatingText = floatingDamageInstance.GetComponent<FloatingText>();
@@ -72,7 +77,8 @@ public class Health : MonoBehaviour
         theFloatingText.text.color = Color.Lerp(Color.yellow, Color.red, (float)damageValue / maxHealth);
     }
 
-    public virtual void TakeDamage(int damageAmount) {
+    public virtual void TakeDamage(int damageAmount)
+    {
         if (IsDead)
             return;
 
@@ -85,20 +91,26 @@ public class Health : MonoBehaviour
     }
 
     /// <summary> Plays the hurt animation (if any), color flashes red, plays hurt sound. </summary>
-    private void Hurt() {
+    private void Hurt()
+    {
         audioSource.PlayOneShot(hurtAudioClip);
         if (_anim != null && !IsDead)
             _anim.SetTrigger("Hurt");
         rend.color = damageColor;
     }
 
-    public void Stun(float seconds) {
+    public void Stun(float seconds)
+    {
         StartCoroutine(EnumStun(seconds));
     }
-    protected IEnumerator EnumStun(float seconds) {
-        if (!walker || !walker.BlockMoveInput) {
+    protected IEnumerator EnumStun(float seconds)
+    {
+        if (!walker || !walker.BlockMoveInput)
+        {
             yield return null;
-        } else {
+        }
+        else
+        {
             Debug.Log(gameObject.name + ":   Oh no! what's going on? I can't see!");
             walker.BlockMoveInput = false;
 
@@ -110,13 +122,15 @@ public class Health : MonoBehaviour
     /// <summary>
     /// in charge of updating the healthbar and dying if health is below 0
     /// </summary>
-    public void CheckHealth() {
+    public void CheckHealth()
+    {
         if (CurrentHealth <= 0 || IsDead)
             Die();
         CurrentHealth = Mathf.Clamp(CurrentHealth, 0, maxHealth);
         UpdateHealthBar();
     }
-    private void UpdateHealthBar() {
+    private void UpdateHealthBar()
+    {
         if (healthSlider != null)
             healthSlider.value = CurrentHealth;
         else
@@ -127,9 +141,11 @@ public class Health : MonoBehaviour
     /// The die method for the gameObject
     /// Instantiates deathEffects, plays audio, sets animator trigger ("Die")
     /// </summary>
-    public virtual void Die() {
+    public virtual void Die()
+    {
         // If this is the first time this method is called
-        if (!IsDead) {
+        if (!IsDead)
+        {
             // Make death effects, sounds, and animation
             if (deathEffects) Instantiate(deathEffects, transform.position, Quaternion.identity);
             if (_anim) _anim.SetTrigger("Die");
@@ -144,17 +160,26 @@ public class Health : MonoBehaviour
     }
 
     /// <summary> Transition back to the original color </summary>
-    private void LerpColor() {
+    private void LerpColor()
+    {
         if (!rend.color.Equals(originalColor))
             rend.color = Color.Lerp(rend.color, originalColor, Time.deltaTime * 10);
     }
 
-    private void OnCollisionEnter2D(Collision2D other) {
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (IsDead && rb.velocity.y <= 0.1f)
+        {
+            Destroy(gameObject, 5f);
+        }
+
         // Skips taking fall damage to be more efficient.
-        if (fallDamageModifier > 0) {
+        if (fallDamageModifier > 0)
+        {
             Rigidbody2D otherRb = other.gameObject.GetComponent<Rigidbody2D>();
 
-            if (rb != null && otherRb != null) {
+            if (rb != null && otherRb != null)
+            {
                 float fallDamage = Vector3.Distance(otherRb.velocity * otherRb.mass, rb.velocity * rb.mass) * fallDamageModifier;
 
                 // only take fallDamage if falldamage is big enough
@@ -165,19 +190,22 @@ public class Health : MonoBehaviour
         }
     }
     /// <summary> Increment by x% of the starting health (only if not yet reached max health) </summary>
-    public void RegenerateHealth() {
+    public void RegenerateHealth()
+    {
         RegenerateHealth(Mathf.RoundToInt(regenPercent / 100 * maxHealth));
     }
     /// <summary> Add health </summary>
     /// <param name="addedHealth"></param>
-    public void RegenerateHealth(int addedHealth) {
+    public void RegenerateHealth(int addedHealth)
+    {
         // add regenPercent but not exceding maxHealth
         CurrentHealth = Mathf.Clamp(CurrentHealth + addedHealth, 0, maxHealth);
         CheckHealth();
         rend.color = Color.green;
     }
 
-    private void InitHealthBar() {
+    private void InitHealthBar()
+    {
         if (!healthBar)
             healthBar = Instantiate(healthBar, transform);
         healthSlider = healthBar.transform.GetComponentsInChildren<Slider>()[0];

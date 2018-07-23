@@ -11,7 +11,8 @@ public class Utils
     /// <param name="layerMask"></param>
     /// <param name="layer"></param>
     /// <returns></returns>
-    public static bool IsInLayerMask(LayerMask layerMask, int layer) {
+    public static bool IsInLayerMask(LayerMask layerMask, int layer)
+    {
         return (layerMask.value & 1 << layer) != 0;
     }
 }

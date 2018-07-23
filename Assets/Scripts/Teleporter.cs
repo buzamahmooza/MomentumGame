@@ -9,7 +9,8 @@ public class Teleporter : MonoBehaviour
     private AudioSource audioSource;
 
     // Use this for initialization
-    private void Awake() {
+    private void Awake()
+    {
         //if (otherTeleporter == null) {
         //    otherTeleporter = Instantiate(gameObject).GetComponent<Teleporter>();
         //}
@@ -21,17 +22,20 @@ public class Teleporter : MonoBehaviour
         audioSource.playOnAwake = false;
     }
 
-    private void OnTriggerEnter2D(Collider2D col) {
+    private void OnTriggerEnter2D(Collider2D col)
+    {
         col.gameObject.transform.position = otherTeleporter.transform.position + Vector3.up;
         audioSource.Play();
         otherTeleporter.GetComponent<Collider2D>().enabled = false;
     }
 
-    private void OnTriggerExit2D(Collider2D col) {
+    private void OnTriggerExit2D(Collider2D col)
+    {
         otherTeleporter.GetComponent<Collider2D>().enabled = true;
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.DrawLine(this.transform.position, otherTeleporter.transform.position);
     }
 }

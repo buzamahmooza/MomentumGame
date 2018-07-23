@@ -15,15 +15,18 @@ public class TimeManager : MonoBehaviour
     private bool m_SloMo = false;
     public float hSliderValue = 1000;
 
-    void Awake() {
+    void Awake()
+    {
         if (!ps) ps = GetComponent<ParticleSystem>();
     }
 
-    public void DoSlowMotion() {
+    public void DoSlowMotion()
+    {
         DoSlowMotion(slowdownFactor);
     }
 
-    public void DoSlowMotion(float theSlowdownFactor) {
+    public void DoSlowMotion(float theSlowdownFactor)
+    {
         Time.timeScale = Mathf.Clamp(theSlowdownFactor, 0f, 100f);
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         m_SloMo = true;
@@ -31,25 +34,31 @@ public class TimeManager : MonoBehaviour
     /// <summary>
     /// slows down time for a duration of 0.05f seconds
     /// </summary>
-    public void DoHitStop() {
+    public void DoHitStop()
+    {
         DoHitStop(defaultHitStopDuration);
     }
-    public void DoHitStop(float seconds) {
+    public void DoHitStop(float seconds)
+    {
         Time.timeScale = 0.01f;
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         StartCoroutine(ResetTimeScale(seconds));
     }
 
-    private IEnumerator ResetTimeScale(float seconds) {
+    private IEnumerator ResetTimeScale(float seconds)
+    {
         yield return StartCoroutine(CoroutineUtil.WaitForRealSeconds(seconds));
         ResetTimeScale();
     }
 
     // Update is called once per frame
-    private void Update() {
-        if (m_SloMo) {
+    private void Update()
+    {
+        if (m_SloMo)
+        {
             ps.Emit(1);
-            if (Math.Abs((Time.timeScale) - 1) < 0.01f) {
+            if (Math.Abs((Time.timeScale) - 1) < 0.01f)
+            {
                 ResetTimeScale();
             }
 
@@ -59,7 +68,8 @@ public class TimeManager : MonoBehaviour
         //Mathf.Lerp(Time.timeScale, 1, Time.deltaTime);
     }
 
-    private void ResetTimeScale() {
+    private void ResetTimeScale()
+    {
         m_SloMo = false;
         Time.timeScale = 1f;
         Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
@@ -67,9 +77,11 @@ public class TimeManager : MonoBehaviour
 }
 public static class CoroutineUtil
 {
-    public static IEnumerator WaitForRealSeconds(float time) {
+    public static IEnumerator WaitForRealSeconds(float time)
+    {
         float start = Time.realtimeSinceStartup;
-        while (Time.realtimeSinceStartup < start + time) {
+        while (Time.realtimeSinceStartup < start + time)
+        {
             yield return null;
         }
     }

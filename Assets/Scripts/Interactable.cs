@@ -13,11 +13,13 @@ public abstract class Interactable : MonoBehaviour
     /// This method invokes the InteractEvent and DoInteraction.
     /// Use this method for interacting, do NOT use DoInteraction directly
     /// </summary>
-    public void OnInteract() {
+    public void OnInteract()
+    {
         if (InteractEvent != null)
             InteractEvent();
 
-        if (allowedInteractions > 0) {
+        if (allowedInteractions > 0)
+        {
             allowedInteractions--;
             DoInteraction();
         }

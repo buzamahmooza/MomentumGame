@@ -8,7 +8,8 @@ public class PlayerHealth : Health
 {
     public event Action PlayerDeathEvent;
 
-    public override void Die() {
+    public override void Die()
+    {
         base.Die();
         if (PlayerDeathEvent != null)
             PlayerDeathEvent();

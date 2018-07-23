@@ -15,12 +15,14 @@ public class MeleeEnemy : Enemy
     private float meleeRange = 1f;
 
 
-    protected override void Awake() {
+    protected override void Awake()
+    {
         base.Awake();
         if (!attackHitbox) attackHitbox = GetComponent<EnemyHitbox>() ?? GetComponentInChildren<EnemyHitbox>();
     }
 
-    protected override void Start() {
+    protected override void Start()
+    {
         base.Start();
         if (attackHitbox)
             meleeRange = attackHitbox.collider2D.bounds.extents.magnitude +
@@ -28,11 +30,13 @@ public class MeleeEnemy : Enemy
         attackHitbox.collider2D.enabled = false;
     }
 
-    protected override void Update() {
+    protected override void Update()
+    {
         base.Update();
 
         // if attack is ready, attack as soon as the player is within melee range
-        if (attackReady && m_Attacking && targeting.AimDirection.magnitude < meleeRange) {
+        if (attackReady && m_Attacking && targeting.AimDirection.magnitude < meleeRange)
+        {
             attackReady = false;
             _anim.speed = m_DefaultAnimSpeed;
         }
@@ -42,7 +46,8 @@ public class MeleeEnemy : Enemy
     /// <summary>
     /// overriding Attack() so it won't play the attack sound
     /// </summary>
-    public override void Attack() {
+    public override void Attack()
+    {
         if (!m_CanAttack) return;
         if (m_Attacking) return;
 
@@ -55,7 +60,8 @@ public class MeleeEnemy : Enemy
     /// Jumps to the player direction so he'd get hurt. Just like COD knifing
     /// </summary>
     /// <param name="mult">Defaults to 1</param>
-    private void Lundge(float mult = 1f) {
+    private void Lundge(float mult = 1f)
+    {
         rb.AddForce(targeting.AimDirection * lungeForce * mult * rb.mass, ForceMode2D.Impulse);
     }
 
@@ -65,7 +71,8 @@ public class MeleeEnemy : Enemy
     /// Called when the attackIsReady to happen
     /// (for example an enemy raising a sword, when the sword is raised, he's ready to attack)
     /// </summary>
-    public void AttackReady() {
+    public void AttackReady()
+    {
         attackReady = true;
         _anim.speed = 0;
         Lundge();
@@ -77,31 +84,37 @@ public class MeleeEnemy : Enemy
     /// The enemy will only wait so long.
     /// </summary>
     /// <returns></returns>
-    IEnumerator AttackReadyTimeout(float seconds = 0.6f) {
+    IEnumerator AttackReadyTimeout(float seconds = 0.6f)
+    {
         yield return new WaitForSeconds(seconds);
         attackReady = false;
         _anim.speed = m_DefaultAnimSpeed;
     }
-    public void ActivateHitbox() {
+    public void ActivateHitbox()
+    {
         Lundge(0.4f);
         attackHitbox.collider2D.enabled = true;
         if (attackSound) audioSource.PlayOneShot(attackSound);
         StartCoroutine(Safety_DeactivateHitbox());
     }
-    IEnumerator Safety_DeactivateHitbox(float seconds=1f) {
+    IEnumerator Safety_DeactivateHitbox(float seconds = 1f)
+    {
         yield return new WaitForSeconds(seconds);
-        if(m_Attacking) {
+        if (m_Attacking)
+        {
             Debug.LogWarning("Hitbox was on for long, deactivating");
             CloseHitbox();
         }
     }
-    public void CloseHitbox() {
+    public void CloseHitbox()
+    {
         attackHitbox.collider2D.enabled = false;
         m_Attacking = false;
         attackReady = false;
     }
 
-    protected override void OnDrawGizmos() {
+    protected override void OnDrawGizmos()
+    {
         base.OnDrawGizmos();
     }
 }

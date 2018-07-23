@@ -47,7 +47,8 @@ public class Hitbox : MonoBehaviour
     void OnEnable() { collider2D.enabled = true; }
     void OnDisable() { collider2D.enabled = false; }
 
-    private void Awake() {
+    private void Awake()
+    {
         guiIndex = guiCount++;
 
         if (layerMask.value == 0) // initialize to "Enemy", "EnemyIgnore", "Object" layers
@@ -58,18 +59,21 @@ public class Hitbox : MonoBehaviour
         collider2D.enabled = false;
     }
 
-    private void Start() {
+    private void Start()
+    {
         if (!audioSource) audioSource = gameObject.AddComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter2D(Collider2D other) {
+    private void OnTriggerEnter2D(Collider2D other)
+    {
         var otherHealth = other.gameObject.GetComponent<Health>();
         var isInLayerMask = Utils.IsInLayerMask(layerMask, other.gameObject.layer);
         Debug.Log("layermask.value=" + layerMask.value);
 
         bool wasDead = otherHealth && otherHealth.IsDead;
 
-        if (isInLayerMask && other.attachedRigidbody) {
+        if (isInLayerMask && other.attachedRigidbody)
+        {
 
             Vector2 toTarget = (other.transform.position - transform.parent.transform.position).normalized;
             attackDirection.x *= Mathf.Sign(toTarget.x);
@@ -96,18 +100,21 @@ public class Hitbox : MonoBehaviour
                 if (OnHitEvent != null) OnHitEvent(other.gameObject, speedMult, isFinalBlow);
 
             if (attackSound) audioSource.PlayOneShot(attackSound);
-            if (hitStop > 0) {
+            if (hitStop > 0)
+            {
                 var seconds = hitStop * speedMult;
 
                 if (isFinalBlow) seconds *= killCoeff;
                 GameManager.TimeManager.DoHitStop(seconds);
             }
 
-            if (fisheye > 0) {
+            if (fisheye > 0)
+            {
                 GameManager.CameraController.DoFisheye(fisheye);
             }
 
-            if (slomoFactor < 1) {
+            if (slomoFactor < 1)
+            {
                 var theSlowdownFactor = slomoFactor / speedMult;
                 if (isFinalBlow) theSlowdownFactor /= killCoeff;
                 GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
@@ -119,13 +126,15 @@ public class Hitbox : MonoBehaviour
 
         }
 
-        if (deactivateOnContact && otherHealth) {
+        if (deactivateOnContact && otherHealth)
+        {
             collider2D.enabled = false;
             Debug.Log("Punch trigger disabled because it came in contact with " + other.gameObject.name);
         }
     }
 
-    void OnGUI() {
+    void OnGUI()
+    {
         if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) guiSlidersEnabled = !guiSlidersEnabled;
         if (!guiSlidersEnabled)
             return;

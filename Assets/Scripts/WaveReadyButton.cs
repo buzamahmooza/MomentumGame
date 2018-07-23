@@ -9,27 +9,32 @@ public class WaveReadyButton : Interactable
     private SpriteRenderer sr;
     private AudioSource audioSource;
 
-    void Awake() {
+    void Awake()
+    {
         sr = GetComponent<SpriteRenderer>();
         audioSource = GetComponent<AudioSource>();
     }
 
-    void Start() {
+    void Start()
+    {
         sr.sprite = spriteNotPressed;
     }
 
     void OnDisable() { }
-    void OnEnable() {
+    void OnEnable()
+    {
         sr.sprite = spriteNotPressed;
     }
 
-    protected override void DoInteraction() {
+    protected override void DoInteraction()
+    {
         sr.sprite = spritePressed;
         audioSource.Play();
         enabled = false;
     }
 
-    public override string GetPrompt() {
+    public override string GetPrompt()
+    {
         return "Start next wave";
     }
 }

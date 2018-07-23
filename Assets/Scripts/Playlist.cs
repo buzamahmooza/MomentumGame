@@ -8,7 +8,8 @@ class Playlist : List<AudioClip>
     public int current = -1;
 
     /// <inheritdoc />
-    public Playlist(AudioClip[] tracks) {
+    public Playlist(AudioClip[] tracks)
+    {
         this.AddRange(tracks);
     }
 
@@ -17,12 +18,17 @@ class Playlist : List<AudioClip>
     /// Starts with returning the first item
     /// </summary>
     /// <returns></returns>
-    public AudioClip Next() {
-        while (true) {
+    public AudioClip Next()
+    {
+        while (true)
+        {
             AudioClip next;
-            if (current < this.Count - 1) {
+            if (current < this.Count - 1)
+            {
                 next = this[++current];
-            } else {
+            }
+            else
+            {
                 // if at the last song, loop
                 current = -1;
                 next = Next();
@@ -33,7 +39,8 @@ class Playlist : List<AudioClip>
         }
     }
 
-    public void Shuffle() {
+    public void Shuffle()
+    {
         for (var i = 0; i < this.Count; i++)
             Swap(i, UnityEngine.Random.Range(0, this.Count - 1));
 
@@ -45,7 +52,8 @@ class Playlist : List<AudioClip>
     /// </summary>
     /// <param name="a">index of first element</param>
     /// <param name="b">index of second element</param>
-    private void Swap(int a, int b) {
+    private void Swap(int a, int b)
+    {
         if (a == b) return;
         if (a < 0 || a >= this.Count) throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", a));
         if (b < 0 || b >= this.Count) throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", b));

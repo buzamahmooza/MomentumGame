@@ -61,9 +61,11 @@ public class Walker : MonoBehaviour
     ///     Animator,
     ///     Health
     /// </summary>
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
         targeting = GetComponent<Targeting>();
-        if (!targeting) {
+        if (!targeting)
+        {
             targeting = gameObject.AddComponent<Targeting>();
             Debug.Log("Adding Targeting component to " + gameObject.name);
         }
@@ -92,9 +94,11 @@ public class Walker : MonoBehaviour
     /// <summary>
     /// If you want to modify any movements or Rigidbody forces/velocity do that here, otherwise your changes will be immediately overriden by this method as the velocity is modified directly
     /// </summary>
-    public void Move(Vector2 input, bool jump) {
+    public void Move(Vector2 input, bool jump)
+    {
         if (!BlockMoveInput)
-            if (control_AirControl || Grounded) {
+            if (control_AirControl || Grounded)
+            {
                 _move = input.x * moveSpeed;
             }
 
@@ -103,22 +107,28 @@ public class Walker : MonoBehaviour
             m_ReachedJumpPeak = true;
 
         // If on the wall
-        if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0) {
+        if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0)
+        {
             print("on wall");
             // On wall and falling
-            if (rb.velocity.y < 0) {
+            if (rb.velocity.y < 0)
+            {
                 m_HasDoubleJump = true;
 
                 // limit wallslide speed
-                if (rb.velocity.y < -wallSlideSpeedMax) {
+                if (rb.velocity.y < -wallSlideSpeedMax)
+                {
                     rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeedMax);
-                } else if (input.y > 0.5f) {
+                }
+                else if (input.y > 0.5f)
+                {
                     Debug.Log("trying to resist wall slide");
                 }
             }
         }
 
-        if (Grounded) {
+        if (Grounded)
+        {
             m_ReachedJumpPeak = false;
         }
         // TODO: on direction buttonUp, if(!direction && Grounded) set rb Y velocity to zero 0
@@ -127,7 +137,8 @@ public class Walker : MonoBehaviour
         rb.velocity = new Vector2(_move, rb.velocity.y);
 
         //When to jump
-        if (jump) {
+        if (jump)
+        {
             CallJump();
         }
     }
@@ -135,32 +146,43 @@ public class Walker : MonoBehaviour
     /// This method is called when the Move() method is asked to jump.
     /// This method checks for the conditions of being allowed to jump (such as jumping only when being grounded)
     /// </summary>
-    protected void CallJump() {
-        if (Grounded) {
+    protected void CallJump()
+    {
+        if (Grounded)
+        {
             m_lastGroundSpeed = _move; //Updating lastGroundSpeed
             Jump();
         }
     }
 
-    public void Jump() {
+    public void Jump()
+    {
         rb.AddForce(Vector2.up * rb.mass * jumpForce, ForceMode2D.Impulse);
     }
 
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
-    protected virtual void AdjustAnimationSpeed() {
+    protected virtual void AdjustAnimationSpeed()
+    {
         String clipName = _anim.GetCurrentAnimatorClipInfo(_anim.layerCount - 1)[_anim.layerCount - 1].clip.name;
 
-        if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1) { //walking animation and moving
+        if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1)
+        { //walking animation and moving
             _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedCoeff);
-        } else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1) {            //Airborn animation and moving
+        }
+        else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1)
+        {            //Airborn animation and moving
             _anim.speed = Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedCoeff * 5f / 8f));
-        } else {
+        }
+        else
+        {
             _anim.speed = m_DefaultAnimSpeed; //Go back to default speed
         }
     }
 
-    public bool Grounded {
-        get {
+    public bool Grounded
+    {
+        get
+        {
             m_Grounded = false;
             m_Grounded = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask)
                 .Any(col => col.gameObject != gameObject && !col.gameObject.transform.IsChildOf(this.transform));
@@ -169,11 +191,14 @@ public class Walker : MonoBehaviour
         }
         set { m_Grounded = value; }
     }
-    public bool CeilCheck {
+    public bool CeilCheck
+    {
         get { return Physics2D.OverlapCircleAll(point: m_CeilingCheck.position, radius: k_GroundedRadius, layerMask: floorMask).Any(col => col.gameObject != gameObject); }
     }
-    public bool Wallcheck {
-        get {
+    public bool Wallcheck
+    {
+        get
+        {
             m_Climb = Physics2D.OverlapCircleAll(m_ClimbCheck.position, k_WallcheckRaduis, floorMask)
                 .Any(hit => hit.transform != transform && !hit.transform.IsChildOf(this.transform));
             return m_Climb;
@@ -188,14 +213,17 @@ public class Walker : MonoBehaviour
     public int FacingSign { get { return FacingRight ? 1 : -1; } }
 
     /// <summary> If set to true, all movement inputs will be ignored </summary>
-    public bool BlockMoveInput {
+    public bool BlockMoveInput
+    {
         get { return blockMoveInput; }
         set { blockMoveInput = value; }
     }
 
-    protected virtual void OnCollisionEnter2D(Collision2D collision) {
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
+    {
         // Play footstep sound, if player falls fast enough
-        if (rb.velocity.y * Time.deltaTime < 2) {
+        if (rb.velocity.y * Time.deltaTime < 2)
+        {
             audioSource.PlayOneShot(footstepSound, 0.5f);
         }
     }
@@ -204,12 +232,14 @@ public class Walker : MonoBehaviour
     /// Updating the animatorController parameters: [Grounded, VSpeed, Speed]
     /// this method should be overriden and extended to add any extra animator params.
     /// </summary>
-    public virtual void UpdateAnimatorParams() {
+    public virtual void UpdateAnimatorParams()
+    {
         _anim.SetBool("Grounded", Grounded);
         _anim.SetFloat("VSpeed", Mathf.Abs(rb.velocity.y));
         _anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
     }
-    public virtual void Flip() {
+    public virtual void Flip()
+    {
         FacingRight = !FacingRight;
         Vector3 theScale = transform.localScale;
         theScale.x = -1 * (theScale.x);
@@ -221,26 +251,34 @@ public class Walker : MonoBehaviour
         health.healthBar.transform.localScale = healthBarScale;
     }
     /// <summary> Uses the <code>FacingRight</code> and m_facesAimDirection to Flip the player's direction </summary>
-    protected virtual void FaceAimDirection() {
-        if (Grounded || control_AirControl) {
-            if (control_facesAimDirection) { // If should face the AimDirection
+    protected virtual void FaceAimDirection()
+    {
+        if (Grounded || control_AirControl)
+        {
+            if (control_facesAimDirection)
+            { // If should face the AimDirection
                 FaceDirection(targeting.AimDirection.x); ;
-            } else {
+            }
+            else
+            {
                 FaceDirection(_move);
             }
         }
     }
 
-    protected void FaceDirection(float directionX) {
+    protected void FaceDirection(float directionX)
+    {
         if (FacingRight && directionX < 0) Flip(); // If directionX is left and facing right, Flip()
         else if (!FacingRight && directionX > 0) Flip(); // If directionX is right and facing left, Flip()
     }
 
-    public void PlayFootstepSound() {
+    public void PlayFootstepSound()
+    {
         //audioSource.PlayOneShot(footstepSound, 0.5f);
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         Gizmos.DrawWireSphere(m_GroundCheck.position, k_GroundedRadius);
         Gizmos.DrawWireSphere(m_ClimbCheck.position, k_WallcheckRaduis);
     }

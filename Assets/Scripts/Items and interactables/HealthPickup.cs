@@ -8,13 +8,15 @@ public class HealthPickup : Pickup
     [SerializeField] private GameObject floatingHealthText;
 
     /// <inheritdoc />
-    protected override void OnPickup(GameObject picker) {
+    protected override void OnPickup(GameObject picker)
+    {
         var health = picker.GetComponent<Health>() ?? picker.GetComponentInParent<Health>();
         if (health)
             health.RegenerateHealth(regenAmount);
         else
             Debug.LogWarning("Pickup picker does not contain a Health script: " + picker.name);
-        if (floatingHealthText) {
+        if (floatingHealthText)
+        {
             var floatingTextInstance = Instantiate(floatingHealthText, transform.position, Quaternion.identity);
             var floatingText = floatingTextInstance.GetComponent<FloatingText>();
             floatingText.Init(string.Format("+{0}HP", regenAmount));

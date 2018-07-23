@@ -23,14 +23,17 @@ public class CameraController : MonoBehaviour
     [SerializeField] [Range(0, 20)] float fisheyeSmooth = 0.3f;
     private Animator animator;
 
-    private void Awake() {
+    private void Awake()
+    {
         animator = GetComponent<Animator>();
         fisheye = Camera.main.GetComponent<Fisheye>();
     }
 
     // Use this for initialization
-    private void Start() {
-        if (!target) {
+    private void Start()
+    {
+        if (!target)
+        {
             target = GameManager.Player.transform;
         }
 
@@ -39,7 +42,8 @@ public class CameraController : MonoBehaviour
         offset = transform.position - target.position;
     }
 
-    private void LateUpdate() {
+    private void LateUpdate()
+    {
         ApproachTarget();
 
         if (bounds)
@@ -51,13 +55,17 @@ public class CameraController : MonoBehaviour
         //UpdateFisheye();
     }
 
-    private void UpdateFisheye() {
+    private void UpdateFisheye()
+    {
         // if fisheyeValue ~== zero
-        if (Math.Abs(fisheyeValue) < 0.01f) {
+        if (Math.Abs(fisheyeValue) < 0.01f)
+        {
             // end fisheye
             fisheye.enabled = false;
             fisheyeValue = 0;
-        } else {
+        }
+        else
+        {
             Mathf.Lerp(fisheye.strengthX, fisheyeValue, Time.time * fisheyeSmooth);
             // decrease fisheyeValue
             fisheyeValue -= Time.deltaTime;
@@ -67,7 +75,8 @@ public class CameraController : MonoBehaviour
 
     }
 
-    public void DoFisheye(float intensity) {
+    public void DoFisheye(float intensity)
+    {
         if (!fisheye) { Debug.LogError("Fisheye is null"); return; }
         //animator.SetTrigger("Fisheye");
         //return;
@@ -80,7 +89,8 @@ public class CameraController : MonoBehaviour
         fisheyeValue = intensity;
     }
 
-    private void ApproachTarget() {
+    private void ApproachTarget()
+    {
         Vector3 offset2D = new Vector3(offset.x, offset.y, 0);
         Vector3 targetPos2D = new Vector3(target.position.x, target.position.y, zDist);
 
@@ -97,7 +107,8 @@ public class CameraController : MonoBehaviour
         );
     }
 
-    public Vector3 LookAheadPos {
+    public Vector3 LookAheadPos
+    {
         get { return target ? (target.position - transform.position) : Vector3.zero; }
     }
 }

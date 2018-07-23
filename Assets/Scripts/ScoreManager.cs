@@ -9,7 +9,8 @@ public class ScoreManager : MonoBehaviour
     [SerializeField] [Range(0, 100)] private float scoreAdded2MomentumPercent;
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         UpdateScore();
     }
 
@@ -18,7 +19,8 @@ public class ScoreManager : MonoBehaviour
     /// Also adds momentum with a value of x% of the addedScore
     /// </summary>
     /// <param name="addedScore"></param>
-    public void AddScore(float addedScore) {
+    public void AddScore(float addedScore)
+    {
         if (addedScore < 0) addedScore = 0;
         GameManager.Player.GetComponent<PlayerMove>().AddMomentum(addedScore * scoreAdded2MomentumPercent / 100.0f);
 
@@ -26,7 +28,8 @@ public class ScoreManager : MonoBehaviour
         UpdateScore();
     }
 
-    private void UpdateScore() {
+    private void UpdateScore()
+    {
         System.Diagnostics.Debug.Assert(scoreText != null, "scoreText != null");
         if (scoreText) scoreText.text = "Score: " + currentScore;
     }

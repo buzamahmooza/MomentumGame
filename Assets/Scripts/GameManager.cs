@@ -18,8 +18,10 @@ public class GameManager : MonoBehaviour
     public static Rigidbody2D PlayerRb { get { return Player.GetComponent<Rigidbody2D>(); } }
     public static PlayerHealth PlayerHealth { get { return Player == null ? null : Player.GetComponent<PlayerHealth>(); } }
     public static CameraShake CameraShake { get { return Camera.main.GetComponent<CameraShake>(); } }
-    public static CameraController CameraController {
-        get {
+    public static CameraController CameraController
+    {
+        get
+        {
             cameraController = cameraController ?? Camera.main.gameObject.transform.parent.GetComponent<CameraController>();
             return cameraController;
         }
@@ -28,30 +30,37 @@ public class GameManager : MonoBehaviour
 
     public static ComboManager ComboManager { get { return GameObject.Find("ComboManager").GetComponent<ComboManager>(); } }
 
-    public static ScoreManager ScoreManager {
+    public static ScoreManager ScoreManager
+    {
         get { return scoreManager = scoreManager ?? GameObject.Find("Game Controller").GetComponent<ScoreManager>(); }
     }
-    public static AudioSource AudioSource {
+    public static AudioSource AudioSource
+    {
         get { return GameObject.Find("Game Controller").GetComponent<AudioSource>(); }
     }
 
 
-    private static void Awake() {
+    private static void Awake()
+    {
         cameraController = Camera.main.gameObject.transform.parent.GetComponent<CameraController>();
     }
-    private void Start() {
+    private void Start()
+    {
         if (!timeManager) timeManager = GetComponent<TimeManager>();
     }
 
-    private void Update() {
+    private void Update()
+    {
         //restart level
-        if (Input.GetKeyDown(KeyCode.R)) {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
-    
 
-    private void OnGUI() {
+
+    private void OnGUI()
+    {
         GUI.TextArea(new Rect(new Vector2(200, 30), new Vector2(100, 800)), string.Join("\n", logs.ToArray()), new GUIStyle());
     }
 
@@ -65,7 +74,8 @@ public class GameManager : MonoBehaviour
     /// <param name="text"></param>
     /// <param name="value"></param>
     /// <param name="y"></param>
-    public static float AddGUISlider(string text, float value, int y) {
+    public static float AddGUISlider(string text, float value, int y)
+    {
         GUI.TextField(new Rect(x: 150, y: y, width: 100, height: GameManager.guiH), text: string.Format("{0}  ({1})", text, value), maxLength: 40, style: new GUIStyle());
         return GUI.HorizontalSlider(new Rect(x: 25, y: y, width: 100, height: GameManager.guiH), value, 0.0f, 100.0f);
     }

@@ -9,7 +9,8 @@ public class Music : MonoBehaviour
     private AudioSource audioSource;
     private Playlist _playlist;
 
-    private void Awake() {
+    private void Awake()
+    {
         audioSource = GetComponent<AudioSource>();
         _playlist = new Playlist(tracks);
         if (audioSource.clip) _playlist.Add(audioSource.clip);
@@ -19,7 +20,8 @@ public class Music : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
         if (shufflePlaylist)
             _playlist.Shuffle();
         // play the first sound track
@@ -28,7 +30,8 @@ public class Music : MonoBehaviour
         StartCoroutine(PlayAfterTrackIsOver(audioClip));
     }
 
-    public IEnumerator PlayAfterTrackIsOver(AudioClip clip) {
+    public IEnumerator PlayAfterTrackIsOver(AudioClip clip)
+    {
         yield return new WaitForSeconds(clip.length);
 
         var nextAudioClip = _playlist.Next();

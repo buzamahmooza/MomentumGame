@@ -53,7 +53,8 @@ public class Shooter : MonoBehaviour
             float randomShootAngle,
             int damage,
             AudioClip shootSound
-        ) {
+        )
+        {
             this.cameraKickback = cameraKickback;
             this.projectilePrefab = projectilePrefab;
             this.projectileSpeed = projectileSpeed;
@@ -65,29 +66,35 @@ public class Shooter : MonoBehaviour
         }
     }
 
-    protected virtual void Awake() {
+    protected virtual void Awake()
+    {
         audioSource = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
         targeting = GetComponent<Targeting>();
     }
 
-    public void ShootIfAllowed(Vector2 shootDirection) {
-        if (m_TimeSinceLastShot >= m_TimeBetweenShots) {
+    public void ShootIfAllowed(Vector2 shootDirection)
+    {
+        if (m_TimeSinceLastShot >= m_TimeBetweenShots)
+        {
             m_TimeSinceLastShot = 0; // reset shoot timer
             Shoot(shootDirection);
         }
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate()
+    {
         FixShootTiming();
     }
 
-    public void FixShootTiming() {
+    public void FixShootTiming()
+    {
         m_TimeBetweenShots = Time.fixedDeltaTime * 360.0f / CurrentWeaponStats.rpm;
         m_TimeSinceLastShot += Time.fixedDeltaTime;
     }
 
-    public virtual void Shoot(Vector2 shootDirection) {
+    public virtual void Shoot(Vector2 shootDirection)
+    {
         shootDirection.Normalize();
         float randomOffset = Random.Range(-CurrentWeaponStats.wiggleShootOffset, CurrentWeaponStats.wiggleShootOffset);
         Vector2 positionWithWiggle = (new Vector2(-shootDirection.y, shootDirection.x)).normalized * randomOffset;
@@ -112,11 +119,13 @@ public class Shooter : MonoBehaviour
         rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
     }
 
-    private void SetWeaponStats(WeaponStats newWeaponStats) {
+    private void SetWeaponStats(WeaponStats newWeaponStats)
+    {
         CurrentWeaponStats = newWeaponStats;
     }
 
-    private void OnDrawGizmos() {
+    private void OnDrawGizmos()
+    {
         // draw the randomShootAngle lines
         if (!targeting) return;
         var shootDirection = targeting.AimDirection.normalized;

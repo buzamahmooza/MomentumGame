@@ -18,8 +18,9 @@ public class ComboInstance
     /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
     public float TimeSinceLastAttack { get; private set; }
 
-    public ComboInstance(float maxTimeBetweenAttacks) {
-        this.MaxTimeBetweenAttacks = maxTimeBetweenAttacks;
+    public ComboInstance(float maxTimeBetweenAttacks)
+    {
+        MaxTimeBetweenAttacks = maxTimeBetweenAttacks;
         HasEnded = false;
         TimeSinceLastAttack = 0;
     }
@@ -28,12 +29,15 @@ public class ComboInstance
 
 
     /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
-    public float MaxTimeBetweenAttacks {
+    public float MaxTimeBetweenAttacks
+    {
         get;
         private set;
     }
-    public float TimeRemainingBeforeTimeout {
-        get {
+    public float TimeRemainingBeforeTimeout
+    {
+        get
+        {
             return TimeSinceLastAttack < MaxTimeBetweenAttacks ?
                MaxTimeBetweenAttacks - TimeSinceLastAttack :
               0;
@@ -45,19 +49,24 @@ public class ComboInstance
     /// <summary> Use this method in Update() and pass Time.deltaTime
     /// so that the timer will be affected by timeScale </summary>
     /// <param name="timePassed"></param>
-    public void AddTime(float timePassed) {
+    public void AddTime(float timePassed)
+    {
         Debug.Assert(timePassed > 0 && !float.IsNaN(timePassed));
-        if (!HasEnded) {
+        if (!HasEnded)
+        {
             TimeSinceLastAttack += timePassed;
-            if (TimeSinceLastAttack > MaxTimeBetweenAttacks) {
+            if (TimeSinceLastAttack > MaxTimeBetweenAttacks)
+            {
                 OnTimerEnd();
             }
         }
     }
 
     /// <summary> Called when waited too long between attacks </summary>
-    private void OnTimerEnd() {
-        if (!HasEnded) {
+    private void OnTimerEnd()
+    {
+        if (!HasEnded)
+        {
             HasEnded = true;
             TimeSinceLastAttack = 0;
             Debug.Log("ComboInstance ended cuz no attacks have been registered for longer than " + MaxTimeBetweenAttacks + " seconds.");
@@ -68,7 +77,8 @@ public class ComboInstance
     /// Called everytime an attack happens.
     /// This method resets the timer and increments the combo count
     /// </summary>
-    public void IncrementCount() {
+    public void IncrementCount()
+    {
         if (HasEnded) { Debug.LogWarning("ComboInstance has already ended, you can't change it after that."); return; }
         Count++;
 
