@@ -1,5 +1,12 @@
-﻿using UnityEngine;
+﻿using System.Timers;
+using UnityEngine;
 
+/// <summary>
+/// NOTE: Instances of ComboInstance must be continuesly updated by an external timer (via Update).
+/// </summary>
+/// <example>
+/// void Update() { comboInstance.AddTime(Time.deltaTime); }
+/// </example>
 public class ComboInstance
 {
     /// indicates if the combo has already ended
@@ -8,42 +15,64 @@ public class ComboInstance
     /// The combo count of the current instance (each hit in the combo increments the count by one).
     /// </summary>
     public int Count { get; private set; }
-    /// <summary> the maximum time between each consecutive hit without dropping the combo </summary>
-    [SerializeField] private float maxTimeBetweenCombos = 2f;
-    private System.Timers.Timer _timer;
+    /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
+    public float TimeSinceLastAttack { get; private set; }
 
-    public ComboInstance() {
+    public ComboInstance(float maxTimeBetweenAttacks) {
+        this.MaxTimeBetweenAttacks = maxTimeBetweenAttacks;
         HasEnded = false;
-        SetTimer();
+        TimeSinceLastAttack = 0;
+    }
+    // defaults to 2f
+    public ComboInstance() : this(2f) { }
+
+
+    /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
+    public float MaxTimeBetweenAttacks {
+        get;
+        private set;
+    }
+    public float TimeRemainingBeforeTimeout {
+        get {
+            return TimeSinceLastAttack < MaxTimeBetweenAttacks ?
+               MaxTimeBetweenAttacks - TimeSinceLastAttack :
+              0;
+        }
     }
 
-    //TODO: this timer doesn't get affected by timescale, we need it to affect it, otherwise the slomotion will still count as normal time
-    /// <summary>
-    /// Sets the _timer of the combo,
-    /// when the timer goes off, the combo will have ended.
-    /// The combo is reset on IncrementCount()
-    /// </summary>
-    private void SetTimer() {
-        if (_timer != null) _timer.Dispose();
-        // create a timer and set its interval and enable it
-        _timer = new System.Timers.Timer {
-            Interval = maxTimeBetweenCombos * 1000,
-            Enabled = true
-        };
 
-        // subscribe to the Elapsed event with an anonymous delegate function
-        _timer.Elapsed += delegate {
-            if (!HasEnded) {
-                HasEnded = true;
-                Debug.Log("ComboInstance ended cuz no attacks have been registered for longer than " + maxTimeBetweenCombos +
-                          " seconds.");
+
+    /// <summary> Use this method in Update() and pass Time.deltaTime
+    /// so that the timer will be affected by timeScale </summary>
+    /// <param name="timePassed"></param>
+    public void AddTime(float timePassed) {
+        Debug.Assert(timePassed > 0 && !float.IsNaN(timePassed));
+        if (!HasEnded) {
+            TimeSinceLastAttack += timePassed;
+            if (TimeSinceLastAttack > MaxTimeBetweenAttacks) {
+                OnTimerEnd();
             }
-        };
+        }
     }
 
+    /// <summary> Called when waited too long between attacks </summary>
+    private void OnTimerEnd() {
+        if (!HasEnded) {
+            HasEnded = true;
+            TimeSinceLastAttack = 0;
+            Debug.Log("ComboInstance ended cuz no attacks have been registered for longer than " + MaxTimeBetweenAttacks + " seconds.");
+        }
+    }
+
+    /// <summary>
+    /// Called everytime an attack happens.
+    /// This method resets the timer and increments the combo count
+    /// </summary>
     public void IncrementCount() {
         if (HasEnded) { Debug.LogWarning("ComboInstance has already ended, you can't change it after that."); return; }
         Count++;
-        SetTimer();
+
+        // reset the timer
+        TimeSinceLastAttack = 0;
     }
 }
