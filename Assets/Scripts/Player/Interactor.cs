@@ -33,8 +33,10 @@ public class Interactor : MonoBehaviour
         StartCoroutine(disableTextCoroutine);
 
         if (CrossPlatformInputManager.GetButtonDown("Fire1") || InputManager.ActiveDevice.Action3.IsPressed) {
-            interactable.OnInteract();
-            DisableText();
+            if (interactable.enabled) {
+                interactable.OnInteract();
+                DisableText();
+            }
         }
     }
 

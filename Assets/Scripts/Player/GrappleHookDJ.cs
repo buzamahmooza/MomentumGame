@@ -149,7 +149,7 @@ public class GrappleHookDJ : MonoBehaviour
     private void Pull(GameObject obj) {
         joint.enabled = true;
 
-        var otherRigidbody = grabbedObj.GetComponent<Rigidbody2D>();
+        var otherRigidbody = grabbedObj ? grabbedObj.GetComponent<Rigidbody2D>() : null;
         joint.connectedBody = otherRigidbody;
 
         if (otherRigidbody && !otherRigidbody.bodyType.Equals(RigidbodyType2D.Static)) {

@@ -29,7 +29,7 @@ public class AimInput : Targeting
 
         //switch to mouse if mouse pressed:
         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1)) {
-            Debug.Log("Mouse button pressed, switching to mouse control");
+            //Debug.Log("Mouse button pressed, switching to mouse control");
             usingMouse = true;
             usingJoystick = false;
         }

@@ -204,7 +204,7 @@ public class Walker : MonoBehaviour
     /// Updating the animatorController parameters: [Grounded, VSpeed, Speed]
     /// this method should be overriden and extended to add any extra animator params.
     /// </summary>
-    protected virtual void UpdateAnimatorParams() {
+    public virtual void UpdateAnimatorParams() {
         _anim.SetBool("Grounded", Grounded);
         _anim.SetFloat("VSpeed", Mathf.Abs(rb.velocity.y));
         _anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));

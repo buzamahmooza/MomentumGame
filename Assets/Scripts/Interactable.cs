@@ -21,8 +21,6 @@ public abstract class Interactable : MonoBehaviour
             allowedInteractions--;
             DoInteraction();
         }
-
-        print("allowedInteractions:   " + allowedInteractions);
     }
     /// <summary>
     /// Override this method in subclasses, but do not use call, instead use, <see cref="OnInteract"/>

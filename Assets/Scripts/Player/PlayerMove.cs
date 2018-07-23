@@ -215,6 +215,7 @@ public class PlayerMove : Walker
         }
     }
 
+    /// <inheritdoc />
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
     protected override void AdjustAnimationSpeed() {
         String clipName = _anim.GetCurrentAnimatorClipInfo(_anim.layerCount - 1)[_anim.layerCount - 1].clip.name;
@@ -233,12 +234,8 @@ public class PlayerMove : Walker
     }
 
     public bool CanDashAttack { get { return Mathf.Abs(rb.velocity.x) > minDashAttackSpeedThr * momentum; } }
-
-    protected override void OnCollisionEnter2D(Collision2D collision) {
-        base.OnCollisionEnter2D(collision);
-    }
-
-    protected override void UpdateAnimatorParams() {
+    
+    public override void UpdateAnimatorParams() {
         base.UpdateAnimatorParams();
         _anim.SetBool("Grappling", grapple.m_Flying);
 

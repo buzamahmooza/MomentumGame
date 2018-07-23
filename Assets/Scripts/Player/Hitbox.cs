@@ -64,7 +64,7 @@ public class Hitbox : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other) {
         var otherHealth = other.gameObject.GetComponent<Health>();
-        var isInLayerMask = (layerMask.value & 1 << other.gameObject.layer) != 0;
+        var isInLayerMask = Utils.IsInLayerMask(layerMask, other.gameObject.layer);
         Debug.Log("layermask.value=" + layerMask.value);
 
         bool wasDead = otherHealth && otherHealth.IsDead;
