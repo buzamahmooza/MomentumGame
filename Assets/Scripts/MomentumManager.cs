@@ -10,7 +10,7 @@ public class MomentumManager : MonoBehaviour
 
     [SerializeField] private GameObject floatingTextPrefab;
     [SerializeField] [Range(0, 10f)] private float decayIntervalInSeconds = 1f;
-    [SerializeField] [Range(0, 1f)] private float decayAmount = 0.2f;
+    [SerializeField] [Range(0, 1f)] private float decayAmount = 0.05f;
 
     /// <summary> the maximum amount the momentum multiplier can reach </summary>
     [SerializeField] [Range(0, 10f)] private float maxMomentum = 10f;
@@ -43,11 +43,11 @@ public class MomentumManager : MonoBehaviour
 
     public void AddMomentum(float momentumAdded)
     {
-        if (!_startedGame)
-        {
-            _startedGame = true;
+        if (_startedGame)
             StartCoroutine(DecayMomentum());
-        }
+        else
+            _startedGame = true;
+
 
         if (momentumAdded < 0)
         {
@@ -58,8 +58,7 @@ public class MomentumManager : MonoBehaviour
         Momentum += momentumAdded;
         Debug.Log("Momentum is now: " + momentumAdded);
 
-        momentumSlider.value = Momentum;
-        momentumText.text = "Momentum: x" + Momentum;
+        UpdateMomentum();
 
         //creating momentum floatingText
         if (floatingTextPrefab)
@@ -72,6 +71,13 @@ public class MomentumManager : MonoBehaviour
         }
     }
 
+    /// <summary> Updates the momentum GUI (text and slider) </summary>
+    private void UpdateMomentum()
+    {
+        momentumSlider.value = Momentum;
+        momentumText.text = "Momentum: x" + Momentum;
+    }
+
     IEnumerator DecayMomentum()
     {
         float newVal = Momentum - decayAmount;
@@ -82,6 +88,7 @@ public class MomentumManager : MonoBehaviour
         }
 
         Momentum = Mathf.Clamp(newVal, 0, maxMomentum);
+        UpdateMomentum();
         yield return new WaitForSeconds(decayIntervalInSeconds);
         StartCoroutine(DecayMomentum());
         yield return null;
