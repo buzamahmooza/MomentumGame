@@ -52,9 +52,11 @@ public class GameManager : MonoBehaviour
     private void Update()
     {
         //restart level
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetButton("Restart"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            Time.timeScale = 1f;
+            Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
         }
     }
 

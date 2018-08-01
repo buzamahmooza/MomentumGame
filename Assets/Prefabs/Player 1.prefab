@@ -175,9 +175,11 @@ GameObject:
   - component: {fileID: 114152568044484468}
   - component: {fileID: 114501295167312770}
   - component: {fileID: 114984777739380634}
+  - component: {fileID: 114778329432344400}
   - component: {fileID: 82049625007252686}
   - component: {fileID: 120961800247076382}
   - component: {fileID: 232067819660577250}
+  - component: {fileID: 114918820639057462}
   m_Layer: 10
   m_Name: Player 1
   m_TagString: Player
@@ -1102,16 +1104,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HasReachedSlamPeak: 0
-  maxTimeBetweenAttacks: 2
+  maxTimeBetweenAttacks: 4
   dashAttackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
   slamAttackSound: {fileID: 8300000, guid: 518b87c20662fd640997caaaeb67f349, type: 3}
   slamExplosionObj: {fileID: 1786255796667864, guid: 448bfefac1a48d94583f96f89b94ce52,
     type: 2}
   hitboxes:
-    punchHitbox: {fileID: 0}
-    slamHitbox: {fileID: 0}
-    dashAttackHitbox: {fileID: 0}
-    uppercutHitbox: {fileID: 0}
+    punchHitbox: {fileID: 114288068967152634}
+    slamHitbox: {fileID: 114708740765897438}
+    dashAttackHitbox: {fileID: 114089587266126236}
+    uppercutHitbox: {fileID: 114454820563067926}
   explosionRadius: 2
   upwardModifier: 1.73
   explosionMask:
@@ -1130,7 +1132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jitter: {x: 0.2, y: 0.09}
+  jitter: {x: 0.11, y: 0.09}
   attackSound: {fileID: 8300000, guid: f93bc16fa84571648904d10e9c988b76, type: 3}
   damageAmount: 24
   deactivateOnContact: 1
@@ -1183,7 +1185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jitter: {x: 0.2, y: 0.09}
+  jitter: {x: 0.15, y: 0.09}
   attackSound: {fileID: 8300000, guid: f93bc16fa84571648904d10e9c988b76, type: 3}
   damageAmount: 24
   deactivateOnContact: 1
@@ -1312,7 +1314,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7321857140f57469463fc1baf99152, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jitter: {x: 0.1, y: 0.07}
+  jitter: {x: 0.07, y: 0.07}
   attackSound: {fileID: 8300000, guid: 518b87c20662fd640997caaaeb67f349, type: 3}
   damageAmount: 27
   deactivateOnContact: 1
@@ -1326,6 +1328,17 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 6144
   collider2D: {fileID: 0}
+--- !u!114 &114778329432344400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1533114883056634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acfc8646b27d26d44b1a610e95e77b95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114809542759435404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1353,6 +1366,22 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114918820639057462
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1533114883056634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ff3700d0bd64242b48b30510856a786, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputSmoother: 0.202
+  _touchJoystickAmplitude: 100
+  _touchNob1: {fileID: 0}
+  _touchNob2: {fileID: 0}
+  _deadZone: 0.2
 --- !u!114 &114984777739380634
 MonoBehaviour:
   m_ObjectHideFlags: 1

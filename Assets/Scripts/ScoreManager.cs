@@ -22,7 +22,7 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(float addedScore)
     {
         if (addedScore < 0) addedScore = 0;
-        GameManager.Player.GetComponent<PlayerMove>().AddMomentum(addedScore * scoreAdded2MomentumPercent / 100.0f);
+        GameManager.Player.GetComponent<MomentumManager>().AddMomentum(addedScore * scoreAdded2MomentumPercent / 100.0f);
 
         currentScore += addedScore;
         UpdateScore();
