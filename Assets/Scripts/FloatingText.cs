@@ -41,7 +41,7 @@ public class FloatingText : MonoBehaviour
             transform.position = Vector2.MoveTowards(
                 transform.position,
                 destination.position,
-                Vector2.Distance(transform.position, destination.position)
+                Vector2.Distance(transform.position, destination.position) * smooth
             );
         }
     }

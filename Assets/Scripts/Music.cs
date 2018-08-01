@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Timers;
 using UnityEngine;
 using Random = System.Random;
 
@@ -20,7 +21,7 @@ public class Music : MonoBehaviour
     }
 
     // Use this for initialization
-    void Start()
+    private void Start()
     {
         if (shufflePlaylist)
             _playlist.Shuffle();
@@ -30,13 +31,12 @@ public class Music : MonoBehaviour
         StartCoroutine(PlayAfterTrackIsOver(audioClip));
     }
 
-    public IEnumerator PlayAfterTrackIsOver(AudioClip clip)
+    private IEnumerator PlayAfterTrackIsOver(AudioClip clip)
     {
         yield return new WaitForSeconds(clip.length);
-
         var nextAudioClip = _playlist.Next();
         audioSource.PlayOneShot(nextAudioClip);
         StartCoroutine(PlayAfterTrackIsOver(nextAudioClip));
+        yield return null;
     }
-
 }

@@ -7,9 +7,9 @@ using InControl;
 [RequireComponent(typeof(PlayerMove))]
 public class AimInput : Targeting
 {
-    public float mouseMoveThreshold = 0.3f,
+    [SerializeField] float mouseMoveThreshold = 0.3f,
         JoystickThreshold = 0.2f;
-    public bool debugMousePosition = false;
+    [SerializeField] bool debugMousePosition = false;
     /// <summary>
     /// Do NOT modify this directly outside the class
     /// </summary>
@@ -23,12 +23,12 @@ public class AimInput : Targeting
     {
         playerMove = GameManager.Player.GetComponent<PlayerMove>();
     }
-
+    
     private void FixedUpdate()
     {
         RecheckInputDevice();
         lastMousePos = MousePos;
-
+#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE)
         //switch to mouse if mouse pressed:
         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1))
         {
@@ -45,6 +45,7 @@ public class AimInput : Targeting
             usingMouse = false;
             usingJoystick = true;
         }
+#endif
     }
 
     /// <summary>
@@ -134,14 +135,13 @@ public class AimInput : Targeting
     {
         get
         {
-            Camera c = Camera.main;
             float depth;
             if (GameManager.Player)
                 depth = GameManager.Player.transform.position.z - Camera.main.transform.position.z;
             else
-                depth = Mathf.Abs(c.transform.position.z);
+                depth = Mathf.Abs(Camera.main.transform.position.z);
 
-            return (c.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, depth)));
+            return (Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, depth)));
         }
     }
     /// <summary>
@@ -172,9 +172,8 @@ public class AimInput : Targeting
     }
 
     /// <summary>
-    /// 
+    /// Returns Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis
     /// </summary>
-    /// <param name="rawAxis"></param>
     /// <returns>Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis</returns>
     public static Vector2 InputGetAxisVector
     {

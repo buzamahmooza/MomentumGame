@@ -21,11 +21,10 @@ public class CameraController : MonoBehaviour
     private Fisheye fisheye;
     [SerializeField] private float fisheyeValue = 0.0f;
     [SerializeField] [Range(0, 20)] float fisheyeSmooth = 0.3f;
-    private Animator animator;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        GetComponent<Animator>();
         fisheye = Camera.main.GetComponent<Fisheye>();
     }
 

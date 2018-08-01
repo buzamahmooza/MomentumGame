@@ -117,7 +117,7 @@ namespace UnityStandardAssets.CrossPlatformInput
 			if (Input.touchCount >= m_Id + 1 && m_Id != -1)
 			{
 #if !UNITY_EDITOR
-
+	
             if (controlStyle == ControlStyle.Swipe)
             {
                 m_Center = m_PreviousTouchPos;

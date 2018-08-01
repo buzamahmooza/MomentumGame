@@ -10,39 +10,38 @@ using UnityStandardAssets.CrossPlatformInput;
 public class PlayerAttack : MonoBehaviour
 {
     [HideInInspector] public bool HasReachedSlamPeak = false;
-    [SerializeField] [Range(0, 4f)] private float maxTimeBetweenAttacks = 2f;
+    [SerializeField] [Range(0, 4f)] float maxTimeBetweenAttacks = 2f;
     public ComboInstance currentCombo = null;
 
-    [SerializeField] private AudioClip dashAttackSound, slamAttackSound;
-    [SerializeField] private GameObject slamExplosionObj = null;
+    [SerializeField] AudioClip dashAttackSound, slamAttackSound;
+    [SerializeField] GameObject slamExplosionObj = null;
 
     // This is just to make the members collapsable in the inspector
-    [System.Serializable] private struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
-    [SerializeField] private Hitboxes hitboxes;
-    [SerializeField] [Range(0.5f, 10f)] private float explosionRadius = 2;
-    [SerializeField] [Range(0f, 10f)] private float upwardModifier = 1;
-    [SerializeField] private LayerMask explosionMask;
+    [System.Serializable] struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
+    [SerializeField] Hitboxes hitboxes;
+    [SerializeField] [Range(0.5f, 10f)] float explosionRadius = 2;
+    [SerializeField] [Range(0f, 10f)] float upwardModifier = 1;
+    [SerializeField] LayerMask explosionMask;
 
-    private bool slam,
-                punch,
-                uppercut;
+    bool slam,
+        punch,
+        uppercut;
 
     [SerializeField]
-    private float dashAttackSpeedFactor = 1.5f,
+    float dashAttackSpeedFactor = 1.5f,
                 uppercutJumpForce = 1f;
-    private float animSpeed = 1;
+    float animSpeed = 1;
 
     // components
-    private Animator _anim;
-    private PlayerMove playerMove;
-    private AudioSource audioSource;
-    private Rigidbody2D rb;
+    Animator _anim;
+    PlayerMove playerMove;
+    Rigidbody2D rb;
 
 
-    private void Awake()
+    void Awake()
     {
         playerMove = GetComponent<PlayerMove>();
-        audioSource = GetComponent<AudioSource>();
+        GetComponent<AudioSource>();
         _anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
 
@@ -55,7 +54,7 @@ public class PlayerAttack : MonoBehaviour
         if (!hitboxes.dashAttackHitbox) hitboxes.dashAttackHitbox = transform.Find("DashAttackTrigger").GetComponent<Hitbox>();
     }
 
-    private void Start()
+    void Start()
     {
         print("explosionMask = " + explosionMask.value);
         hitboxes.slamHitbox.enabled = false;
@@ -69,15 +68,15 @@ public class PlayerAttack : MonoBehaviour
 
         SubscribeToHitEvents();
     }
-    // TODO: move the effects (screenshake, hitStop and slomo) here rather than having it in HitBox
-    private void SubscribeToHitEvents()
+    // TODO: call the effects (screenshake, hitStop and slomo) here rather than having it in Hitbox
+    void SubscribeToHitEvents()
     {
         hitboxes.uppercutHitbox.OnHitEvent += OnHitHandler;
         hitboxes.dashAttackHitbox.OnHitEvent += OnHitHandler;
         hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
         hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
     }
-    private void OnHitHandler(GameObject go, float speedMult, bool isFinalBlow)
+    void OnHitHandler(GameObject go, float speedMult, bool isFinalBlow)
     {
         if (currentCombo == null || currentCombo.HasEnded)
         {
@@ -87,7 +86,7 @@ public class PlayerAttack : MonoBehaviour
     }
 
 
-    private void Update()
+    void Update()
     {
         if (currentCombo != null)
         {
@@ -110,7 +109,7 @@ public class PlayerAttack : MonoBehaviour
                 // If airborn and pressing down, SlamAttack
                 if (AttackInput && input.y <= -0.5f && Mathf.Abs(input.x) <= 0.5)
                 {
-                    if (playerMove.Grounded || rb.velocity.y >= -0.5f) // if not already falling, jump
+                    if (playerMove.Grounded) // if not in the air, Jump()
                         playerMove.Jump();
                     slam = true;
                 }
@@ -262,7 +261,7 @@ public class PlayerAttack : MonoBehaviour
         playerMove.BlockMoveInput = false;
     }
 
-    private void UpdateAnimatorParams()
+    void UpdateAnimatorParams()
     {
         _anim.SetBool("Punching", punch);
         _anim.SetBool("Slamming", slam);

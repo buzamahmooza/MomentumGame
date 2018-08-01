@@ -7,14 +7,16 @@ namespace UnityStandardAssets.Utility
     {
         // An incredibly simple menu which, when given references
         // to gameobjects in the scene
+#pragma warning disable 618
         public GUIText camSwitchButton;
+#pragma warning restore 618
         public GameObject[] objects;
 
 
-        private int m_CurrentActiveObject;
+        int m_CurrentActiveObject;
 
 
-        private void OnEnable()
+        void OnEnable()
         {
             // active object starts from first in array
             m_CurrentActiveObject = 0;

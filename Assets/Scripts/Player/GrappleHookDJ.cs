@@ -28,10 +28,7 @@ public class GrappleHookDJ : MonoBehaviour
 
     public Vector3 AnchorVec3
     {
-        get
-        {
-            return transform.position + new Vector3(joint.anchor.x, joint.anchor.y, 0);
-        }
+        get { return transform.position + new Vector3(joint.anchor.x, joint.anchor.y, 0); }
     }
 
     private void Awake()
@@ -80,20 +77,28 @@ public class GrappleHookDJ : MonoBehaviour
     {
         get
         {
-            return Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1) || Input.GetAxisRaw("LeftTrigger") > 0.5f;
+            return
+#if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE)
+                Input.GetKeyDown(KeyCode.LeftShift) || 
+                   Input.GetMouseButtonDown(1) ||
+#endif
+                Input.GetAxisRaw("LeftTrigger") > 0.5f;
         }
     }
+
     private bool InputReleased
     {
         get
         {
-            return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift) || aimInput.usingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
+            return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift) ||
+                   aimInput.usingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
         }
     }
 
     private void FindTarget()
     {
-        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, playerMove.CrossPlatformInput, maxGrappleRange, mask))
+        foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, playerMove.MovementInput, maxGrappleRange, mask)
+        )
         {
             bool grappleConditions = hit && hit.collider != null &&
                                      hit.collider.gameObject != gameObject;
@@ -112,12 +117,12 @@ public class GrappleHookDJ : MonoBehaviour
              * without this, grabbing will always grab the origin position of the other object,  
              * but we want the grabbed position, grabbed position = other_position + targetPointOffset
              */
-            targetPointOffset = hit.point - (Vector2)grabbedObj.transform.position;
+            targetPointOffset = hit.point - (Vector2) grabbedObj.transform.position;
 
             if (pullConditions)
             {
                 m_Pulling = true;
-                joint.connectedAnchor = (Vector2)targetPointOffset;
+                joint.connectedAnchor = (Vector2) targetPointOffset;
                 return;
             }
             else if (grappleConditions)
@@ -132,27 +137,31 @@ public class GrappleHookDJ : MonoBehaviour
     private void RenderLine()
     {
         lr.SetPosition(0, gun.position);
-        Vector2 endVec = m_Pulling ? (Vector2)(grabbedObj.transform.position + targetPointOffset) : joint.connectedAnchor;
+        Vector2 endVec =
+            m_Pulling ? (Vector2) (grabbedObj.transform.position + targetPointOffset) : joint.connectedAnchor;
         lr.SetPosition(1, endVec);
     }
 
     private void CloseDistance()
     {
-        Vector2 inputVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"), CrossPlatformInputManager.GetAxis("Vertical"));
+        Vector2 inputVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
+            CrossPlatformInputManager.GetAxis("Vertical"));
 
         Vector2 grappleDir = (m_Flying ? (joint.connectedAnchor) :
-                                 m_Pulling ? (Vector2)(joint.connectedBody.gameObject.transform.position) :
+                                 m_Pulling ? (Vector2) (joint.connectedBody.gameObject.transform.position) :
                                  Vector2.zero
-                             ) - (Vector2)AnchorVec3;
+                             ) - (Vector2) AnchorVec3;
 
         float dot = Vector2.Dot(grappleDir.normalized, inputVec.normalized);
 
         float smoother = speed * Time.deltaTime / Vector2.Distance(AnchorVec3, target);
 
-        float newDistance = m_Flying ?  // if flying, make the newDistance depend on the input
-                Mathf.Lerp(joint.distance - dot * speed * Time.deltaTime * (m_Pulling ? -1 : 1), 0, smoother) :/*invert controls if pulling objects*/
+        float newDistance = m_Flying
+                ? // if flying, make the newDistance depend on the input
+                Mathf.Lerp(joint.distance - dot * speed * Time.deltaTime * (m_Pulling ? -1 : 1), 0, smoother)
+                : /*invert controls if pulling objects*/
                 Mathf.Lerp(joint.distance, 0, smoother) // else if pulling, always pull (keep decreasing the distance)
-        ;
+            ;
 
         joint.distance = Mathf.Clamp(newDistance, 0, maxDistance);
     }
@@ -164,6 +173,7 @@ public class GrappleHookDJ : MonoBehaviour
         {
             joint.connectedBody = null;
         }
+
         CloseDistance();
         RenderLine();
     }
@@ -183,6 +193,7 @@ public class GrappleHookDJ : MonoBehaviour
             {
                 playerMove.Flip();
             }
+
             CloseDistance();
             RenderLine();
         }

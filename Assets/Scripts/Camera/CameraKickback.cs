@@ -3,18 +3,16 @@
 public class CameraKickback : MonoBehaviour
 {
     private Vector3 m_TargetPos,
-        m_LastSteadyPosition,
         m_KickbackDirection = Vector3.zero;
-    [SerializeField] private float DefaultKickbackDuration = 0.2f;
-    [SerializeField] [Range(0, 1)] private float smooth = 0.3f;
-    [SerializeField] private float m_KickbackDuration = 0.2f; //
+    [SerializeField] float DefaultKickbackDuration = 0.2f;
+    [SerializeField] [Range(0, 1)] float smooth = 0.3f;
+    [SerializeField] float m_KickbackDuration = 0.2f; //
 
-    private bool m_Kickback = false;
-    private Vector3 startingLocalPosition;
+    bool m_Kickback = false;
+    Vector3 startingLocalPosition;
 
     private void Start()
     {
-        m_LastSteadyPosition = transform.position;
         startingLocalPosition = transform.localPosition;
     }
 
@@ -66,7 +64,6 @@ public class CameraKickback : MonoBehaviour
         }
         else
         {
-            m_LastSteadyPosition = transform.position;
             m_Kickback = true;
 
             // Random vector to add to the current position   
