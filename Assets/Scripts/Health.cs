@@ -63,7 +63,7 @@ public class Health : MonoBehaviour
             InvokeRepeating("RegenerateHealth", 0, HEALTH_REGENERATION_PERIOD); //Periodically regenerate health
     }
 
-    private void Update()
+    protected virtual void LateUpdate()
     {
         LerpColor(); //In case the color flashes red, it has to go back to normal
     }
