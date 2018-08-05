@@ -2,12 +2,11 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Shooter))]
-public class DoomEnemy : Enemy
+public class ShooterEnemy : Enemy
 {
-    [SerializeField] private GameObject enemyBullet;
-    [SerializeField] private Transform shootTransform;
+    [SerializeField] protected Transform shootTransform;
     [SerializeField] [Range(1, 50)] private int burstSize = 7;
-    [SerializeField] private Shooter shooter;
+    protected Shooter shooter;
     private float timeBetweenShotsInBurst;
 
 
@@ -37,7 +36,7 @@ public class DoomEnemy : Enemy
 
             _anim.SetTrigger("Attack");
 
-            shooter.Shoot(GameManager.Player.transform.position - shootTransform.position);
+            shooter.Shoot(GameManager.Player.transform);
             if (!health.IsDead)
                 yield return new WaitForSeconds(timeBetweenShotsInBurst);
         }
