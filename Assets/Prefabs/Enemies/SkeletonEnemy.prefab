@@ -411,6 +411,7 @@ MonoBehaviour:
   updateDelay: 0.5
   stopDist: 0.5
   followOnGround: 1
+  _debugLevel: 1
   floorMask:
     serializedVersion: 2
     m_Bits: 512
@@ -445,7 +446,7 @@ MonoBehaviour:
   damageColor: {r: 1, g: 0, b: 0, a: 1}
   fallDamageThreshold: 10
   regenPercent: 1
-  scoreValue: 25
+  ScoreValue: 25
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
     type: 2}
   jumpAndPhaseThroughWhenDead: 0

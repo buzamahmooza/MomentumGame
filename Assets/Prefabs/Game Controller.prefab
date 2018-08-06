@@ -481,14 +481,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b6514d9d43bacc47b5ffa6415b342a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPointsParent: {fileID: 1644451780369012}
-  enemies:
+  _spawnPointsParent: {fileID: 1644451780369012}
+  _enemies:
   - {fileID: 1051513968227620, guid: d058761270e995649a2ad65d8b3eee65, type: 2}
   - {fileID: 1051513968227620, guid: 4c4b3b3687c47b849a9d785ac2603741, type: 2}
-  useSpawnPointsParent: 1
-  maxSpawnedEnemies: 15
-  delayBetweenSpawns: {x: 1, y: 6}
-  interactable: {fileID: 0}
+  - {fileID: 1283264370198676, guid: 2a5c8c8595a7d2b4d8943382a4ce1ba1, type: 2}
+  _useSpawnPointsParent: 1
+  _maxSpawnedEnemies: 8
+  _delayBetweenSpawns: {x: 0.5, y: 1}
+  _interactable: {fileID: 0}
 --- !u!114 &114154797630075418
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -501,7 +502,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreText: {fileID: 0}
-  scoreAdded2MomentumPercent: 0.15
+  scoreAdded2MomentumPercent: 0.5
 --- !u!114 &114169787619030920
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -519,9 +520,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 419eecd9338b69b4c8aa27d0a9fc8f77, type: 3}
   - {fileID: 8300000, guid: 7dbbf46592335dc4186af58503b2f639, type: 3}
   - {fileID: 8300000, guid: 0f625f1f480352f43b96c41f2ed242d3, type: 3}
-  - {fileID: 8300000, guid: efd3c4731da2f054993dcc821ba4346c, type: 3}
-  - {fileID: 8300000, guid: 806cfa6d580608d46a0f5f03bc4c1093, type: 3}
   - {fileID: 8300000, guid: c2aafb1353db0eb4ba3017b469153e5b, type: 3}
+  - {fileID: 8300000, guid: 806cfa6d580608d46a0f5f03bc4c1093, type: 3}
   shufflePlaylist: 1
 --- !u!114 &114233475358410974
 MonoBehaviour:
@@ -538,7 +538,7 @@ MonoBehaviour:
   invertYAxis: 0
   enableXInput: 0
   useFixedUpdate: 0
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   customProfiles: []
 --- !u!114 &114383116968020330
 MonoBehaviour:
