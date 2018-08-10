@@ -395,7 +395,7 @@ MonoBehaviour:
   CurrentWeaponStats:
     projectilePrefab: {fileID: 1260665002527420, guid: e0e79e347687c1d408608d622972b3ab,
       type: 2}
-    projectileSpeed: 2
+    projectileSpeed: 1.5
     rpm: 693
     damage: 20
     wiggleShootOffset: 0.041
@@ -428,7 +428,6 @@ MonoBehaviour:
   m_Grounded: 1
   m_Jump: 0
   _move: 0
-  rb: {fileID: 0}
   health: {fileID: 0}
   footstepSound: {fileID: 0}
   m_GroundCheck: {fileID: 0}
@@ -439,8 +438,8 @@ MonoBehaviour:
   timeBetweenAttacks: 7.5
   m_Attacking: 0
   shootTransform: {fileID: 4288608041395246}
-  burstSize: 7
-  _timeBetweenMissiles: 7
+  burstSize: 4
+  _timeBetweenMissiles: 6
   _missilePrefab: {fileID: 1314123691622566, guid: 6bab473c7388de141b879666a91a3569,
     type: 2}
 --- !u!114 &114297184521390244
@@ -507,23 +506,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7dd465cd4169984383396768fe61189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 1263738216756416}
-  deathEffects: {fileID: 0}
-  IsDead: 0
-  CurrentHealth: 0
   useHealthbar: 1
-  destroyOnDeath: 0
-  autoRegenHealth: 0
-  maxHealth: 1000
-  fallDamageModifier: 0
+  healthBar: {fileID: 1263738216756416}
+  hurtEffects: {fileID: 0}
+  _stickyHurtEffects: 0
+  deathEffects: {fileID: 0}
+  _stickyDeathEffects: 0
+  _damageColor: {r: 1, g: 0, b: 0, a: 1}
   hurtAudioClip: {fileID: 0}
   deathAudioClip: {fileID: 0}
+  destroyOnDeath: 0
+  MaxHealth: 300
+  CurrentHealth: 0
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  fallDamageModifier: 0
   fallDamageThreshold: 10
+  autoRegenHealth: 0
   regenPercent: 1
-  ScoreValue: 30
+  hurtEffectsDamageThreshold: 10
+  stunThreshold: 10
+  IsDead: 0
+  ScoreValue: 50
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
     type: 2}
   jumpAndPhaseThroughWhenDead: 0
@@ -540,13 +544,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Target: {fileID: 0}
   updateDelay: 0.5
-  stopDist: 2.63
+  stopDist: 4
   followOnGround: 0
   _debugLevel: 0
-  floorMask:
-    serializedVersion: 2
-    m_Bits: 512
-  m_GroundCheck: {fileID: 4322198114364968}
   nextWaypointDistance: 2
   heightToJump: 1
   angleToJump: 45

@@ -20,8 +20,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4590431870744390}
   - component: {fileID: 114107833112774858}
-  - component: {fileID: 61858563636376926}
   - component: {fileID: 50592196828039500}
+  - component: {fileID: 58012917610808118}
   m_Layer: 2
   m_Name: Enemy Bullet
   m_TagString: DamageSource
@@ -53,7 +53,7 @@ Transform:
   m_GameObject: {fileID: 1818333677561192}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 1}
   m_Children: []
   m_Father: {fileID: 4590431870744390}
   m_RootOrder: 0
@@ -65,8 +65,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1260665002527420}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.3423867, y: -3.5961905, z: 14.484641}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4398516401944180}
   m_Father: {fileID: 0}
@@ -92,8 +92,8 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!61 &61858563636376926
-BoxCollider2D:
+--- !u!58 &58012917610808118
+CircleCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
@@ -104,19 +104,9 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.0020116847, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.16, y: 0.16}
-    newSize: {x: 0.16, y: 0.16}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
+  m_Offset: {x: 0, y: 0.11}
   serializedVersion: 2
-  m_Size: {x: 0.059382167, y: 0.16}
-  m_EdgeRadius: 0
+  m_Radius: 0.1
 --- !u!114 &114107833112774858
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -128,10 +118,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06fe0478217b58a41b8962adaec6d237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageAmount: 10
+  damageAmount: 7
   destroyMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 5120
+  Shooter: {fileID: 0}
   damageShootersWithSameTag: 0
   _correctRotation: 1
 --- !u!212 &212380209013241196

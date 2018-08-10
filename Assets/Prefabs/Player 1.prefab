@@ -190,9 +190,11 @@ GameObject:
   - component: {fileID: 114984777739380634}
   - component: {fileID: 114778329432344400}
   - component: {fileID: 114918820639057462}
+  - component: {fileID: 114904486145490240}
   - component: {fileID: 82049625007252686}
   - component: {fileID: 120961800247076382}
   - component: {fileID: 232067819660577250}
+  - component: {fileID: 233204032662463108}
   m_Layer: 10
   m_Name: Player 1
   m_TagString: Player
@@ -602,7 +604,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 1.2
   m_Material: {fileID: 6200000, guid: 241e1933dcf865d47a4415a87eae6de5, type: 2}
-  m_Interpolate: 1
+  m_Interpolate: 2
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
@@ -904,12 +906,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jitter: {x: 0.1, y: 0.09}
   attackSound: {fileID: 8300000, guid: 985895af4d1f9d741aa3e03dd165d57e, type: 3}
-  damageAmount: 26
-  deactivateOnContact: 1
-  explosive: 0
+  damageAmount: 30
+  _deactivateOnContact: 0
+  _explosive: 0
   hitStop: 0
   fisheye: 0
-  slomoFactor: 0.238
+  slomoFactor: 0.22
   killCoeff: 1.5
   attackDirection: {x: 5, y: 0.7}
   layerMask:
@@ -967,7 +969,7 @@ MonoBehaviour:
   _explosionMask:
     serializedVersion: 2
     m_Bits: 6144
-  _dashAttackSpeedFactor: 80
+  _dashAttackSpeedFactor: 40
   _uppercutJumpForce: 1
 --- !u!114 &114288068967152634
 MonoBehaviour:
@@ -982,10 +984,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jitter: {x: 0.11, y: 0.09}
   attackSound: {fileID: 8300000, guid: f93bc16fa84571648904d10e9c988b76, type: 3}
-  damageAmount: 24
-  deactivateOnContact: 1
-  explosive: 0
-  hitStop: 0.04
+  damageAmount: 20
+  _deactivateOnContact: 0
+  _explosive: 0
+  hitStop: 0.03
   fisheye: 0
   slomoFactor: 1
   killCoeff: 1.98
@@ -1005,24 +1007,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02e1276164b7a1c4d903b9128ea86c88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 1287926828942094}
-  deathEffects: {fileID: 1786255796667864, guid: 448bfefac1a48d94583f96f89b94ce52,
-    type: 2}
-  hurtEffects: {fileID: 0}
-  IsDead: 0
-  CurrentHealth: 0
   useHealthbar: 1
+  healthBar: {fileID: 1287926828942094}
+  hurtEffects: {fileID: 0}
+  _stickyHurtEffects: 1
+  deathEffects: {fileID: 1000011797152326, guid: acf39d9f4addf294d93fa56fa373961b,
+    type: 2}
+  _stickyDeathEffects: 0
+  _damageColor: {r: 1, g: 0, b: 0, a: 1}
+  hurtAudioClips:
+  - {fileID: 8300000, guid: f99fe350510a0e044850236ec4549f24, type: 3}
+  - {fileID: 8300000, guid: 0d8ed7295ee31e941b71d5062c595edb, type: 3}
+  deathAudioClip: {fileID: 8300000, guid: 880d6624d11a3074e886d305acd9916a, type: 3}
   destroyOnDeath: 0
-  autoRegenHealth: 0
-  maxHealth: 1500
-  fallDamageModifier: 0.5
-  hurtAudioClip: {fileID: 0}
-  deathAudioClip: {fileID: 0}
+  MaxHealth: 200
+  CurrentHealth: 0
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  fallDamageModifier: 0.5
   fallDamageThreshold: 10
+  autoRegenHealth: 0
   regenPercent: 2
+  hurtEffectsDamageThreshold: 10
+  stunThreshold: 10
+  IsDead: 0
 --- !u!114 &114454820563067926
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1037,8 +1045,8 @@ MonoBehaviour:
   jitter: {x: 0.1, y: 0.06}
   attackSound: {fileID: 8300000, guid: f93bc16fa84571648904d10e9c988b76, type: 3}
   damageAmount: 24
-  deactivateOnContact: 1
-  explosive: 0
+  _deactivateOnContact: 0
+  _explosive: 0
   hitStop: 0.15
   fisheye: 0
   slomoFactor: 1
@@ -1070,7 +1078,6 @@ MonoBehaviour:
   speed: 7
   maxGrappleRange: 300
   releaseGrappleOnInputRelease: 1
-  DistanceJoint2D: {fileID: 0}
 --- !u!114 &114538949106072028
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1123,7 +1130,6 @@ MonoBehaviour:
   m_Grounded: 1
   m_Jump: 0
   _move: 0
-  rb: {fileID: 50305008224959004}
   health: {fileID: 0}
   footstepSound: {fileID: 8300000, guid: 1cc71bc4c10c73146b69b9356e8a9117, type: 3}
   m_GroundCheck: {fileID: 4698830513365926}
@@ -1166,8 +1172,8 @@ MonoBehaviour:
   jitter: {x: 0.07, y: 0.07}
   attackSound: {fileID: 8300000, guid: 518b87c20662fd640997caaaeb67f349, type: 3}
   damageAmount: 27
-  deactivateOnContact: 1
-  explosive: 1
+  _deactivateOnContact: 0
+  _explosive: 0
   hitStop: 0
   fisheye: 0.402
   slomoFactor: 0.054
@@ -1192,8 +1198,9 @@ MonoBehaviour:
   momentumText: {fileID: 0}
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
-  decayAmount: 0.04
-  maxMomentum: 5
+  decayAmount: 0.02
+  MaxMomentum: 2
+  minimumMomentumPercentForTrail: 70
 --- !u!114 &114809542759435404
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1221,6 +1228,20 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &114904486145490240
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1533114883056634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14ae536dbd9034445952e86620281de0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DefaultColor: {r: 0, g: 1, b: 1, a: 0.3}
+  SampleLifetime: 1
+  _trailFrequency: 40
 --- !u!114 &114918820639057462
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1660,3 +1681,26 @@ DistanceJoint2D:
   m_AutoConfigureDistance: 0
   m_Distance: 0.005
   m_MaxDistanceOnly: 1
+--- !u!233 &233204032662463108
+HingeJoint2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1533114883056634}
+  m_Enabled: 0
+  serializedVersion: 4
+  m_EnableCollision: 0
+  m_ConnectedRigidBody: {fileID: 0}
+  m_BreakForce: Infinity
+  m_BreakTorque: Infinity
+  m_AutoConfigureConnectedAnchor: 1
+  m_Anchor: {x: 0, y: 0}
+  m_ConnectedAnchor: {x: -4, y: 2.69}
+  m_UseMotor: 0
+  m_Motor:
+    m_MotorSpeed: 0
+    m_MaximumMotorForce: 10000
+  m_UseLimits: 0
+  m_AngleLimits:
+    m_LowerAngle: 0
+    m_UpperAngle: 359

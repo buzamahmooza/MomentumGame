@@ -23,9 +23,10 @@ GameObject:
   - component: {fileID: 50273070079488304}
   - component: {fileID: 82865225625143316}
   - component: {fileID: 70459290466008896}
-  m_Layer: 0
+  - component: {fileID: 70640201274395202}
+  m_Layer: 11
   m_Name: Missile
-  m_TagString: Untagged
+  m_TagString: Shootable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +40,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4986762871943014}
   - component: {fileID: 212241275829584162}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Sprite
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -53,7 +54,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1314123691622566}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.1439435, z: -0.07633908}
+  m_LocalPosition: {x: 3.87, y: 3.35, z: -0.07633908}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4986762871943014}
@@ -91,7 +92,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!70 &70459290466008896
 CapsuleCollider2D:
@@ -107,6 +108,21 @@ CapsuleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.7, y: 0.31}
+  m_Direction: 1
+--- !u!70 &70640201274395202
+CapsuleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1314123691622566}
+  m_Enabled: 0
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 3626fe8e008014f6bbd19bb72937b311, type: 2}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.6, y: 0.25}
   m_Direction: 1
 --- !u!82 &82865225625143316
 AudioSource:
@@ -200,19 +216,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87bd00711bf5a60489fd51c206557dfe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageAmount: 25
+  damageAmount: 50
   destroyMask:
     serializedVersion: 2
-    m_Bits: 1536
-  damageShootersWithSameTag: 0
+    m_Bits: 3584
+  Shooter: {fileID: 0}
+  damageShootersWithSameTag: 1
   _correctRotation: 0
   Target: {fileID: 0}
   _speed: 5
   _rotationSpeed: 3
-  _particleEffects: {fileID: 1786255796667864, guid: 448bfefac1a48d94583f96f89b94ce52,
+  _particleEffects: {fileID: 1000013462590818, guid: ecdd96beb7f93494880c052dfccf9dc1,
     type: 2}
-  _explosionClip: {fileID: 8300000, guid: e59e9f9ee1e9233428074e254c16b81b, type: 3}
-  _explosionForce: 2
+  _explosionClip: {fileID: 8300000, guid: 9db56e9af5c9673408ab2f2773d2a997, type: 3}
+  _explosionForce: 1
+  IsArmed: 1
 --- !u!212 &212241275829584162
 SpriteRenderer:
   m_ObjectHideFlags: 1

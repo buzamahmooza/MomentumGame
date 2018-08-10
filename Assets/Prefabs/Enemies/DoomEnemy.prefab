@@ -396,10 +396,6 @@ MonoBehaviour:
   stopDist: 2
   followOnGround: 1
   _debugLevel: 1
-  floorMask:
-    serializedVersion: 2
-    m_Bits: 512
-  m_GroundCheck: {fileID: 4332809853392118}
   nextWaypointDistance: 2
   heightToJump: 1
   angleToJump: 45
@@ -414,25 +410,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7dd465cd4169984383396768fe61189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useHealthbar: 1
   healthBar: {fileID: 1123226677973996}
-  deathEffects: {fileID: 1000012909287652, guid: 30b693504612e174189d4898568df4c2,
-    type: 2}
   hurtEffects: {fileID: 1000012909287652, guid: 30b693504612e174189d4898568df4c2,
     type: 2}
-  IsDead: 0
-  CurrentHealth: 0
-  useHealthbar: 1
-  destroyOnDeath: 0
-  autoRegenHealth: 0
-  maxHealth: 100
-  fallDamageModifier: 0.5
+  _stickyHurtEffects: 0
+  deathEffects: {fileID: 1000012909287652, guid: 30b693504612e174189d4898568df4c2,
+    type: 2}
+  _stickyDeathEffects: 0
+  _damageColor: {r: 1, g: 0, b: 0, a: 1}
   hurtAudioClip: {fileID: 8300000, guid: 5afbc263bd322e14984bf120d8165741, type: 3}
   deathAudioClip: {fileID: 0}
+  destroyOnDeath: 0
+  MaxHealth: 100
+  CurrentHealth: 0
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  fallDamageModifier: 0.5
   fallDamageThreshold: 10
+  autoRegenHealth: 0
   regenPercent: 1
+  hurtEffectsDamageThreshold: 10
+  stunThreshold: 10
+  IsDead: 0
   ScoreValue: 30
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
     type: 2}
@@ -489,7 +489,6 @@ MonoBehaviour:
   m_Grounded: 1
   m_Jump: 0
   _move: 0
-  rb: {fileID: 0}
   health: {fileID: 0}
   footstepSound: {fileID: 0}
   m_GroundCheck: {fileID: 0}
@@ -497,10 +496,10 @@ MonoBehaviour:
   awarenessRadius: 10
   attackRange: 5
   visionAngle: 30
-  timeBetweenAttacks: 3
+  timeBetweenAttacks: 4
   m_Attacking: 0
   shootTransform: {fileID: 4518945598912932}
-  burstSize: 7
+  burstSize: 3
 --- !u!114 &114627290848340368
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -590,11 +589,11 @@ MonoBehaviour:
   CurrentWeaponStats:
     projectilePrefab: {fileID: 1260665002527420, guid: e0e79e347687c1d408608d622972b3ab,
       type: 2}
-    projectileSpeed: 2
-    rpm: 437
-    damage: 7
+    projectileSpeed: 1.5
+    rpm: 150
+    damage: 15
     wiggleShootOffset: 0.12
-    randomShootAngle: 15
+    randomShootAngle: 9
     cameraKickback: 0
     shootSound: {fileID: 8300000, guid: 9c02d49f418bea04e85bc08dab90002a, type: 3}
   shootTransform: {fileID: 4518945598912932}

@@ -309,7 +309,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -412,10 +412,6 @@ MonoBehaviour:
   stopDist: 0.5
   followOnGround: 1
   _debugLevel: 1
-  floorMask:
-    serializedVersion: 2
-    m_Bits: 512
-  m_GroundCheck: {fileID: 4332809853392118}
   nextWaypointDistance: 2
   heightToJump: 1
   angleToJump: 45
@@ -430,22 +426,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7dd465cd4169984383396768fe61189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 1123226677973996}
-  deathEffects: {fileID: 0}
-  IsDead: 0
-  CurrentHealth: 0
   useHealthbar: 1
-  destroyOnDeath: 0
-  autoRegenHealth: 0
-  maxHealth: 100
-  fallDamageModifier: 0.5
-  hurtAudioClip: {fileID: 8300000, guid: 57eb84f52305e6e488ebb92db56a6299, type: 3}
+  healthBar: {fileID: 1123226677973996}
+  hurtEffects: {fileID: 0}
+  _stickyHurtEffects: 0
+  deathEffects: {fileID: 0}
+  _stickyDeathEffects: 0
+  _damageColor: {r: 1, g: 0, b: 0, a: 1}
+  hurtAudioClips:
+  - {fileID: 8300000, guid: 56320992377ac544f964e50ccc02eb0f, type: 3}
+  - {fileID: 8300000, guid: 3db6e755973ec114e8c18c896b2b32bc, type: 3}
+  - {fileID: 8300000, guid: 2f0f22634401de347b2357cbad964d20, type: 3}
   deathAudioClip: {fileID: 8300000, guid: 9949cccb811bb2e4f8c9f0461839e97c, type: 3}
+  destroyOnDeath: 0
+  MaxHealth: 100
+  CurrentHealth: 0
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
-  damageColor: {r: 1, g: 0, b: 0, a: 1}
+  fallDamageModifier: 0.5
   fallDamageThreshold: 10
+  autoRegenHealth: 0
   regenPercent: 1
+  hurtEffectsDamageThreshold: 10
+  stunThreshold: 10
+  IsDead: 0
   ScoreValue: 25
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
     type: 2}
@@ -492,23 +496,18 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   control_AirControl: 1
-  control_CanDoubleJump: 1
   control_facesAimDirection: 1
+  _neverFlip: 0
   moveSpeed: 97.34
   jumpForce: 8
-  wallSlideSpeedMax: 1
-  k_WallcheckRaduis: 0.3
   k_GroundedRadius: 0.08
+  animationSpeedCoeff: 0.8
   FacingRight: 1
   m_Grounded: 1
   m_Jump: 0
-  m_HasDoubleJump: 1
   _move: 0
-  rb: {fileID: 0}
   health: {fileID: 0}
   footstepSound: {fileID: 8300000, guid: 9e41770558785e448b50f9df45400b1c, type: 3}
-  m_CeilingCheck: {fileID: 0}
-  m_ClimbCheck: {fileID: 0}
   m_GroundCheck: {fileID: 0}
   attackSound: {fileID: 8300000, guid: 7a8797988e5c7644ebf0fe2c141cf6b4, type: 3}
   awarenessRadius: 6
