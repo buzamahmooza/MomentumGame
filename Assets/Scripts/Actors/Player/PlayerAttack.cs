@@ -11,96 +11,90 @@ public class PlayerAttack : MonoBehaviour
 {
     [HideInInspector] public bool HasReachedSlamPeak = false;
     [SerializeField] [Range(0, 4f)] float maxTimeBetweenAttacks = 2f;
-    public ComboInstance currentCombo = null;
+    public ComboInstance CurrentComboInstance = null;
 
     [SerializeField] AudioClip dashAttackSound, slamAttackSound;
     [SerializeField] GameObject slamExplosionObj = null;
 
     // This is just to make the members collapsable in the inspector
     [System.Serializable] struct Hitboxes { public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox; }
-    [SerializeField] Hitboxes hitboxes;
-    [SerializeField] [Range(0.5f, 10f)] float explosionRadius = 2;
-    [SerializeField] [Range(0f, 10f)] float upwardModifier = 1;
-    [SerializeField] LayerMask explosionMask;
+    [SerializeField] Hitboxes _hitboxes;
+    [SerializeField] [Range(0.5f, 10f)] float _explosionRadius = 2;
+    [SerializeField] [Range(0f, 10f)] float _upwardModifier = 1.7f;
+    [SerializeField] LayerMask _explosionMask; // enemy, object
 
-    bool slam,
-        punch,
-        uppercut;
+    bool _slam,
+        _punch,
+        _uppercut;
 
     [SerializeField]
-    float dashAttackSpeedFactor = 1.5f,
-                uppercutJumpForce = 1f;
-    float animSpeed = 1;
+    float _dashAttackSpeedFactor = 80f,
+                _uppercutJumpForce = 1f;
+    float _animSpeed = 1;
 
     // components
     Animator _anim;
-    PlayerMove playerMove;
-    Rigidbody2D rb;
+    PlayerMove _playerMove;
+    Rigidbody2D _rb;
 
 
     void Awake()
     {
-        playerMove = GetComponent<PlayerMove>();
+        _playerMove = GetComponent<PlayerMove>();
         GetComponent<AudioSource>();
         _anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
+        _rb = GetComponent<Rigidbody2D>();
 
-        if (explosionMask == 0) explosionMask = LayerMask.NameToLayer("Enemy") +
-                                               LayerMask.NameToLayer("Object");
-
-        if (!hitboxes.punchHitbox) hitboxes.punchHitbox = transform.Find("PunchTrigger").GetComponent<Hitbox>();
-        if (!hitboxes.slamHitbox) hitboxes.slamHitbox = transform.Find("SlamTrigger").GetComponent<Hitbox>();
-        if (!hitboxes.uppercutHitbox) hitboxes.uppercutHitbox = transform.Find("UppercutTrigger").GetComponent<Hitbox>();
-        if (!hitboxes.dashAttackHitbox) hitboxes.dashAttackHitbox = transform.Find("DashAttackTrigger").GetComponent<Hitbox>();
+        if (_explosionMask == 0) _explosionMask = LayerMask.GetMask("Enemy", "Object");
     }
 
     void Start()
     {
-        print("explosionMask = " + explosionMask.value);
-        hitboxes.slamHitbox.enabled = false;
-        hitboxes.dashAttackHitbox.enabled = false;
-        hitboxes.punchHitbox.enabled = false;
-        hitboxes.dashAttackHitbox.enabled = false;
-        hitboxes.uppercutHitbox.enabled = false;
+        print("explosionMask = " + _explosionMask.value);
+        _hitboxes.slamHitbox.enabled = false;
+        _hitboxes.dashAttackHitbox.enabled = false;
+        _hitboxes.punchHitbox.enabled = false;
+        _hitboxes.dashAttackHitbox.enabled = false;
+        _hitboxes.uppercutHitbox.enabled = false;
 
-        animSpeed = _anim.speed;
-        Debug.Assert(hitboxes.slamHitbox && hitboxes.punchHitbox);
+        _animSpeed = _anim.speed;
+        Debug.Assert(_hitboxes.slamHitbox && _hitboxes.punchHitbox);
 
         SubscribeToHitEvents();
     }
     // TODO: call the effects (screenshake, hitStop and slomo) here rather than having it in Hitbox
     void SubscribeToHitEvents()
     {
-        hitboxes.uppercutHitbox.OnHitEvent += OnHitHandler;
-        hitboxes.dashAttackHitbox.OnHitEvent += OnHitHandler;
-        hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
-        hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
+        _hitboxes.uppercutHitbox.OnHitEvent += OnHitHandler;
+        _hitboxes.dashAttackHitbox.OnHitEvent += OnHitHandler;
+        _hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
+        _hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
     }
     void OnHitHandler(GameObject go, float speedMult, bool isFinalBlow)
     {
-        if (currentCombo == null || currentCombo.HasEnded)
+        if (CurrentComboInstance == null || CurrentComboInstance.HasEnded)
         {
-            currentCombo = new ComboInstance(maxTimeBetweenAttacks);
+            CurrentComboInstance = new ComboInstance(maxTimeBetweenAttacks);
         }
-        currentCombo.IncrementCount();
+        CurrentComboInstance.IncrementCount();
     }
 
 
     void Update()
     {
-        if (currentCombo != null)
+        if (CurrentComboInstance != null)
         {
             // display combo text
-            GameManager.ComboManager.DisplayCombo(currentCombo.HasEnded ? 0 : currentCombo.Count);
-            GameManager.ComboManager.comboText.text += "\nCombo time left: " + currentCombo.TimeRemainingBeforeTimeout;
+            GameManager.ComboManager.DisplayCombo(CurrentComboInstance.HasEnded ? 0 : CurrentComboInstance.Count);
+            GameManager.ComboManager.comboText.text += "\nCombo time left: " + CurrentComboInstance.TimeRemainingBeforeTimeout;
 
-            currentCombo.AddTime(Time.deltaTime);
+            CurrentComboInstance.AddTime(Time.deltaTime);
         }
 
         // Get input if there is no action to disturb
-        if (!uppercut && !punch && !slam)
+        if (!_uppercut && !_punch && !_slam)
         {
-            uppercut = punch = slam = false;
+            _uppercut = _punch = _slam = false;
             var input = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"), CrossPlatformInputManager.GetAxisRaw("Vertical"));
             var attackDown = Input.GetKeyDown(KeyCode.F) || InputManager.ActiveDevice.Action3.IsPressed;
 
@@ -109,28 +103,28 @@ public class PlayerAttack : MonoBehaviour
                 // If airborn and pressing down, SlamAttack
                 if (AttackInput && input.y <= -0.5f && Mathf.Abs(input.x) <= 0.5)
                 {
-                    if (playerMove.Grounded) // if not in the air, Jump()
-                        playerMove.Jump();
-                    slam = true;
+                    if (_playerMove.Grounded) // if not in the air, Jump()
+                        _playerMove.Jump();
+                    _slam = true;
                 }
                 // If DashAttack conditions are met, DashAttack!
-                else if (attackDown && playerMove.Grounded && playerMove.CanDashAttack && Mathf.Abs(input.x) > 0.1f &&
+                else if (attackDown && _playerMove.Grounded && _playerMove.CanDashAttack && Mathf.Abs(input.x) > 0.1f &&
                          !_anim.GetBool("DashAttack"))
                 {
-                    playerMove.rb.AddForce(Vector2.right * rb.velocity.x * Time.deltaTime * dashAttackSpeedFactor, ForceMode2D.Impulse);
+                    _playerMove.rb.AddForce(Vector2.right * _rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor, ForceMode2D.Impulse);
                     _anim.SetBool("DashAttack", true);
                     // Block input for dashattack animation length
                     StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
                 }
                 else if (AttackInput && input.y >= 0.5f && Mathf.Abs(input.x) <= 0.5)
                 { //uppercut
-                    uppercut = true;
+                    _uppercut = true;
                     _anim.SetTrigger("Uppercut");
                 }
                 else if (AttackInput)
                 {
                     // otherwise just do a boring-ass punch...
-                    punch = true;
+                    _punch = true;
                 }
             }
         }
@@ -138,9 +132,9 @@ public class PlayerAttack : MonoBehaviour
         UpdateAnimatorParams();
 
         //When landing a slam on the ground, go back to normal animation speed
-        if (_anim.GetBool("Slamming") && playerMove.m_Grounded)
+        if (_anim.GetBool("Slamming") && _playerMove.m_Grounded)
         {
-            _anim.speed = animSpeed;
+            _anim.speed = _animSpeed;
         }
     }
 
@@ -157,9 +151,9 @@ public class PlayerAttack : MonoBehaviour
     private System.Collections.IEnumerator BlockInput(float blockInputDuration)
     {
         //Debug.Log("BlockInput for "+blockInputDuration+" seconds");
-        playerMove.BlockMoveInput = true;
+        _playerMove.BlockMoveInput = true;
         yield return new WaitForSeconds(blockInputDuration);
-        playerMove.BlockMoveInput = false;
+        _playerMove.BlockMoveInput = false;
     }
 
 
@@ -170,35 +164,35 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public void Attack_PunchStart()
     {
-        hitboxes.punchHitbox.enabled = true;
+        _hitboxes.punchHitbox.enabled = true;
     }
     /// <summary>
     /// Closes the punch interval
     /// </summary>
     public void Attack_PunchEnd()
     {
-        punch = false;
-        hitboxes.punchHitbox.enabled = false;
+        _punch = false;
+        _hitboxes.punchHitbox.enabled = false;
     }
     public void PunchCompleted()
     {
-        punch = false;
+        _punch = false;
         UpdateAnimatorParams();
     }
 
 
     public void UppercutStart()
     {
-        uppercut = true;
-        hitboxes.uppercutHitbox.enabled = true;
+        _uppercut = true;
+        _hitboxes.uppercutHitbox.enabled = true;
         Invoke("UppercutCompleted", 1f);
-        rb.AddForce(Vector2.up * uppercutJumpForce, ForceMode2D.Impulse);
+        _rb.AddForce(Vector2.up * _uppercutJumpForce, ForceMode2D.Impulse);
     }
     public void UppercutCompleted()
     {
         print("UppercutCompleted()");
-        uppercut = false;
-        hitboxes.uppercutHitbox.enabled = false;
+        _uppercut = false;
+        _hitboxes.uppercutHitbox.enabled = false;
     }
 
     public void ReachedSlamPeak()
@@ -209,25 +203,25 @@ public class PlayerAttack : MonoBehaviour
     }
     public void Attack_Slam()
     {
-        hitboxes.slamHitbox.enabled = true;
+        _hitboxes.slamHitbox.enabled = true;
     }
     public void SlamEnded()
     {
-        slam = false;
-        _anim.speed = animSpeed;
-        hitboxes.slamHitbox.enabled = false;
+        _slam = false;
+        _anim.speed = _animSpeed;
+        _hitboxes.slamHitbox.enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Player");
         UpdateAnimatorParams();
     }
 
     public void CreateSlamExplosion()
     {
-        Instantiate(slamExplosionObj, hitboxes.slamHitbox.collider2D.bounds.center + Vector3.back, Quaternion.identity);
-        float landingSpeed = Mathf.Abs(rb.velocity.y);
+        Instantiate(slamExplosionObj, _hitboxes.slamHitbox.collider2D.bounds.center + Vector3.back, Quaternion.identity);
+        float landingSpeed = Mathf.Abs(_rb.velocity.y);
         GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         var explosionPos = transform.position;
-        foreach (var hit in Physics2D.OverlapCircleAll(explosionPos, explosionRadius, explosionMask))
+        foreach (Collider2D hit in Physics2D.OverlapCircleAll(explosionPos, _explosionRadius, _explosionMask))
         {
             var otherHealth = hit.gameObject.GetComponent<Health>();
             if (!otherHealth)
@@ -242,58 +236,27 @@ public class PlayerAttack : MonoBehaviour
             var otherRb = hit.GetComponent<Rigidbody2D>();
 
             if (otherRb) otherRb.AddForce(
-                new Vector2(playerMove.FacingSign, upwardModifier) * (landingSpeed / distance),
+                new Vector2(_playerMove.FacingSign, _upwardModifier) * (landingSpeed / distance),
                 ForceMode2D.Impulse
             );
         }
-
     }
 
     public void DashAttackOpen()
     {
-        hitboxes.dashAttackHitbox.enabled = true;
+        _hitboxes.dashAttackHitbox.enabled = true;
     }
     public void DashAttackClose()
     {
-        hitboxes.dashAttackHitbox.enabled = false;
+        _hitboxes.dashAttackHitbox.enabled = false;
         _anim.SetBool("DashAttack", false);
-        punch = false;
-        playerMove.BlockMoveInput = false;
+        _punch = false;
+        _playerMove.BlockMoveInput = false;
     }
 
     void UpdateAnimatorParams()
     {
-        _anim.SetBool("Punching", punch);
-        _anim.SetBool("Slamming", slam);
+        _anim.SetBool("Punching", _punch);
+        _anim.SetBool("Slamming", _slam);
     }
-
-
-
-
-    // Not in use
-    /*
-    private bool CheckTrigger(Collider2D collider)
-    {
-        bool hasCollided = false;
-
-        Bounds trigBounds = collider.bounds;
-        Collider2D[] cols = Physics2D.OverlapBoxAll(trigBounds.center, trigBounds.extents,0);
-
-        foreach (Collider2D col in cols)
-        {
-            bool colliderConditions =
-                col.isTrigger != true &&
-                col.gameObject != gameObject &&
-                col.attachedRigidbody != null;
-
-            if (colliderConditions) {
-                Debug.Log(col.gameObject.name + " trigger ACTUALLY collided with other object. Name: " + col.gameObject.name + ", Layer: " + LayerMask.LayerToName(col.gameObject.layer));
-                //Vector2 forceDir = Vector2.right * Mathf.Abs(trigBounds.center.x - col.attachedRigidbody.centerOfMass.x) * playerMove.FacingSign;
-                
-				hasCollided = true;
-            }
-        }
-        return hasCollided;
-    }
-*/
 }

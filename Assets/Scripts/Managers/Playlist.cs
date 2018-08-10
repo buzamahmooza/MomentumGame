@@ -22,14 +22,13 @@ class Playlist : List<AudioClip>
     {
         while (true)
         {
-            AudioClip next;
+            AudioClip next = null;
             if (current < this.Count - 1)
             {
                 next = this[++current];
             }
-            else
+            else if (current == this.Count - 1) // if at the last song, loop
             {
-                // if at the last song, loop
                 current = -1;
                 next = Next();
             }
@@ -55,13 +54,14 @@ class Playlist : List<AudioClip>
     private void Swap(int a, int b)
     {
         if (a == b) return;
-        if (a < 0 || a >= this.Count) throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", a));
-        if (b < 0 || b >= this.Count) throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", b));
+        if (a < 0 || a >= this.Count)
+            throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", a));
+        if (b < 0 || b >= this.Count)
+            throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", b));
 
         var temp = this[a];
         this[a] = this[b];
         this[b] = temp;
         temp = null;
     }
-
 }

@@ -97,6 +97,11 @@ public class MeleeEnemy : Enemy
         if (attackSound) audioSource.PlayOneShot(attackSound);
         StartCoroutine(Safety_DeactivateHitbox());
     }
+    /// <summary>
+    /// deactivates hitbox in case it was on for too long for some reason
+    /// </summary>
+    /// <param name="seconds"></param>
+    /// <returns></returns>
     IEnumerator Safety_DeactivateHitbox(float seconds = 1f)
     {
         yield return new WaitForSeconds(seconds);

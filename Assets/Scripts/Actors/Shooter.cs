@@ -9,8 +9,7 @@ public class Shooter : MonoBehaviour
     /// </summary>
     [SerializeField] float kickbackForceMplier = 5;
 
-    [SerializeField]
-    public WeaponStats CurrentWeaponStats = new WeaponStats(
+    [SerializeField] public WeaponStats CurrentWeaponStats = new WeaponStats(
         projectilePrefab: null,
         projectileSpeed: 7,
         rpm: 300,
@@ -20,6 +19,7 @@ public class Shooter : MonoBehaviour
         damage: 7,
         shootSound: null
     );
+
     [SerializeField] Transform shootTransform;
 
     float m_TimeBetweenShots;
@@ -33,15 +33,11 @@ public class Shooter : MonoBehaviour
     {
         public GameObject projectilePrefab;
         public float projectileSpeed; //15
-        [Range(1, 10000)]
-        public float rpm; //50
+        [Range(1, 10000)] public float rpm; //50
         public int damage; //25
-        [Range(0, 0.5f)]
-        public float wiggleShootOffset; //0.12
-        [Range(0, 90)]
-        public float randomShootAngle;  // (in degrees) 10
-        [Range(0, 1)]
-        public float cameraKickback; // 0.1
+        [Range(0, 0.5f)] public float wiggleShootOffset; //0.12
+        [Range(0, 90)] public float randomShootAngle; // (in degrees) 10
+        [Range(0, 1)] public float cameraKickback; // 0.1
         public AudioClip shootSound;
 
         public WeaponStats(
@@ -87,18 +83,43 @@ public class Shooter : MonoBehaviour
         FixShootTiming();
     }
 
-    public void FixShootTiming()
+    void FixShootTiming()
     {
         m_TimeBetweenShots = Time.fixedDeltaTime * 360.0f / CurrentWeaponStats.rpm;
         m_TimeSinceLastShot += Time.fixedDeltaTime;
     }
 
+    public void Shoot(Vector2 direction, GameObject projectilePrefab)
+    {
+        
+    }
+    public virtual void Shoot(Transform target)
+    {
+        GameObject projectile = CreateProjectile(target.transform.position - transform.position);
+        // Set bullet damage
+        BulletScript bulletScript = projectile.GetComponent<BulletScript>();
+        Missile missile = bulletScript as Missile;
+        if (missile != null)
+        {
+            missile.Target = target;
+        }
+    }
+
     public virtual void Shoot(Vector2 shootDirection)
+    {
+        GameObject projectile = CreateProjectile(shootDirection);
+
+        BulletScript bulletScript = projectile.GetComponent<BulletScript>();
+
+        rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
+    }
+
+    private GameObject CreateProjectile(Vector2 shootDirection)
     {
         shootDirection.Normalize();
         float randomOffset = Random.Range(-CurrentWeaponStats.wiggleShootOffset, CurrentWeaponStats.wiggleShootOffset);
-        Vector2 positionWithWiggle = (new Vector2(-shootDirection.y, shootDirection.x)).normalized * randomOffset;
-        Vector2 shootPosition = (Vector2)(shootTransform.position) + positionWithWiggle;
+        Vector2 positionWithWiggle = new Vector2(-shootDirection.y, shootDirection.x).normalized * randomOffset;
+        Vector2 shootPosition = (Vector2) shootTransform.position + positionWithWiggle;
 
         if (audioSource) audioSource.PlayOneShot(CurrentWeaponStats.shootSound, Random.Range(0.7f, 1.0f));
         else Debug.LogError("Audio source is not assigned!!");
@@ -106,20 +127,23 @@ public class Shooter : MonoBehaviour
         // Create simple rotation which looks where the player is aiming in addition to a wiggle amount of euler angles
         // How? IDK, just leave it, it works
         float randomRotation = Random.Range(-CurrentWeaponStats.randomShootAngle, CurrentWeaponStats.randomShootAngle);
-        var bulletRotation = Quaternion.LookRotation(Quaternion.Euler(0, 0, randomRotation) * shootDirection);
-        var projectile = Instantiate(CurrentWeaponStats.projectilePrefab, shootPosition, bulletRotation, this.transform); // Create bullet
+        Quaternion bulletRotation =
+            Quaternion.LookRotation(Quaternion.Euler(0, 0, randomRotation) * shootDirection);
+        GameObject projectile = Instantiate(CurrentWeaponStats.projectilePrefab, shootPosition, bulletRotation);
 
-        // Set bullet damage
-        var bulletScript = projectile.GetComponent<BulletScript>();
-        bulletScript.damageAmount = Mathf.RoundToInt(CurrentWeaponStats.damage * Random.Range(0.8f, 1.2f));
-        // Set bullet movement
-        var bulletRb = projectile.GetComponent<Rigidbody2D>();
-        bulletRb.velocity = Quaternion.Euler(0, 0, randomRotation) * shootDirection * CurrentWeaponStats.projectileSpeed;
+        // Set projectile movement
+        Rigidbody2D projectileRigidbody2D = projectile.GetComponent<Rigidbody2D>();
+        projectileRigidbody2D.velocity = Quaternion.Euler(0, 0, randomRotation) * shootDirection *
+                                         CurrentWeaponStats.projectileSpeed;
+        BulletScript bulletScript = projectile.GetComponent<BulletScript>();
+        bulletScript.damageAmount =
+            Mathf.RoundToInt(CurrentWeaponStats.damage * Random.Range(0.8f, 1.2f));
+        bulletScript.Shooter = this.gameObject;
 
-        rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        return projectile;
     }
 
-    private void SetWeaponStats(WeaponStats newWeaponStats)
+    public void SetWeaponStats(WeaponStats newWeaponStats)
     {
         CurrentWeaponStats = newWeaponStats;
     }
@@ -129,10 +153,14 @@ public class Shooter : MonoBehaviour
         // draw the randomShootAngle lines
         if (!targeting) return;
         var shootDirection = targeting.AimDirection.normalized;
-        var positionWithWiggle = new Vector3(-shootDirection.y, shootDirection.x).normalized * CurrentWeaponStats.wiggleShootOffset;
+        var positionWithWiggle = new Vector3(-shootDirection.y, shootDirection.x).normalized *
+                                 CurrentWeaponStats.wiggleShootOffset;
         Vector3 shootPos = shootTransform.position;
-        Gizmos.DrawLine(shootPos - positionWithWiggle, Quaternion.Euler(0, 0, -CurrentWeaponStats.randomShootAngle) * shootDirection + shootPos - positionWithWiggle);
-        Gizmos.DrawLine(shootPos + positionWithWiggle, Quaternion.Euler(0, 0, CurrentWeaponStats.randomShootAngle) * shootDirection + shootPos + positionWithWiggle);
+        Gizmos.DrawLine(shootPos - positionWithWiggle,
+            Quaternion.Euler(0, 0, -CurrentWeaponStats.randomShootAngle) * shootDirection + shootPos -
+            positionWithWiggle);
+        Gizmos.DrawLine(shootPos + positionWithWiggle,
+            Quaternion.Euler(0, 0, CurrentWeaponStats.randomShootAngle) * shootDirection + shootPos +
+            positionWithWiggle);
     }
-
 }

@@ -7,43 +7,45 @@ using InControl;
 [RequireComponent(typeof(PlayerMove))]
 public class AimInput : Targeting
 {
-    [SerializeField] float mouseMoveThreshold = 0.3f,
-        JoystickThreshold = 0.2f;
-    [SerializeField] bool debugMousePosition = false;
     /// <summary>
     /// Do NOT modify this directly outside the class
     /// </summary>
-    [SerializeField] public bool usingJoystick = false;
-    [SerializeField] public bool usingMouse = false;
-    private Vector2 lastMousePos;
-    private PlayerMove playerMove;
+    public bool UsingJoystick = false;
+    public bool UsingMouse = false;
+
+    [SerializeField] bool _debugMousePosition = false;
+    [SerializeField] float _mouseMoveThreshold = 0.3f,
+        _joystickThreshold = 0.2f;
+
+    private Vector2 _lastMousePos;
+    private Walker _walker; // playerMove
 
 
     private void Awake()
     {
-        playerMove = GameManager.Player.GetComponent<PlayerMove>();
+        _walker = GameManager.Player.GetComponent<Walker>();
     }
     
     private void FixedUpdate()
     {
         RecheckInputDevice();
-        lastMousePos = MousePos;
+        _lastMousePos = MousePos;
 #if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE)
         //switch to mouse if mouse pressed:
         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1))
         {
             //Debug.Log("Mouse button pressed, switching to mouse control");
-            usingMouse = true;
-            usingJoystick = false;
+            UsingMouse = true;
+            UsingJoystick = false;
         }
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            usingMouse = false;
+            UsingMouse = false;
         }
         if (InputManager.ActiveDevice.AnyButton)
         {
-            usingMouse = false;
-            usingJoystick = true;
+            UsingMouse = false;
+            UsingJoystick = true;
         }
 #endif
     }
@@ -58,14 +60,12 @@ public class AimInput : Targeting
         {
             // Using joystick, if there is input
             Vector2 aimDir = RightJoystick;
-            if (usingJoystick && Mathf.Abs(aimDir.magnitude) > 0.1f)
+            if (UsingJoystick && aimDir.magnitude > 0.1f)
             {
-                // ~Debug.Log("Using controller aiming, aimDirection = " + aimDir);
                 return (aimDir.normalized);
             }
-
             //Using mouse
-            else if (usingMouse)
+            else if (UsingMouse)
             {
                 return (MousePos - (Vector2)GameManager.Player.transform.position).normalized;
             }
@@ -73,17 +73,11 @@ public class AimInput : Targeting
             else
             {
                 Vector2 moveInput = InputGetAxisRawVector;
-
+                
                 // If input is large enough
-                if (Mathf.Abs(moveInput.magnitude) > 0.1f)
-                {
-                    return (moveInput.normalized); //Normalized vector
-                }
-                // If input is too little, just aim where player is facing
-                else
-                {
-                    return (Vector2.right * playerMove.FacingSign);
-                }
+                return moveInput.magnitude > 0.1f 
+                    ? moveInput.normalized 
+                    : Vector2.right * _walker.FacingSign;
             }
         }
     }
@@ -93,37 +87,37 @@ public class AimInput : Targeting
     /// </summary>
     private void RecheckInputDevice()
     {
-        float mouseDisp = Vector3.Distance(MousePos, lastMousePos);
-        if (debugMousePosition) Debug.Log("mouseDisp: " + mouseDisp);
+        float mouseDisp = Vector3.Distance(MousePos, _lastMousePos);
+        if (_debugMousePosition) Debug.Log("mouseDisp: " + mouseDisp);
 
-        if (!usingMouse)
+        if (!UsingMouse)
         {
             //Switch to mouse
             float camDisp = GameManager.CameraController.LookAheadPos.magnitude;
             float compensatedMouseDisp = Mathf.Abs(mouseDisp) - Mathf.Abs(camDisp);
             // If mousespeed is greater than camSpeed (camera movement causes mouse to move, we want to compensate for this)
-            if (compensatedMouseDisp > mouseMoveThreshold || Input.GetMouseButton(0))
+            if (compensatedMouseDisp > _mouseMoveThreshold || Input.GetMouseButton(0))
             {
-                usingMouse = true; Debug.Log("Switch control to using mouse");
-                usingJoystick = false;
+                UsingMouse = true; Debug.Log("Switch control to using mouse");
+                UsingJoystick = false;
             }
         }
-        if (!usingJoystick)
+        if (!UsingJoystick)
         {
             // Switch to joystick, if there is enough input
-            if (InputManager.ActiveDevice.AnyButton || RightJoystick.magnitude > JoystickThreshold || LeftJoystick.magnitude > JoystickThreshold)
+            if (InputManager.ActiveDevice.AnyButton || RightJoystick.magnitude > _joystickThreshold || LeftJoystick.magnitude > _joystickThreshold)
             {
                 Debug.Log("Swiching to joystick");
-                usingJoystick = true;
-                usingMouse = false;
+                UsingJoystick = true;
+                UsingMouse = false;
             }
         }
         //Use joystick by default
-        if (usingMouse && usingJoystick)
+        if (UsingMouse && UsingJoystick)
         {
             Debug.Log("Switched to DEFAULT");
-            usingMouse = true;
-            usingJoystick = false;
+            UsingMouse = true;
+            UsingJoystick = false;
         }
     }
 

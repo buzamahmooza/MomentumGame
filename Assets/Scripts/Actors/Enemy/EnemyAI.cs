@@ -14,11 +14,13 @@ public class EnemyAI : Targeting
     private Vector3 targetPosition;
 
     public float updateDelay = 1f;
+
     //The calculated path
     public Path path;
 
     [SerializeField] private float stopDist = 2f;
-    [SerializeField] private bool followOnGround = true;
+    [SerializeField] public bool followOnGround = true;
+    [SerializeField] private int _debugLevel = 0;
 
     public LayerMask floorMask;
     public Transform m_GroundCheck;
@@ -31,9 +33,9 @@ public class EnemyAI : Targeting
     [SerializeField] private float angleToJump = 45;
 
     private bool pathHasEnded = false;
+
     //The waypoint we are currently moving towards
     private int currentWaypoint = 0;
-    private bool m_Grounded;
     private readonly float k_GroundedRadius = .2f;
 
     private Vector3 moveDirection;
@@ -54,6 +56,7 @@ public class EnemyAI : Targeting
         enemyScript = GetComponent<Enemy>();
         m_GroundCheck = transform.Find("GroundCheck");
     }
+
     protected virtual void Start()
     {
         if (!TargetExists()) return;
@@ -77,12 +80,16 @@ public class EnemyAI : Targeting
             ApproachTarget();
         }
     }
+
     private void ApproachTarget()
     {
         bool result = CalculateWaypoint();
         if (!result)
-        { // if result is false, just stop moving
-            print("CalculateWaypoint result is FALSE :(");
+        {
+            // if result is false, just stop moving
+
+            if (_debugLevel > 2)
+                Debug.Log("CalculateWaypoint result is FALSE :(");
             moveDirection = Vector3.zero;
             if (anim) anim.SetBool("Walk", false);
             return;
@@ -93,8 +100,7 @@ public class EnemyAI : Targeting
         Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
         Debug.DrawLine(transform.position, Target.position, Color.red);
 
-        print(name + " EnemyAI moving...");
-        enemyScript.Move(dir, false);
+        enemyScript.Move(dir);
 
         // Jump
         //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);
@@ -103,13 +109,15 @@ public class EnemyAI : Targeting
 
     /// <summary>
     /// Returns false if target is null or too close
+    /// TODO: needs performance improvement! This method currently takes up 14% of the CPU process time
     /// </summary>
     /// <returns></returns>
     public bool CalculateWaypoint()
     {
         if (!TargetExists())
         {
-            Debug.LogWarning(name + " Target is null");
+            if (_debugLevel >= 1)
+                Debug.LogWarning(name + " Target is null");
             return false;
         }
 
@@ -119,7 +127,8 @@ public class EnemyAI : Targeting
         //We have no path to move after yet
         if (path == null)
         {
-            Debug.LogWarning(name + " path == null");
+            if (_debugLevel >= 1)
+                Debug.LogWarning(name + " path == null");
             UpdatePath();
             return false;
         }
@@ -127,7 +136,8 @@ public class EnemyAI : Targeting
         // If path ended
         if (currentWaypoint >= path.vectorPath.Count)
         {
-            Debug.Log("End Of Path Reached");
+            if (_debugLevel >= 2)
+                Debug.Log("End Of Path Reached");
             if (pathHasEnded)
                 return false;
             rb.velocity = new Vector2(0, rb.velocity.y);
@@ -135,12 +145,12 @@ public class EnemyAI : Targeting
             pathHasEnded = true;
             return false;
         }
+
         pathHasEnded = false;
 
         // If too close
         if (stopDist > Vector3.Distance(transform.position, Target.position) && TargetExists())
         {
-            Debug.Log(name + " reached stopping distance");
             return false;
         }
 
@@ -152,8 +162,9 @@ public class EnemyAI : Targeting
 
         //Direction to the next waypoint
         Vector2 dir = nextWaypoint;
-        if (followOnGround) dir = new Vector3(dir.x, -rb.gravityScale);
-        moveDirection = dir.normalized;
+        if (followOnGround) 
+            dir = new Vector3(dir.x, -rb.gravityScale);
+        moveDirection = dir;
         return true;
     }
 
@@ -202,26 +213,14 @@ public class EnemyAI : Targeting
 
         if (Target == null)
         {
-            Debug.Log("Target is null");
+            if (_debugLevel >= 1)
+                Debug.Log("Target is null");
             return false;
         }
+
         return true;
     }
 
-    public bool Grounded
-    {
-        get
-        {
-            m_Grounded = false;
-            foreach (Collider2D col in Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask))
-            {
-                if (col.gameObject == gameObject) break;
-                else m_Grounded = true;
-            }
-            return m_Grounded;
-        }
-        set { m_Grounded = value; }
-    }
 
     private void OnDrawGizmosSelected()
     {

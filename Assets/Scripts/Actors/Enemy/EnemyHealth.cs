@@ -7,7 +7,7 @@ using Random = System.Random;
 [RequireComponent(typeof(Enemy))]
 public class EnemyHealth : Health
 {
-    [SerializeField] [Range(0, 100)] private int scoreValue = 0;  // assigned in inspector
+    [SerializeField] [Range(0, 500)] public int ScoreValue = 0;  // assigned in inspector
     private GameObject player;
     private EnemyAI enemyAI;
     [SerializeField] private GameObject healthPickup;
@@ -46,10 +46,10 @@ public class EnemyHealth : Health
         // if this is the first time the enemy dies:
         if (!IsDead)
         {
-            if (scoreValue > 0)
+            if (ScoreValue > 0)
             {
-                CreateFloatingScore(scoreValue);
-                GameManager.ScoreManager.AddScore(scoreValue);
+                CreateFloatingScore(ScoreValue);
+                GameManager.ScoreManager.AddScore(ScoreValue, true);
                 GameManager.PlayerHealth.RegenerateHealth();
             }
 
