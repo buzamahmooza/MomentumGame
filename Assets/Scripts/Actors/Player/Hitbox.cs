@@ -53,6 +53,7 @@ public class Hitbox : MonoBehaviour
     public new Collider2D collider2D;
     AudioSource audioSource;
     PlayerAttack playerAttack;
+    private Walker walker;
 
     private static bool _guiSlidersEnabled = false;
     private static int _guiCount = 0;
@@ -84,6 +85,7 @@ public class Hitbox : MonoBehaviour
         playerAttack = GetComponentInParent<PlayerAttack>();
         collider2D = GetComponent<Collider2D>();
         audioSource = GetComponent<AudioSource>();
+        walker = GetComponentInParent<Walker>();
         collider2D.enabled = true;
     }
 
@@ -128,30 +130,27 @@ public class Hitbox : MonoBehaviour
             attackDirection.x *= Mathf.Sign(toTarget.x);
             other.attachedRigidbody.AddForce(toTarget + attackDirection, ForceMode2D.Impulse);
 
+            Vector2 moveDirection = walker.Rb.velocity.magnitude > 0
+                ? walker.Rb.velocity
+                : attackDirection;
             /**a multiplier that depends on the speed at which the attacker hit*/
-            float speedMult = Mathf.Clamp(
-                Mathf.Log( // Log() cuz we don't want to keep dealing more damage the faster you hit, there comes a point where it has to plateau
-                    Mathf.Abs(Vector2.Dot(GameManager.PlayerRb.velocity,
-                        attackDirection)) // abs() cuz no negatives are allowed in Log()
-                ),
-                1f, 50f);
-            // safety check
-            if (float.IsNaN(speedMult)) speedMult = 1f;
-            if (playerAttack.CurrentComboInstance != null)
-                speedMult = speedMult * Mathf.Log(playerAttack.CurrentComboInstance.Count);
+            float speedMult = Mathf.Log(
+                Utils.FilterMultiplier(Vector2.Dot(moveDirection, attackDirection), 50f)
+            );
 
-//            Debug.Log("speedMult = " + speedMult);
-            float nonzeroSpeedMult = 1 + speedMult;
+            if (playerAttack.CurrentComboInstance != null)
+                speedMult = speedMult * (1 + Mathf.Log(playerAttack.CurrentComboInstance.Count));
 
             // do attack stuff
             if (otherHealth)
-                otherHealth.TakeDamage(Mathf.RoundToInt(damageAmount * nonzeroSpeedMult), attackDirection);
+                otherHealth.TakeDamage(Mathf.CeilToInt(damageAmount * speedMult), attackDirection);
+
             bool isFinalBlow = !wasDead && (otherHealth && otherHealth.IsDead);
 
             // invoke the hit event
             if (otherHealth && !otherHealth.IsDead)
                 if (OnHitEvent != null)
-                    OnHitEvent(other.gameObject, nonzeroSpeedMult, isFinalBlow);
+                    OnHitEvent(other.gameObject, speedMult, isFinalBlow);
 
 
             if (attackSound)
@@ -159,7 +158,7 @@ public class Hitbox : MonoBehaviour
 
             if (hitStop > 0)
             {
-                float seconds = hitStop * nonzeroSpeedMult;
+                float seconds = hitStop * speedMult;
 
                 if (isFinalBlow) seconds *= killCoeff;
                 GameManager.TimeManager.DoHitStop(seconds);
@@ -172,7 +171,7 @@ public class Hitbox : MonoBehaviour
 
             if (slomoFactor < 1)
             {
-                float theSlowdownFactor = slomoFactor / nonzeroSpeedMult;
+                float theSlowdownFactor = slomoFactor / speedMult;
                 if (isFinalBlow) theSlowdownFactor /= killCoeff;
                 GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
             }
@@ -180,7 +179,7 @@ public class Hitbox : MonoBehaviour
             if (_explosive)
                 playerAttack.CreateSlamExplosion();
 
-            GameManager.CameraShake.DoJitter(jitter.x * Mathf.Log(nonzeroSpeedMult), jitter.y);
+            GameManager.CameraShake.DoJitter(jitter.x * Mathf.Log(speedMult), jitter.y);
         }
 
         if (_deactivateOnContact && otherHealth)
@@ -190,7 +189,7 @@ public class Hitbox : MonoBehaviour
         }
     }
 
-    void OnGUI()
+    /*void OnGUI()
     {
         if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) _guiSlidersEnabled = !_guiSlidersEnabled;
         if (!_guiSlidersEnabled)
@@ -199,5 +198,5 @@ public class Hitbox : MonoBehaviour
         hitStop = GameManager.AddGUISlider(gameObject.name + " hitStop", hitStop, 35 * (1 + _guiIndex));
         slomoFactor = GameManager.AddGUISlider(gameObject.name + " slomoFactor", slomoFactor,
             Mathf.RoundToInt(35 * (1.5f + _guiIndex)));
-    }
+    }*/
 }
