@@ -111,7 +111,7 @@ public class PlayerAttack : MonoBehaviour
                 else if (attackDown && _playerMove.Grounded && _playerMove.CanDashAttack && Mathf.Abs(input.x) > 0.1f &&
                          !_anim.GetBool("DashAttack"))
                 {
-                    _playerMove.rb.AddForce(Vector2.right * _rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor, ForceMode2D.Impulse);
+                    _playerMove.Rb.AddForce(Vector2.right * _rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor, ForceMode2D.Impulse);
                     _anim.SetBool("DashAttack", true);
                     // Block input for dashattack animation length
                     StartCoroutine(BlockInput(_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));

@@ -42,7 +42,7 @@ public class Enemy : Walker
     {
         if (health.IsDead)
             return;
-        Debug.Assert(rb != null);
+        Debug.Assert(Rb != null);
 
         timeSinceLastAttack += Time.deltaTime;
     }
@@ -90,7 +90,7 @@ public class Enemy : Walker
 
     private void UpdateAnimParams()
     {
-        _anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        _anim.SetFloat("Speed", Mathf.Abs(Rb.velocity.x));
     }
 
 

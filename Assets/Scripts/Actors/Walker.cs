@@ -41,7 +41,7 @@ public class Walker : MonoBehaviour
     protected bool m_Climb = false;
 
     //Components
-    [HideInInspector] public Rigidbody2D rb;
+    public Rigidbody2D Rb { get; private set; }
     [HideInInspector] public Health health;
     [SerializeField] protected AudioClip footstepSound;
     [SerializeField] protected Transform m_GroundCheck;
@@ -67,7 +67,7 @@ public class Walker : MonoBehaviour
         }
 
         audioSource = GetComponent<AudioSource>();
-        rb = GetComponent<Rigidbody2D>();
+        Rb = GetComponent<Rigidbody2D>();
         _anim = GetComponent<Animator>();
         health = GetComponent<Health>();
 
@@ -88,7 +88,7 @@ public class Walker : MonoBehaviour
     /// </summary>
     public void Move(Vector2 input, bool jump)
     {
-        Move(new Vector2(input.x, rb.velocity.y));
+        Move(new Vector2(input.x, Rb.velocity.y));
 
         //When to jump
         if (jump)
@@ -106,7 +106,7 @@ public class Walker : MonoBehaviour
             }
 
         // Move (horizontally only)
-        rb.velocity = input * moveSpeed;
+        Rb.velocity = input * moveSpeed;
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public class Walker : MonoBehaviour
 
     public void Jump()
     {
-        rb.AddForce(Vector2.up * rb.mass * jumpForce, ForceMode2D.Impulse);
+        Rb.AddForce(Vector2.up * Rb.mass * jumpForce, ForceMode2D.Impulse);
     }
 
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
@@ -132,15 +132,15 @@ public class Walker : MonoBehaviour
     {
         String clipName = _anim.GetCurrentAnimatorClipInfo(_anim.layerCount - 1)[_anim.layerCount - 1].clip.name;
 
-        if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1)
+        if (clipName.Equals("Walk") && Mathf.Abs(Rb.velocity.x) >= 0.1)
         {
             //walking animation and moving
-            _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedCoeff);
+            _anim.speed = Mathf.Abs(Rb.velocity.x * animationSpeedCoeff);
         }
-        else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1)
+        else if (clipName.Equals("Air Idle") && Mathf.Abs(Rb.velocity.y) >= 0.1)
         {
             //Airborn animation and moving
-            _anim.speed = Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedCoeff * 5f / 8f));
+            _anim.speed = Mathf.Log(Mathf.Abs(Rb.velocity.y * animationSpeedCoeff * 5f / 8f));
         }
         else
         {
@@ -182,7 +182,7 @@ public class Walker : MonoBehaviour
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
         // Play footstep sound, if player falls fast enough
-        if (rb.velocity.y * Time.deltaTime < 2)
+        if (Rb.velocity.y * Time.deltaTime < 2)
         {
             audioSource.PlayOneShot(footstepSound, 0.5f);
         }
@@ -194,7 +194,7 @@ public class Walker : MonoBehaviour
     /// </summary>
     public virtual void UpdateAnimatorParams()
     {
-        _anim.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+        _anim.SetFloat("Speed", Mathf.Abs(Rb.velocity.x));
     }
 
     public virtual void Flip()

@@ -62,7 +62,7 @@ public class MeleeEnemy : Enemy
     /// <param name="mult">Defaults to 1</param>
     private void Lundge(float mult = 1f)
     {
-        rb.AddForce(targeting.AimDirection * lungeForce * mult * rb.mass, ForceMode2D.Impulse);
+        Rb.AddForce(targeting.AimDirection * lungeForce * mult * Rb.mass, ForceMode2D.Impulse);
     }
 
     // called by animationEvents

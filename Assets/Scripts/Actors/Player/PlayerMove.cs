@@ -140,15 +140,15 @@ public class PlayerMove : Walker
     private void ModifyGravity()
     {
         Vector2 gravityV2 = Vector2.up * Physics2D.gravity.y * Time.fixedDeltaTime;
-        if (rb.velocity.y < 0.1f)
+        if (Rb.velocity.y < 0.1f)
         {
             // if player is falling
-            rb.velocity += gravityV2 * (fallMultiplier);
+            Rb.velocity += gravityV2 * (fallMultiplier);
         }
-        else if (rb.velocity.y > 0 && !CrossPlatformInputManager.GetButton("Jump"))
+        else if (Rb.velocity.y > 0 && !CrossPlatformInputManager.GetButton("Jump"))
         {
             // else if player is still moving up
-            rb.velocity += gravityV2 * (lowJumpMultiplier);
+            Rb.velocity += gravityV2 * (lowJumpMultiplier);
         }
     }
 
@@ -171,7 +171,7 @@ public class PlayerMove : Walker
                 _move = MovementInput.x * moveSpeed * momentum;
 
         // If reached jump peak
-        if (Mathf.Approximately(rb.velocity.y, 0) && !Grounded)
+        if (Mathf.Approximately(Rb.velocity.y, 0) && !Grounded)
         {
         }
 
@@ -179,14 +179,14 @@ public class PlayerMove : Walker
         if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0 && !_anim.GetBool("Slamming"))
         {
             // On wall and falling
-            if (rb.velocity.y < 0)
+            if (Rb.velocity.y < 0)
             {
                 m_HasDoubleJump = true;
 
                 // limit wallslide speed
-                if (rb.velocity.y < -wallSlideSpeedMax)
+                if (Rb.velocity.y < -wallSlideSpeedMax)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x, -wallSlideSpeedMax);
+                    Rb.velocity = new Vector2(Rb.velocity.x, -wallSlideSpeedMax);
                 }
 
 //                else if (MovementInput.y > 0.5f)
@@ -204,7 +204,7 @@ public class PlayerMove : Walker
         // TODO: on jump buttonUp, if(!m_Jump && Grounded) set rb Y velocity to zero 0
 
         // Move horizontally
-        rb.velocity = /*grapple.m_Flying? Vector2.zero:*/ new Vector2(_move, rb.velocity.y);
+        Rb.velocity = /*grapple.m_Flying? Vector2.zero:*/ new Vector2(_move, Rb.velocity.y);
 
         if (Wallcheck)
             m_HasDoubleJump = true;
@@ -225,7 +225,7 @@ public class PlayerMove : Walker
                 //If jumping and on the wall:
                 // NOTE: the player has to be facing the wall to wallslide/walljump
                 Debug.Log("Jump off wall");
-                rb.AddForce(Vector2.right * -FacingSign * walljumpForce * jumpForce * rb.mass, ForceMode2D.Impulse);
+                Rb.AddForce(Vector2.right * -FacingSign * walljumpForce * jumpForce * Rb.mass, ForceMode2D.Impulse);
                 Jump();
                 Flip();
                 m_Jump = false;
@@ -233,7 +233,7 @@ public class PlayerMove : Walker
             else if (control_PlayerCanDoubleJump && m_HasDoubleJump)
             {
                 // Double jump
-                rb.velocity = new Vector2(0, 0); // Resets vertical speed before doubleJump (prevents glitchy jumping)
+                Rb.velocity = new Vector2(0, 0); // Resets vertical speed before doubleJump (prevents glitchy jumping)
                 print("Double jump");
                 if (!grapple.m_Flying
                 ) // if grappling, then the player get's an extra jump, otherwise mark that the doubleJump has been used
@@ -261,15 +261,15 @@ public class PlayerMove : Walker
             //Is using slam_attack and reached peak
             _anim.speed = 0;
         }
-        else if (clipName.Equals("Walk") && Mathf.Abs(rb.velocity.x) >= 0.1)
+        else if (clipName.Equals("Walk") && Mathf.Abs(Rb.velocity.x) >= 0.1)
         {
             //walking animation and moving
-            _anim.speed = Mathf.Abs(rb.velocity.x * animationSpeedCoeff);
+            _anim.speed = Mathf.Abs(Rb.velocity.x * animationSpeedCoeff);
         }
-        else if (clipName.Equals("Air Idle") && Mathf.Abs(rb.velocity.y) >= 0.1)
+        else if (clipName.Equals("Air Idle") && Mathf.Abs(Rb.velocity.y) >= 0.1)
         {
             //Airborn animation and moving
-            _anim.speed = Mathf.Abs(Mathf.Log(Mathf.Abs(rb.velocity.y * animationSpeedCoeff * 5f / 8f)));
+            _anim.speed = Mathf.Abs(Mathf.Log(Mathf.Abs(Rb.velocity.y * animationSpeedCoeff * 5f / 8f)));
         }
         else
         {
@@ -282,7 +282,7 @@ public class PlayerMove : Walker
 
     public bool CanDashAttack
     {
-        get { return Mathf.Abs(rb.velocity.x) > minDashAttackSpeedThr * momentum; }
+        get { return Mathf.Abs(Rb.velocity.x) > minDashAttackSpeedThr * momentum; }
     }
 
     public bool CeilCheck
@@ -310,7 +310,7 @@ public class PlayerMove : Walker
     {
         base.UpdateAnimatorParams();
         _anim.SetBool("Grappling", grapple.m_Flying);
-        _anim.SetFloat("VSpeed", Mathf.Abs(rb.velocity.y));
+        _anim.SetFloat("VSpeed", Mathf.Abs(Rb.velocity.y));
         _anim.SetBool("Grounded", Grounded);
 
         if (!_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack Dash"))
@@ -322,10 +322,10 @@ public class PlayerMove : Walker
     private void CheckLanding()
     {
         //If should be landing
-        float landingHeight = Mathf.Abs(rb.velocity.y) * 0.5f;
+        float landingHeight = Mathf.Abs(Rb.velocity.y) * 0.5f;
         Debug.DrawLine(m_GroundCheck.position, (Vector2) m_GroundCheck.position + Vector2.down * landingHeight,
             Color.green);
-        if (Physics2D.Raycast(m_GroundCheck.position, Vector2.down, landingHeight) && !Grounded && rb.velocity.y < 0)
+        if (Physics2D.Raycast(m_GroundCheck.position, Vector2.down, landingHeight) && !Grounded && Rb.velocity.y < 0)
         {
             _anim.SetBool("Landing", true);
             Debug.Log("Landing");
@@ -342,7 +342,7 @@ public class PlayerMove : Walker
         {
             "timeScale: " + Time.timeScale,
             "fixedDeltaTime: " + Time.fixedDeltaTime,
-            "velocity: " + rb.velocity,
+            "velocity: " + Rb.velocity,
             "HSpeed(Anim): " + _anim.GetFloat("Speed"),
             "VSpeed(Anim): " + _anim.GetFloat("VSpeed"),
             "lastGroundSpeed: " + m_lastGroundSpeed,

@@ -32,7 +32,7 @@ public class ShooterEnemy : Enemy
         while (i++ < burstSize)
         {
             // set x velocity to 0
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            Rb.velocity = new Vector2(0, Rb.velocity.y);
 
             _anim.SetTrigger("Attack");
 

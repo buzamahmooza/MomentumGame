@@ -48,6 +48,7 @@ public class FlyingDroneEnemy : ShooterEnemy
         Missile missileScript = missile.GetComponent<Missile>();
         missileScript.Shooter = this.gameObject;
         missileScript.Target = targeting.Target;
+        missileScript.IsArmed = false;
     }
 
     /// <summary>
@@ -59,7 +60,7 @@ public class FlyingDroneEnemy : ShooterEnemy
         {
             print("Healing");
             // move away from player
-            rb.AddForce((transform.position - GameManager.Player.transform.position).normalized * 10,
+            Rb.AddForce((transform.position - GameManager.Player.transform.position).normalized * 10,
                 ForceMode2D.Impulse);
 
             //disable AI to stop moving
@@ -73,7 +74,7 @@ public class FlyingDroneEnemy : ShooterEnemy
         _anim.SetBool("Healing", _isHealing);
         if (_isHealing)
         {
-            health.RegenerateHealth(50);
+            health.AddHealth(50);
             Invoke("Heal", 1);
         }
     }
