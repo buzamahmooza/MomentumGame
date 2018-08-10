@@ -20,7 +20,8 @@ public class Health : MonoBehaviour
 
     [SerializeField] Color _damageColor = Color.red;
 
-    [SerializeField] protected AudioClip hurtAudioClip, deathAudioClip;
+    [SerializeField] protected AudioClip[] hurtAudioClips;
+    [SerializeField] protected AudioClip deathAudioClip;
     [SerializeField] protected bool destroyOnDeath = false;
     [SerializeField] [Range(0, 1000f)] public int MaxHealth = 100;
     [SerializeField] [Range(0, 1000f)] public int CurrentHealth;
@@ -35,7 +36,10 @@ public class Health : MonoBehaviour
     /// <summary>
     /// the minimum damage needed to create hurtEffects, any smaller damage value will not cause hurtEffects
     /// </summary>
-    [SerializeField] [Range(0, 100)] int hurtEffectsDamageValueThreshold = 10;
+    [SerializeField] [Range(0, 100)] int hurtEffectsDamageThreshold = 10;
+
+    /// <summary> the minimum damage needed to cause the enemy to get stunned </summary>
+    [SerializeField] [Range(0, 100)] int stunThreshold = 10;
 
     [HideInInspector] public bool IsDead = false;
 
@@ -58,7 +62,7 @@ public class Health : MonoBehaviour
         walker = GetComponent<Walker>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>() ?? gameObject.AddComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -78,7 +82,7 @@ public class Health : MonoBehaviour
         if (gameObject.layer == LayerMask.NameToLayer("Object"))
             fallDamageModifier = 0;
         if (autoRegenHealth)
-            InvokeRepeating("RegenerateHealth", 0, HealthRegenerationInterval); //Periodically regenerate health
+            InvokeRepeating("AddHealth", 0, HealthRegenerationInterval); //Periodically regenerate health
     }
 
     protected virtual void LateUpdate()
@@ -116,7 +120,7 @@ public class Health : MonoBehaviour
         UpdateHealthBar();
         CheckHealth();
 
-        if (hurtEffects && damageAmount > hurtEffectsDamageValueThreshold)
+        if (hurtEffects && damageAmount > hurtEffectsDamageThreshold)
         {
             GameObject effects;
             if (_stickyHurtEffects)
@@ -129,12 +133,17 @@ public class Health : MonoBehaviour
 
         if (floatingTextPrefab)
             CreateFloatingDamage(damageAmount);
+
+        if (damageAmount > stunThreshold)
+            Stun(1.5f);
     }
 
     /// <summary> Plays the hurt animation (if any), color flashes red, plays hurt sound. </summary>
     private void Hurt()
     {
-        audioSource.PlayOneShot(hurtAudioClip);
+        if (hurtAudioClips.Length > 0)
+            audioSource.PlayOneShot(Utils.GetRandomElement(hurtAudioClips));
+        
         if (_anim != null && !IsDead)
             _anim.SetTrigger("Hurt");
         SpriteRenderer.color = _damageColor;
@@ -251,16 +260,17 @@ public class Health : MonoBehaviour
     }
 
     /// <summary> Increment by x% of the starting health (only if not yet reached max health) </summary>
-    public void RegenerateHealth()
+    public void AddHealth()
     {
-        RegenerateHealth(Mathf.RoundToInt(regenPercent / 100 * MaxHealth));
+        AddHealth(Mathf.RoundToInt(regenPercent / 100 * MaxHealth));
     }
+
     /// <summary> Add health </summary>
-    /// <param name="addedHealth"></param>
-    public void RegenerateHealth(int addedHealth)
+    /// <param name="healthToAdd"></param>
+    public void AddHealth(int healthToAdd)
     {
         // add regenPercent but not exceding maxHealth
-        CurrentHealth = Mathf.Clamp(CurrentHealth + addedHealth, 0, MaxHealth);
+        CurrentHealth = Mathf.Clamp(CurrentHealth + healthToAdd, 0, MaxHealth);
         CheckHealth();
         SpriteRenderer.color = Color.green;
     }

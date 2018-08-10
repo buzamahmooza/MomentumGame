@@ -39,8 +39,6 @@ public class EnemyHealth : Health
 
     public override void Die()
     {
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-
         if (enemyAI) enemyAI.enabled = false;
 
         // if this is the first time the enemy dies:
@@ -50,7 +48,7 @@ public class EnemyHealth : Health
             {
                 CreateFloatingScore(ScoreValue);
                 GameManager.ScoreManager.AddScore(ScoreValue, true);
-                GameManager.PlayerHealth.RegenerateHealth();
+                GameManager.PlayerHealth.AddHealth();
             }
 
             // Add force up to give a nice effect
@@ -81,7 +79,7 @@ public class EnemyHealth : Health
                 pickupRb.gravityScale = 0.5f;
             }
 
-            print("numberOfPickupsToSpawn = " + numberOfPickupsToSpawn);
+//            print("numberOfPickupsToSpawn = " + numberOfPickupsToSpawn);
         }
 
         // disable colliders (so it would go through the floor and fall out of the map)

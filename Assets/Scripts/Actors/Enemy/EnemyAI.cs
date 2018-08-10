@@ -22,9 +22,6 @@ public class EnemyAI : Targeting
     [SerializeField] public bool followOnGround = true;
     [SerializeField] private int _debugLevel = 0;
 
-    public LayerMask floorMask;
-    public Transform m_GroundCheck;
-
     //The max distance from the AI to a waypoint for it to continue to the next waypoint
     public float nextWaypointDistance = 3;
 
@@ -42,7 +39,7 @@ public class EnemyAI : Targeting
 
     private Seeker seeker;
     private Rigidbody2D rb;
-    private Enemy enemyScript;
+    private Enemy walker;
     private Targeting targeting;
     private Animator anim;
 
@@ -53,8 +50,8 @@ public class EnemyAI : Targeting
         anim = GetComponent<Animator>();
         seeker = GetComponent<Seeker>();
         rb = GetComponent<Rigidbody2D>();
-        enemyScript = GetComponent<Enemy>();
-        m_GroundCheck = transform.Find("GroundCheck");
+        walker = GetComponent<Enemy>();
+        transform.Find("GroundCheck");
     }
 
     protected virtual void Start()
@@ -75,7 +72,7 @@ public class EnemyAI : Targeting
     /// </summary>
     public void MoveAlongPath()
     {
-        if (!enemyScript.m_Attacking && !enemyScript.health.IsDead)
+        if (!walker.m_Attacking && !walker.health.IsDead)
         {
             ApproachTarget();
         }
@@ -100,7 +97,8 @@ public class EnemyAI : Targeting
         Debug.DrawLine(transform.position, transform.position + dir, Color.yellow);
         Debug.DrawLine(transform.position, Target.position, Color.red);
 
-        enemyScript.Move(dir);
+        if (!followOnGround || followOnGround && walker.Grounded)
+            walker.Move(dir);
 
         // Jump
         //nextPointAngle = Vector3.Angle(dir.normalized, Vector3.up);
@@ -140,7 +138,7 @@ public class EnemyAI : Targeting
                 Debug.Log("End Of Path Reached");
             if (pathHasEnded)
                 return false;
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            rb.velocity = new Vector2(0, rb.velocity.y - rb.gravityScale);
 
             pathHasEnded = true;
             return false;
@@ -162,8 +160,8 @@ public class EnemyAI : Targeting
 
         //Direction to the next waypoint
         Vector2 dir = nextWaypoint;
-        if (followOnGround) 
-            dir = new Vector3(dir.x, -rb.gravityScale);
+        if (followOnGround)
+            dir = new Vector2(dir.x, rb.velocity.y - rb.gravityScale);
         moveDirection = dir;
         return true;
     }
@@ -224,7 +222,7 @@ public class EnemyAI : Targeting
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = enemyScript && enemyScript.IsAware ? Color.red : Color.blue;
+        Gizmos.color = walker && walker.IsAware ? Color.red : Color.blue;
         Gizmos.DrawWireSphere(transform.position, stopDist);
     }
 }
