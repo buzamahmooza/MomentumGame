@@ -4,20 +4,45 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    [SerializeField]
-    float slowDownLength = 2.0f;
-    [SerializeField]
-    [Range(0.001f, 1)]
-    float slowdownFactor = 0.05f,
+    [SerializeField] float slowDownLength = 2.0f;
+
+    [SerializeField] [Range(0.001f, 1)] float
+        slowdownFactor = 0.05f,
         defaultHitStopDuration = 0.05f;
 
-    [SerializeField] private ParticleSystem ps;
-    private bool m_SloMo = false;
-    public float hSliderValue = 1000;
+    [SerializeField] private GameObject _slomoParticles;
 
-    void Awake()
+    private bool m_SloMo = false;
+    private float _lastTimescale = 1;
+
+
+    private void Update()
     {
-        if (!ps) ps = GetComponent<ParticleSystem>();
+        if (Input.GetButtonDown("Menu"))
+        {
+            if (Math.Abs(Time.timeScale) < 0.01F) // if timescale == 0 (paused)
+            {
+                // unpause
+                Time.timeScale = _lastTimescale;
+            }
+            else
+            {
+                // pause
+                _lastTimescale = Time.timeScale;
+                Time.timeScale = 0;
+            }
+        }
+
+        if (m_SloMo)
+        {
+            if (Math.Abs(Time.timeScale - 1) < 0.01f)
+            {
+                ResetTimeScale();
+            }
+
+            Time.timeScale = Mathf.Clamp(Time.timeScale + 1 / slowDownLength * Time.unscaledDeltaTime, 0f, 1f);
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        }
     }
 
     public void DoSlowMotion()
@@ -30,7 +55,13 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = Mathf.Clamp(theSlowdownFactor, 0f, 100f);
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
         m_SloMo = true;
+
+        // spawn the particles with the main camera
+        if (_slomoParticles)
+            Instantiate(_slomoParticles, Camera.main.transform.position + Vector3.forward, Quaternion.identity,
+                FindObjectOfType<CameraController>().transform);
     }
+
     /// <summary>
     /// slows down time for a duration of 0.05f seconds
     /// </summary>
@@ -38,6 +69,7 @@ public class TimeManager : MonoBehaviour
     {
         DoHitStop(defaultHitStopDuration);
     }
+
     public void DoHitStop(float seconds)
     {
         Time.timeScale = 0.01f;
@@ -51,30 +83,14 @@ public class TimeManager : MonoBehaviour
         ResetTimeScale();
     }
 
-    // Update is called once per frame
-    private void Update()
-    {
-        if (m_SloMo)
-        {
-            ps.Emit(1);
-            if (Math.Abs((Time.timeScale) - 1) < 0.01f)
-            {
-                ResetTimeScale();
-            }
-
-            Time.timeScale = Mathf.Clamp(Time.timeScale + 1 / slowDownLength * Time.unscaledDeltaTime, 0f, 1f);
-            Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        }
-        //Mathf.Lerp(Time.timeScale, 1, Time.deltaTime);
-    }
-
-    private void ResetTimeScale()
+    public void ResetTimeScale()
     {
         m_SloMo = false;
-        Time.timeScale = 1f;
-        Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
+        Time.timeScale = _lastTimescale;
+        Time.fixedDeltaTime = 0.02f;
     }
 }
+
 public static class CoroutineUtil
 {
     public static IEnumerator WaitForRealSeconds(float time)

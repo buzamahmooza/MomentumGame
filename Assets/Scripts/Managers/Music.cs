@@ -4,6 +4,7 @@ using System.Timers;
 using UnityEngine;
 using Random = System.Random;
 
+[RequireComponent(typeof(AudioSource))]
 public class Music : MonoBehaviour
 {
     [SerializeField] private AudioClip[] tracks;
