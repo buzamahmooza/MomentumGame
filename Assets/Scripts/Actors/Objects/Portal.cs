@@ -53,6 +53,7 @@ public class Portal : MonoBehaviour
         {
             Debug.Log("Teleported " + col.name);
             OtherPortal.TeleportObject(col);
+            this.DisableTemporarily();
         }
     }
 
@@ -68,7 +69,7 @@ public class Portal : MonoBehaviour
     }
 
     /// <summary> disables the portal for 1 second (disables collider and changes color to dark grey) </summary>
-    private void DisableTemporarily(int time = 1)
+    public void DisableTemporarily(int time = 2)
     {
         _collider2D.enabled = false;
         _spriteRenderer.color = new Color(0.2f, 0.2f, 0.2f, _originalColor.a);

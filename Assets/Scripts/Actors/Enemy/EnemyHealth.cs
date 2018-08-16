@@ -7,7 +7,7 @@ using Random = System.Random;
 [RequireComponent(typeof(Enemy))]
 public class EnemyHealth : Health
 {
-    [SerializeField] [Range(0, 500)] public int ScoreValue = 0;  // assigned in inspector
+    [SerializeField] [Range(0, 500)] public int ScoreValue = 0; // assigned in inspector
     private GameObject player;
     private EnemyAI enemyAI;
     [SerializeField] private GameObject healthPickup;
@@ -49,13 +49,16 @@ public class EnemyHealth : Health
                 CreateFloatingScore(ScoreValue);
                 GameManager.ScoreManager.AddScore(ScoreValue, true);
                 GameManager.PlayerHealth.AddHealth();
+                
+                // TODO: BAD design, subscribe to the OnDeath Action from the RoomBuilder instead, this is temperary. Remove later!
+                KillObjective killObjective = GameManager.RoomBuilder.CurrentObjective as KillObjective;
+                if (killObjective != null)
+                    killObjective.OnEnemyKill();
             }
 
             // Add force up to give a nice effect
             if (rb && jumpAndPhaseThroughWhenDead)
             {
-                // override physics
-                //rb.velocity = Vector2.zero;
                 gameObject.layer = LayerMask.NameToLayer("EnemyIgnore");
                 rb.AddForce(Vector2.up * 6 * rb.mass, ForceMode2D.Impulse);
             }
@@ -65,29 +68,26 @@ public class EnemyHealth : Health
             }
         }
 
-
-        // explode a random amount of pickups
-        if (healthPickup)
+        // spawn pickups (explode a random amount)
+        if (healthPickup != null)
         {
             int numberOfPickupsToSpawn = UnityEngine.Random.Range(1, 5);
             while (numberOfPickupsToSpawn-- > 0)
             {
-                var pickupInstance = Instantiate(healthPickup, transform.position, Quaternion.identity);
-                var pickupRb = pickupInstance.GetComponent<Rigidbody2D>();
-                var randomVector2 = UnityEngine.Random.insideUnitCircle; randomVector2.y = Mathf.Abs(randomVector2.y);
+                GameObject pickupInstance = Instantiate(healthPickup, transform.position, Quaternion.identity);
+                Rigidbody2D pickupRb = pickupInstance.GetComponent<Rigidbody2D>();
+
+                // set trajectory
+                Vector2 randomVector2 = UnityEngine.Random.insideUnitCircle;
+                randomVector2.y = Mathf.Abs(randomVector2.y);
+
+                // add force and set gravity
                 pickupRb.AddForce(randomVector2, ForceMode2D.Impulse);
                 pickupRb.gravityScale = 0.5f;
             }
-
-//            print("numberOfPickupsToSpawn = " + numberOfPickupsToSpawn);
         }
 
         // disable colliders (so it would go through the floor and fall out of the map)
         base.Die();
-
-        //GrappleHookDJ grappleScript = player.GetComponent<GrappleHookDJ>();
-        //if (grappleScript && grappleScript.grabbedObj == this.gameObject) {
-        //    grappleScript.EndGrapple();
-        //}
     }
 }

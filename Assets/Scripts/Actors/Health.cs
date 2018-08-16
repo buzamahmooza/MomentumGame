@@ -20,15 +20,16 @@ public class Health : MonoBehaviour
 
     [SerializeField] Color _damageColor = Color.red;
 
-    [SerializeField] protected AudioClip[] hurtAudioClips;
-    [SerializeField] protected AudioClip deathAudioClip;
+    [SerializeField] protected AudioClip[] hurtAudioClips,
+        deathAudioClips;
+
     [SerializeField] protected bool destroyOnDeath = false;
     [SerializeField] [Range(0, 1000f)] public int MaxHealth = 100;
     [SerializeField] [Range(0, 1000f)] public int CurrentHealth;
     [SerializeField] public GameObject floatingTextPrefab; // assigned in inspector
 
     [SerializeField] [Range(0, 100)] protected float fallDamageModifier = 0.5f;
-    [SerializeField] [Range(0, 100)] float fallDamageThreshold = 10;
+    [Range(0, 100)] float fallDamageThreshold = 7;
 
     [SerializeField] protected bool autoRegenHealth = false;
     [SerializeField] [Range(0, 100)] float regenPercent = 1f;
@@ -36,10 +37,10 @@ public class Health : MonoBehaviour
     /// <summary>
     /// the minimum damage needed to create hurtEffects, any smaller damage value will not cause hurtEffects
     /// </summary>
-    [SerializeField] [Range(0, 100)] int hurtEffectsDamageThreshold = 10;
+    [SerializeField] [Range(0, 100)] int _minDamageForHurtEffects = 10;
 
     /// <summary> the minimum damage needed to cause the enemy to get stunned </summary>
-    [SerializeField] [Range(0, 100)] int stunThreshold = 10;
+    [SerializeField] [Range(0, 100)] int minDamageForStun = 10;
 
     [HideInInspector] public bool IsDead = false;
 
@@ -101,12 +102,12 @@ public class Health : MonoBehaviour
     }
 
 
-    public virtual void TakeDamage(int damageAmount)
+    public void TakeDamage(int damageAmount)
     {
         TakeDamage(damageAmount, Vector3.back + UnityEngine.Random.insideUnitSphere);
     }
 
-    public virtual void TakeDamage(int damageAmount, Vector3 direction)
+    public void TakeDamage(int damageAmount, Vector3 direction)
     {
         if (IsDead)
             return;
@@ -120,13 +121,10 @@ public class Health : MonoBehaviour
         UpdateHealthBar();
         CheckHealth();
 
-        if (hurtEffects && damageAmount > hurtEffectsDamageThreshold)
+        if (hurtEffects && damageAmount > _minDamageForHurtEffects)
         {
-            GameObject effects;
-            if (_stickyHurtEffects)
-                effects = Instantiate(hurtEffects, transform.position, Quaternion.identity, transform);
-            else
-                effects = Instantiate(hurtEffects, transform.position, Quaternion.identity);
+            GameObject effects = Instantiate(hurtEffects, transform.position, Quaternion.identity,
+                _stickyHurtEffects ? transform : null);
 
             effects.transform.LookAt(direction);
         }
@@ -134,7 +132,7 @@ public class Health : MonoBehaviour
         if (floatingTextPrefab)
             CreateFloatingDamage(damageAmount);
 
-        if (damageAmount > stunThreshold)
+        if (damageAmount > minDamageForStun)
             Stun(1.5f);
     }
 
@@ -143,7 +141,7 @@ public class Health : MonoBehaviour
     {
         if (hurtAudioClips.Length > 0)
             audioSource.PlayOneShot(Utils.GetRandomElement(hurtAudioClips));
-        
+
         if (_anim != null && !IsDead)
             _anim.SetTrigger("Hurt");
         SpriteRenderer.color = _damageColor;
@@ -200,14 +198,16 @@ public class Health : MonoBehaviour
         if (!IsDead)
         {
             if (OnDeath != null)
+            {
+                print("OnDeath is not null: " + OnDeath);
                 OnDeath();
+            }
+
             // Make death effects, sounds, and animation
             if (deathEffects)
             {
-                if (_stickyDeathEffects)
-                    Instantiate(deathEffects, transform.position, Quaternion.identity, transform);
-                else
-                    Instantiate(deathEffects, transform.position, Quaternion.identity);
+                Instantiate(deathEffects, transform.position, Quaternion.identity,
+                    _stickyDeathEffects ? transform : null);
             }
 
             if (_anim)
@@ -216,7 +216,8 @@ public class Health : MonoBehaviour
                 _anim.SetTrigger("Die");
             }
 
-            if (deathAudioClip) audioSource.PlayOneShot(deathAudioClip);
+            if (deathAudioClips.Length > 0)
+                audioSource.PlayOneShot(Utils.GetRandomElement(deathAudioClips));
         }
 
         IsDead = true;
@@ -234,9 +235,10 @@ public class Health : MonoBehaviour
             SpriteRenderer.color = Color.Lerp(SpriteRenderer.color, originalColor, Time.deltaTime * 10);
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (IsDead && rb.velocity.y <= 0.1f && gameObject != GameManager.Player)
+        // if the thing is dead and it falls, just delete it
+        if (IsDead && collision.relativeVelocity.y <= 0.1f && gameObject != GameManager.Player)
         {
             Destroy(gameObject, 5f);
         }
@@ -244,12 +246,14 @@ public class Health : MonoBehaviour
         // Skips taking fall damage to be more efficient.
         if (fallDamageModifier > 0)
         {
-            Rigidbody2D otherRb = other.gameObject.GetComponent<Rigidbody2D>();
-
+            Rigidbody2D otherRb = collision.otherRigidbody;
             if (rb != null && otherRb != null)
             {
-                float fallDamage = Vector3.Distance(otherRb.velocity * otherRb.mass, rb.velocity * rb.mass) *
+                float fallDamage = collision.relativeVelocity.magnitude * otherRb.mass * rb.mass *
                                    fallDamageModifier;
+
+                if (collision.relativeVelocity.magnitude < fallDamageThreshold)
+                    fallDamage = 0;
 
                 // only take fallDamage if falldamage is big enough
                 // this check prevents small falls from affecting

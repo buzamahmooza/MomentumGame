@@ -49,6 +49,7 @@ public class Walker : MonoBehaviour
     protected AudioSource audioSource;
     protected Targeting targeting;
 
+
     /// <summary>
     /// Set component fields:
     ///     Targeting,
@@ -81,7 +82,6 @@ public class Walker : MonoBehaviour
         Debug.Assert(targeting != null, "targeting!=null");
     }
 
-    // TODO: when wallclimbing, if input_Y is max (1), player will not slide (stay hanging on the wall)
 
     /// <summary>
     /// If you want to modify any movements or Rigidbody forces/velocity do that here, otherwise your changes will be immediately overriden by this method as the velocity is modified directly
@@ -182,7 +182,7 @@ public class Walker : MonoBehaviour
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
         // Play footstep sound, if player falls fast enough
-        if (Rb.velocity.y * Time.deltaTime < 2)
+        if (collision.relativeVelocity.y * Time.deltaTime < 2)
         {
             audioSource.PlayOneShot(footstepSound, 0.5f);
         }
@@ -220,7 +220,6 @@ public class Walker : MonoBehaviour
             {
                 // If should face the AimDirection
                 FaceDirection(targeting.AimDirection.x);
-                ;
             }
             else
             {
@@ -237,11 +236,12 @@ public class Walker : MonoBehaviour
 
     public void PlayFootstepSound()
     {
-        //audioSource.PlayOneShot(footstepSound, 0.5f);
+        audioSource.PlayOneShot(footstepSound, 0.5f);
     }
 
     protected virtual void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(m_GroundCheck.position, k_GroundedRadius);
+        if (m_GroundCheck != null)
+            Gizmos.DrawWireSphere(m_GroundCheck.position, k_GroundedRadius);
     }
 }

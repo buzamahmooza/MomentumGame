@@ -26,7 +26,10 @@ public class PlayerHealth : Health
         if (grappleHook) grappleHook.EndGrapple();
 
         SpriteRenderer.color = Color.white;
-
+        
+        
+        
+        // disabling scripts (super buggy)
         try
         {
             Destroy(GetComponent<GrappleHook>());

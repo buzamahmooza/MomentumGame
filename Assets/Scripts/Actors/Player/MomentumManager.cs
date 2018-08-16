@@ -48,7 +48,7 @@ public class MomentumManager : MonoBehaviour
         UpdateText();
     }
 
-    void LateUpdate()
+    void Update()
     {
         // enable when over 50%
         _trailGenerator.SampleLifetime = Momentum > MaxMomentum * minimumMomentumPercentForTrail / 100 ? 1 : 0;
@@ -62,7 +62,6 @@ public class MomentumManager : MonoBehaviour
         if (!_startedGame)
         {
             StartCoroutine(WaitAndDecayMomentum());
-            print("StartCoroutine(WaitAndDecayMomentum());");
             _startedGame = true;
         }
 
@@ -74,7 +73,6 @@ public class MomentumManager : MonoBehaviour
         }
 
         Momentum += momentumAdded;
-        Debug.Log("Momentum is now: " + Momentum);
 
         UpdateMomentum();
 

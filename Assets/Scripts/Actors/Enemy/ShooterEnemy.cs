@@ -7,7 +7,6 @@ public class ShooterEnemy : Enemy
     [SerializeField] protected Transform shootTransform;
     [SerializeField] [Range(1, 50)] private int burstSize = 7;
     protected Shooter shooter;
-    private float timeBetweenShotsInBurst;
 
 
     protected override void Awake()
@@ -20,15 +19,16 @@ public class ShooterEnemy : Enemy
     public override void Attack()
     {
         base.Attack();
-        m_Attacking = true;
-        if (!m_CanAttack) return;
+        if (!m_CanAttack)
+            return;
         StartCoroutine(FireBurst());
     }
 
     private IEnumerator FireBurst()
     {
-        timeBetweenShotsInBurst = 60.0f / shooter.CurrentWeaponStats.rpm;
-        var i = 0;
+        Vector3 shootDirection = GameManager.Player.transform.position - this.transform.position;
+
+        int i = 0;
         while (i++ < burstSize)
         {
             // set x velocity to 0
@@ -36,10 +36,11 @@ public class ShooterEnemy : Enemy
 
             _anim.SetTrigger("Attack");
 
-            shooter.Shoot(GameManager.Player.transform);
+            shooter.Shoot(shootDirection);
             if (!health.IsDead)
-                yield return new WaitForSeconds(timeBetweenShotsInBurst);
+                yield return new WaitForSeconds(60.0f / shooter.CurrentWeaponStats.rpm);
         }
+
         m_Attacking = false;
     }
 }

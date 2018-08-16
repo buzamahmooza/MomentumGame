@@ -21,9 +21,8 @@ public class MeleeEnemy : Enemy
         if (!attackHitbox) attackHitbox = GetComponent<EnemyHitbox>() ?? GetComponentInChildren<EnemyHitbox>();
     }
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         if (attackHitbox)
             meleeRange = attackHitbox.collider2D.bounds.extents.magnitude +
                          Vector2.Distance(attackHitbox.transform.position, transform.position);
@@ -116,10 +115,5 @@ public class MeleeEnemy : Enemy
         attackHitbox.collider2D.enabled = false;
         m_Attacking = false;
         attackReady = false;
-    }
-
-    protected override void OnDrawGizmos()
-    {
-        base.OnDrawGizmos();
     }
 }

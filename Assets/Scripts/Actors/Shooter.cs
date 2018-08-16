@@ -93,7 +93,13 @@ public class Shooter : MonoBehaviour
     {
         
     }
-    public virtual void Shoot(Transform target)
+    /// <summary>
+    /// creates a shot and sets it to the target's direction, if it's a missile, sets it to follow the target.
+    /// Returns the projectile
+    /// </summary>
+    /// <param name="target"></param>
+    /// <returns></returns>
+    public GameObject Shoot(Transform target)
     {
         GameObject projectile = CreateProjectile(target.transform.position - transform.position);
         // Set bullet damage
@@ -103,15 +109,18 @@ public class Shooter : MonoBehaviour
         {
             missile.Target = target;
         }
+
+        return projectile;
     }
 
-    public virtual void Shoot(Vector2 shootDirection)
+    public virtual GameObject Shoot(Vector2 shootDirection)
     {
         GameObject projectile = CreateProjectile(shootDirection);
 
         BulletScript bulletScript = projectile.GetComponent<BulletScript>();
 
         rb.AddForce(-shootDirection * kickbackForceMplier * rb.mass * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        return projectile;
     }
 
     private GameObject CreateProjectile(Vector2 shootDirection)

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using InControl;
 
-[RequireComponent(typeof(PlayerMove))]
+[RequireComponent(typeof(Walker))]
 public class AimInput : Targeting
 {
     /// <summary>

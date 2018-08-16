@@ -82,7 +82,8 @@ public class PlayerMove : Walker
         Grounded = false;
 
         // Recharge the doubleJump once one ground
-        if (Grounded) m_HasDoubleJump = true;
+        if (Grounded)
+            m_HasDoubleJump = true;
 
         Move();
         m_Jump = false;
@@ -151,8 +152,6 @@ public class PlayerMove : Walker
             Rb.velocity += gravityV2 * (lowJumpMultiplier);
         }
     }
-
-    // TODO: when wallclimbing, if input_Y is max (1), player will not slide (stay hanging on the wall)
 
     private float momentum
     {

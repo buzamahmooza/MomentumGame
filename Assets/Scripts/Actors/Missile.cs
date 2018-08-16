@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Networking;
 
 /// <summary>
 /// assuming the rocket direction is facing right (the positive x axis)
@@ -10,14 +11,18 @@ using UnityEngine;
 public class Missile : BulletScript
 {
     public Transform Target;
-    private Rigidbody2D _rb;
+
     [SerializeField] private float _speed = 10f;
     [SerializeField] private float _rotationSpeed = 1f;
 
     [SerializeField] private GameObject _particleEffects;
     [SerializeField] private AudioClip _explosionClip;
     [SerializeField] private float _explosionForce = 5;
-    private bool _canExplode = true;
+
+    public bool IsArmed = true;
+    
+    private Rigidbody2D _rb;
+    private GameObject _objectSpawnedIn;
 
 
     void Awake()
@@ -27,48 +32,82 @@ public class Missile : BulletScript
 
     void Start()
     {
-        _canExplode = false;
-        StartCoroutine(AllowExplodingDelayed());
+        RaycastHit2D[] matches = Physics2D.CircleCastAll(transform.position, 0.5f, Vector2.up).Where(hit =>
+            !hit.transform.IsChildOf(transform) && !hit.collider.isTrigger
+        ).ToArray();
+        if (matches.Length > 0)
+        {
+            _objectSpawnedIn = matches[0].collider.gameObject;
+            if (_objectSpawnedIn)
+            {
+                print("Missile spawned in object: " + _objectSpawnedIn.name + ", dissarming");
+                IsArmed = false;
+                Invoke("Arm", 0.1f);
+            }
+        }
     }
 
-    private IEnumerator AllowExplodingDelayed()
+    /// <summary>
+    /// Arms the missile after a delay
+    /// </summary>
+    /// <returns></returns>
+    public void Arm()
     {
-        yield return new WaitForSeconds(0.7f);
-        _canExplode = true;
+        IsArmed = true;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (Target == null)
+        if (Target != null)
         {
-            Explode();
-        }
-        else
-        {
-            _rb.velocity = transform.right * _speed;
-
             Vector3 toTarget = Target.position - transform.position;
             float angle = Vector2.SignedAngle(transform.right, toTarget);
             _rb.angularVelocity = angle * _rotationSpeed;
         }
+
+        _rb.velocity = transform.right * _speed;
     }
 
-    protected new void OnTriggerEnter2D(Collider2D other)
+    protected override void OnTriggerEnter2D(Collider2D col)
     {
-        if (other.usedByEffector || other.isTrigger)
-            return;
-
-        if (other.gameObject.CompareTag(this.tag)) // don't collide with other bullets or missiles
-            return;
-
-        if (other.transform == Target || Utils.IsInLayerMask(destroyMask, other.gameObject.layer) && _canExplode)
+        if (col.isTrigger)
         {
-            Health otherHealth = other.GetComponent<Health>();
+            Debug.Log(name + " didn't explode cuz usedByEffector || isTrigger");
+            return;
+        }
+
+        // don't collide with other bullets or missiles
+        if (col.gameObject.GetComponent<BulletScript>())
+        {
+            Debug.Log(name + " didn't explode cuz " + col.name + " has BulletScript");
+            return;
+        }
+
+        bool hitTarget = col.transform == Target;
+        bool hitExplosionMask = Utils.IsInLayerMask(destroyMask, col.gameObject.layer);
+        if (hitTarget || hitExplosionMask && IsArmed)
+        {
+            Debug.Log(string.Format(
+                "Missile exploded: ({0})",
+                hitTarget
+                    ? $"target was hit: {col.name}"
+                    : $"hit explosion mask ({LayerMask.LayerToName(col.gameObject.layer)})"
+            ));
+            
+            Health otherHealth = col.GetComponent<Health>();
             if (otherHealth)
                 otherHealth.TakeDamage(damageAmount, transform.rotation.eulerAngles.normalized);
-
             Explode();
+        }
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject == _objectSpawnedIn)
+        {
+            Debug.Log("Missile left object spawned in");
+            IsArmed = true;
         }
     }
 
@@ -77,6 +116,7 @@ public class Missile : BulletScript
         Destroy(gameObject); // delay so that the audio will play
         if (_explosionClip)
             GameManager.AudioSource.PlayOneShot(_explosionClip);
+
         if (_particleEffects)
             Instantiate(_particleEffects, transform.position, transform.rotation);
 

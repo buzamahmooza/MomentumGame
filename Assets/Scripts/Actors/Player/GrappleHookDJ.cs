@@ -204,8 +204,11 @@ public class GrappleHookDJ : GrappleHook
 
     public override void EndGrapple()
     {
-        Joint.connectedBody = null;
-        Joint.enabled = false;
+        if(Joint)
+        {
+            Joint.connectedBody = null;
+            Joint.enabled = false;
+        }
         lr.enabled = false;
         m_Flying = false;
         m_Pulling = false;

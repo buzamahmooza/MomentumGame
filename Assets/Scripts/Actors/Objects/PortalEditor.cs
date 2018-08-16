@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
-using UnityEditorInternal;
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Manages a pair of teleporters
@@ -21,6 +16,10 @@ public class PortalEditor : MonoBehaviour
     /// </summary>
     private Color _statusColor = Color.green;
 
+    [SerializeField] private bool _flipPortals = false;
+    [SerializeField] private bool _autoOrientate = true;
+    [SerializeField] private bool _debug = false;
+
 
     void Start()
     {
@@ -36,6 +35,13 @@ public class PortalEditor : MonoBehaviour
 
     void Update()
     {
+        if (_flipPortals)
+        {
+            FlipBothPortals();
+            _flipPortals = false;
+            return;
+        }
+
         // draw line between them to make it clear for the user
         Debug.DrawLine(_portal1.transform.position, _portal2.transform.position, _statusColor);
 
@@ -49,7 +55,6 @@ public class PortalEditor : MonoBehaviour
             _portal2.SpawnTransform.position, Color.blue
         );
 
-        // if the left
         if (IsPortalBlockedRight(_portal1.gameObject) && IsPortalBlockedRight(_portal2.gameObject) ||
             IsPortalBlockedLeft(_portal1.gameObject) && IsPortalBlockedLeft(_portal2.gameObject) ||
             IsPortalSpawnBlocked(_portal1) || IsPortalSpawnBlocked(_portal2))
@@ -59,17 +64,32 @@ public class PortalEditor : MonoBehaviour
         else
         {
             _statusColor = Color.green;
-
-            if (IsPortalBlockedRight(_portal1.gameObject) || IsPortalBlockedLeft(_portal2.gameObject))
-            {
-                FaceLeft(_portal1.transform);
-                FaceRight(_portal2.transform);
-            }
-            else if (IsPortalBlockedRight(_portal2.gameObject) || IsPortalBlockedLeft(_portal1.gameObject))
-            {
-                FaceLeft(_portal2.transform);
-                FaceRight(_portal1.transform);
-            }
+            
+            if (_autoOrientate)
+                if (IsPortalBlockedRight(_portal1.gameObject))
+                {
+                    if(_debug)Debug.LogWarning(_portal1.name + " IsPortalBlockedRight");
+                    FaceLeft(_portal1.transform);
+                    FaceRight(_portal2.transform);
+                }
+                else if (IsPortalBlockedLeft(_portal2.gameObject))
+                {
+                    if(_debug)Debug.LogWarning(_portal2.name + " IsPortalBlockedLeft ");
+                    FaceLeft(_portal1.transform);
+                    FaceRight(_portal2.transform);
+                }
+                else if (IsPortalBlockedRight(_portal2.gameObject))
+                {
+                    if(_debug)Debug.LogWarning(_portal2.name + " IsPortalBlockedRight");
+                    FaceLeft(_portal2.transform);
+                    FaceRight(_portal1.transform);
+                }
+                else if (IsPortalBlockedLeft(_portal1.gameObject))
+                {
+                    if(_debug)Debug.LogWarning(_portal1.name + " IsPortalBlockedLeft");
+                    FaceLeft(_portal2.transform);
+                    FaceRight(_portal1.transform);
+                }
         }
     }
 
@@ -92,9 +112,24 @@ public class PortalEditor : MonoBehaviour
         );
     }
 
+    private void FlipBothPortals()
+    {
+        if (_portal1.transform.localScale.x > 0) // if portal1 is right
+        {
+            FaceLeft(_portal1.transform);
+            FaceRight(_portal2.transform);
+        }
+        else
+        {
+            FaceLeft(_portal2.transform);
+            FaceRight(_portal1.transform);
+        }
+    }
+
     private static bool IsPortalSpawnBlocked(Portal portal)
     {
-        return Physics2D.CircleCast(portal.SpawnTransform.position, 0.5f, Vector2.up, 0.5f, LayerMask.GetMask("Floor"));
+        return Physics2D.CircleCast(portal.SpawnTransform.position, radius: 0.5f, direction: Vector2.up, distance: 0.5f,
+            layerMask: LayerMask.GetMask("Floor"));
     }
 
     /// <summary>

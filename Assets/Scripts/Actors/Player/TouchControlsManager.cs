@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
-using UnityStandardAssets.CrossPlatformInput;
 
-namespace Player
+namespace Actors.Player
 {
     public class TouchControlsManager : MonoBehaviour
     {

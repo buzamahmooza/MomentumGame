@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using UnityStandardAssets.CrossPlatformInput;
+// ReSharper disable UnusedVariable
 
 [RequireComponent(typeof(HingeJoint2D))]
 public class GrappleHookHJ : GrappleHook
@@ -140,9 +141,8 @@ public class GrappleHookHJ : GrappleHook
                                  m_Pulling ? (Vector2) (Joint.connectedBody.gameObject.transform.position) :
                                  Vector2.zero) - (Vector2) AnchorVec3;
 
-        float dot = Vector2.Dot(grappleDir.normalized, inputVec.normalized);
-
-        float smoother = speed * Time.deltaTime / Vector2.Distance(AnchorVec3, Target);
+//        float dot = Vector2.Dot(grappleDir.normalized, inputVec.normalized);
+//        float smoother = speed * Time.deltaTime / Vector2.Distance(AnchorVec3, Target);
 
 //        float newDistance = m_Flying
 //                ? // if flying, make the newDistance depend on the input

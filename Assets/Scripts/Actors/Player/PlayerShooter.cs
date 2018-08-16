@@ -12,10 +12,12 @@ public class PlayerShooter : Shooter
         if (!aimInput) aimInput = GetComponent<AimInput>();
     }
 
-    public override void Shoot(Vector2 shootDirection)
+    public override GameObject Shoot(Vector2 shootDirection)
     {
-        base.Shoot(shootDirection);
-        if (cameraKickback) cameraKickback.DoKickback(-shootDirection * CurrentWeaponStats.cameraKickback);
+        if (cameraKickback) 
+            cameraKickback.DoKickback(-shootDirection * CurrentWeaponStats.cameraKickback);
+        
+        return base.Shoot(shootDirection);
     }
     private void Update()
     {

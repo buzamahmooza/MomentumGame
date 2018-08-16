@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 // Note: Object must be spawned facing to the Right!
 [RequireComponent(typeof(EnemyHealth))]
@@ -14,28 +15,34 @@ public class Enemy : Walker
     [SerializeField] [Range(0, 100)] protected float timeBetweenAttacks = 2f; // in seconds
 
     [HideInInspector] public bool m_Attacking = false;
-    protected float timeSinceLastAttack = -Single.NegativeInfinity;
+    protected float timeSinceLastAttack = -float.NegativeInfinity;
     protected bool m_CanAttack = true;
 
     protected bool m_InAttackRange = false;
 
     // Components
     GrappleHook playerGrappleScript;
-    protected EnemyAI enemyAI;
+    protected EnemyAI ai;
 
-
+    /// <summary>
+    /// Never override Awake without invoking base.Awake()
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
-        enemyAI = GetComponent<EnemyAI>();
+        ai = GetComponent<EnemyAI>();
         playerGrappleScript = GameManager.Player.GetComponent<GrappleHook>();
         gameObject.layer = LayerMask.NameToLayer("Enemy");
+
+        if (!targeting.Target)
+            targeting.Target = GameManager.Player.transform;
     }
 
     protected virtual void Start()
     {
-        if (!targeting.Target)
-            targeting.Target = GameManager.Player.transform;
+        m_CanAttack = false;
+        // wait a random delay until allowed to attack
+        Invoke("AllowAttack", Random.Range(0.5f, 2));
     }
 
     protected virtual void Update()
@@ -70,21 +77,38 @@ public class Enemy : Walker
         UpdateAnimParams();
     }
 
+    /// <summary>
+    /// Sets canAttack to true,
+    /// Only used in the beginning,
+    /// allow the enemy to attack after a short time after spawn
+    /// </summary>
+    private void AllowAttack()
+    {
+        m_CanAttack = true;
+    }
+
 
     public virtual void Attack()
     {
-        if (!m_CanAttack) return;
-        if (attackSound) audioSource.PlayOneShot(attackSound);
+        if (!m_CanAttack)
+        {
+            Invoke("Attack", 0.5f);
+            return;
+        }
+
+        if (attackSound)
+            audioSource.PlayOneShot(attackSound);
+
         m_Attacking = true;
         _anim.SetTrigger("Attack");
     }
 
     private void MoveToTarget()
     {
-        if (enemyAI != null && enemyAI.isActiveAndEnabled)
+        if (ai != null && ai.enabled)
         {
             UpdateAnimatorParams();
-            enemyAI.MoveAlongPath();
+            ai.MoveAlongPath();
         }
     }
 
@@ -114,18 +138,9 @@ public class Enemy : Walker
         get { return playerGrappleScript != null && gameObject == playerGrappleScript.GrabbedObj; }
     }
 
-    /// <summary>
-    /// returns player position with the same Y component as this enemy
-    /// </summary>
-    protected Vector2 TargetPosLeveled
-    {
-        get { return new Vector2(targeting.Target.transform.position.x, transform.position.y); }
-    }
-
     public bool IsAware
     {
         get { return targeting.Target && targeting.AimDirection.magnitude < awarenessRadius; }
-        private set { }
     }
 
     public bool TargetIsDead
@@ -139,10 +154,13 @@ public class Enemy : Walker
         Destroy(gameObject);
     }
 
-    protected virtual void OnDrawGizmos()
+    protected override void OnDrawGizmos()
     {
+        base.OnDrawGizmos();
+
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, awarenessRadius);
+
 
         Gizmos.color = Color.red;
         //Gizmos.DrawWireSphere(transform.position, attackRange);

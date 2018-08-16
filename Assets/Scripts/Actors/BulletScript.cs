@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BulletScript : MonoBehaviour
 {
-    [SerializeField] public int damageAmount = 2;
+    [SerializeField] public int damageAmount = 5;
     [SerializeField] protected LayerMask destroyMask;
 
     /// <summary> the object that created this bullet, useful for not damaging itself </summary>
@@ -34,10 +34,12 @@ public class BulletScript : MonoBehaviour
             CorrectRotation();
     }
 
-    protected void OnTriggerEnter2D(Collider2D other)
+    protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         // prevent damaging the attacker
         if (transform.IsChildOf(other.gameObject.transform))
+            return;
+        if (other.isTrigger) 
             return;
 
         Health otherHealth = other.gameObject.GetComponent<Health>();
