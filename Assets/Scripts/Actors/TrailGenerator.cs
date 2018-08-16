@@ -6,20 +6,20 @@ public class TrailGenerator : MonoBehaviour
 {
 //    [SerializeField] private GameObject trailInstanceTemplate;
     [SerializeField] public Color DefaultColor = new Color(0f, 1f, 1f, 0.3f);
-    private Color _color;
     [SerializeField] [Range(0, 5)] public float SampleLifetime = 1;
     [SerializeField] [Range(0, 100)] float _trailFrequency = 40f;
 
-    private SpriteRenderer _spriteRenderer;
+    private Color m_color;
+    private SpriteRenderer m_spriteRenderer;
 
     void Awake()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        m_spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Start()
     {
-        _color = DefaultColor;
+        m_color = DefaultColor;
         if (_trailFrequency <= 0) return;
         Invoke("CreateTrail", 1 / _trailFrequency);
     }
@@ -51,8 +51,8 @@ public class TrailGenerator : MonoBehaviour
         trailInstance.transform.localScale = this.transform.localScale;
 
         SpriteRenderer trailSpriteRenderer = trailInstance.GetComponent<SpriteRenderer>();
-        trailSpriteRenderer.sprite = _spriteRenderer.sprite;
-        trailSpriteRenderer.color = _color;
+        trailSpriteRenderer.sprite = m_spriteRenderer.sprite;
+        trailSpriteRenderer.color = m_color;
         return trailInstance;
     }
 }

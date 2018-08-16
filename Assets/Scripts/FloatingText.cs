@@ -40,7 +40,7 @@ public class FloatingText : MonoBehaviour
 
         if (destination.magnitude > 0)
         {
-            var destinationWorldPoint = Camera.main.ScreenToWorldPoint(destination);
+            Vector3 destinationWorldPoint = Camera.main.ScreenToWorldPoint(destination);
             if(Vector2.Distance(destinationWorldPoint, transform.position) < 0.1f) 
                 OnReachDestination();
             

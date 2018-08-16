@@ -11,12 +11,13 @@ public class Interactor : MonoBehaviour
 {
     [SerializeField] private Text promptText;
     [SerializeField] private LayerMask interactionMask;
-    private IEnumerator disableTextCoroutine;
+    
+    private IEnumerator m_disableTextCoroutine;
 
     /// <summary>
     /// Can we interacting with something at the moment. (the prompt would be visible)
     /// </summary>
-    private Interactable _currentInteractable;
+    private Interactable m_currentInteractable;
 
     private void Awake()
     {
@@ -25,13 +26,13 @@ public class Interactor : MonoBehaviour
 
     void Update()
     {
-        if (_currentInteractable != null)
+        if (m_currentInteractable != null)
         {
             if (CrossPlatformInputManager.GetButtonDown("Fire1") || InputManager.ActiveDevice.Action3.IsPressed)
             {
-                if (_currentInteractable.enabled)
+                if (m_currentInteractable.enabled)
                 {
-                    _currentInteractable.OnInteract();
+                    m_currentInteractable.OnInteract();
                     DisableText();
                 }
             }
@@ -40,44 +41,44 @@ public class Interactor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        var interactable = col.gameObject.GetComponent<Interactable>();
+        Interactable interactable = col.gameObject.GetComponent<Interactable>();
         if (interactable == null)
         {
             return;
         }
-        _currentInteractable = interactable;
+        m_currentInteractable = interactable;
         
         promptText.enabled = true;
-        promptText.text = _currentInteractable.GetPrompt();
+        promptText.text = m_currentInteractable.GetPrompt();
 
     }
     private void OnTriggerStay2D(Collider2D col)
     {
-        var interactable = col.gameObject.GetComponent<Interactable>();
+        Interactable interactable = col.gameObject.GetComponent<Interactable>();
         if (interactable == null)
         {
             return;
         }
-        _currentInteractable = interactable;
+        m_currentInteractable = interactable;
         
         promptText.enabled = true;
-        promptText.text = _currentInteractable.GetPrompt();
+        promptText.text = m_currentInteractable.GetPrompt();
 
         // disable the previouse coroutine, this check prevents flickering text
-        if (disableTextCoroutine != null) StopCoroutine(disableTextCoroutine);
-        disableTextCoroutine = WaitAndDisableText(3);
-        StartCoroutine(disableTextCoroutine);
+        if (m_disableTextCoroutine != null) StopCoroutine(m_disableTextCoroutine);
+        m_disableTextCoroutine = WaitAndDisableText(3);
+        StartCoroutine(m_disableTextCoroutine);
     }
 
     private void OnTriggerExit2D(Collider2D col)
     {
         promptText.enabled = true;
-        var interactable = col.gameObject.GetComponent<Interactable>();
+        Interactable interactable = col.gameObject.GetComponent<Interactable>();
         if (interactable == null)
         {
             return;
         }
-        _currentInteractable = null;
+        m_currentInteractable = null;
         DisableText();
     }
 

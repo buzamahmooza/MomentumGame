@@ -11,8 +11,8 @@ public class MeleeEnemy : Enemy
 {
     [SerializeField] private EnemyHitbox attackHitbox;
     [SerializeField] [Range(0, 10)] private float lungeForce = 2f;
-    private bool attackReady = false;
-    private float meleeRange = 1f;
+    private bool m_attackReady = false;
+    private float m_meleeRange = 1f;
 
 
     protected override void Awake()
@@ -21,12 +21,12 @@ public class MeleeEnemy : Enemy
         if (!attackHitbox) attackHitbox = GetComponent<EnemyHitbox>() ?? GetComponentInChildren<EnemyHitbox>();
     }
 
-    protected void Start()
+    protected override void Start()
     {
         if (attackHitbox)
-            meleeRange = attackHitbox.collider2D.bounds.extents.magnitude +
+            m_meleeRange = attackHitbox.Collider2D.bounds.extents.magnitude +
                          Vector2.Distance(attackHitbox.transform.position, transform.position);
-        attackHitbox.collider2D.enabled = false;
+        attackHitbox.Collider2D.enabled = false;
     }
 
     protected override void Update()
@@ -34,10 +34,10 @@ public class MeleeEnemy : Enemy
         base.Update();
 
         // if attack is ready, attack as soon as the player is within melee range
-        if (attackReady && m_Attacking && targeting.AimDirection.magnitude < meleeRange)
+        if (m_attackReady && IsAttacking && Targeting.AimDirection.magnitude < m_meleeRange)
         {
-            attackReady = false;
-            _anim.speed = m_DefaultAnimSpeed;
+            m_attackReady = false;
+            Anim.speed = DefaultAnimSpeed;
         }
     }
 
@@ -47,11 +47,11 @@ public class MeleeEnemy : Enemy
     /// </summary>
     public override void Attack()
     {
-        if (!m_CanAttack) return;
-        if (m_Attacking) return;
+        if (!CanAttack) return;
+        if (IsAttacking) return;
 
-        m_Attacking = true;
-        _anim.SetTrigger("Attack");
+        IsAttacking = true;
+        Anim.SetTrigger("Attack");
         FaceAimDirection();
     }
 
@@ -61,7 +61,7 @@ public class MeleeEnemy : Enemy
     /// <param name="mult">Defaults to 1</param>
     private void Lundge(float mult = 1f)
     {
-        Rb.AddForce(targeting.AimDirection * lungeForce * mult * Rb.mass, ForceMode2D.Impulse);
+        Rb.AddForce(Targeting.AimDirection * lungeForce * mult * Rb.mass, ForceMode2D.Impulse);
     }
 
     // called by animationEvents
@@ -72,8 +72,8 @@ public class MeleeEnemy : Enemy
     /// </summary>
     public void AttackReady()
     {
-        attackReady = true;
-        _anim.speed = 0;
+        m_attackReady = true;
+        Anim.speed = 0;
         Lundge();
         StartCoroutine(AttackReadyTimeout());
     }
@@ -86,14 +86,14 @@ public class MeleeEnemy : Enemy
     IEnumerator AttackReadyTimeout(float seconds = 0.6f)
     {
         yield return new WaitForSeconds(seconds);
-        attackReady = false;
-        _anim.speed = m_DefaultAnimSpeed;
+        m_attackReady = false;
+        Anim.speed = DefaultAnimSpeed;
     }
     public void ActivateHitbox()
     {
         Lundge(0.4f);
-        attackHitbox.collider2D.enabled = true;
-        if (attackSound) audioSource.PlayOneShot(attackSound);
+        attackHitbox.Collider2D.enabled = true;
+        if (attackSound) AudioSource.PlayOneShot(attackSound);
         StartCoroutine(Safety_DeactivateHitbox());
     }
     /// <summary>
@@ -104,7 +104,7 @@ public class MeleeEnemy : Enemy
     IEnumerator Safety_DeactivateHitbox(float seconds = 1f)
     {
         yield return new WaitForSeconds(seconds);
-        if (m_Attacking)
+        if (IsAttacking)
         {
             Debug.LogWarning("Hitbox was on for long, deactivating");
             CloseHitbox();
@@ -112,8 +112,8 @@ public class MeleeEnemy : Enemy
     }
     public void CloseHitbox()
     {
-        attackHitbox.collider2D.enabled = false;
-        m_Attacking = false;
-        attackReady = false;
+        attackHitbox.Collider2D.enabled = false;
+        IsAttacking = false;
+        m_attackReady = false;
     }
 }

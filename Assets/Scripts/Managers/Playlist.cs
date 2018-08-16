@@ -40,7 +40,7 @@ class Playlist : List<AudioClip>
 
     public void Shuffle()
     {
-        for (var i = 0; i < this.Count; i++)
+        for (int i = 0; i < this.Count; i++)
             Swap(i, UnityEngine.Random.Range(0, this.Count - 1));
 
         Debug.Log("New shuffled list:\n" + string.Join("\n", this.Select(x => x.name).ToArray()));
@@ -59,7 +59,7 @@ class Playlist : List<AudioClip>
         if (b < 0 || b >= this.Count)
             throw new IndexOutOfRangeException(string.Format("The index {0} is out of not valid", b));
 
-        var temp = this[a];
+        AudioClip temp = this[a];
         this[a] = this[b];
         this[b] = temp;
         temp = null;

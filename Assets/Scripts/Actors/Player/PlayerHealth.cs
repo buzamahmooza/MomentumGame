@@ -13,16 +13,16 @@ public class PlayerHealth : Health
     public override void Die()
     {
         base.Die();
-        walker.BlockMoveInput = true;
+        Walker.BlockMoveInput = true;
 
         Text restartText = GameObject.Find("RestartText").GetComponent<Text>();
         if (restartText) restartText.enabled = true;
 
         Debug.Log(gameObject.name + " died");
-        _anim.SetBool("Dead", true);
+        Anim.SetBool("Dead", true);
 
         //disable all scriptstry 
-        var grappleHook = GetComponent<GrappleHook>();
+        GrappleHook grappleHook = GetComponent<GrappleHook>();
         if (grappleHook) grappleHook.EndGrapple();
 
         SpriteRenderer.color = Color.white;

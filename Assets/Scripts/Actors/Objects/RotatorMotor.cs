@@ -7,12 +7,11 @@ using UnityEngine;
 /// </summary>
 public class RotatorMotor : MonoBehaviour
 {
-    [SerializeField]
-    private float _degreesPerSecond = 10;
-    [SerializeField] private Vector3 _axis = Vector3.forward;
+    [SerializeField] private float _degreesPerSecond = 10;
+    [SerializeField] private Vector3 m_axis = Vector3.forward;
 
     private void LateUpdate()
     {
-        transform.Rotate(_axis, _degreesPerSecond * Time.deltaTime);
+        transform.Rotate(m_axis, _degreesPerSecond * Time.deltaTime);
     }
 }

@@ -19,7 +19,7 @@ public class ShooterEnemy : Enemy
     public override void Attack()
     {
         base.Attack();
-        if (!m_CanAttack)
+        if (!CanAttack)
             return;
         StartCoroutine(FireBurst());
     }
@@ -34,13 +34,13 @@ public class ShooterEnemy : Enemy
             // set x velocity to 0
             Rb.velocity = new Vector2(0, Rb.velocity.y);
 
-            _anim.SetTrigger("Attack");
+            Anim.SetTrigger("Attack");
 
             shooter.Shoot(shootDirection);
-            if (!health.IsDead)
+            if (!Health.IsDead)
                 yield return new WaitForSeconds(60.0f / shooter.CurrentWeaponStats.rpm);
         }
 
-        m_Attacking = false;
+        IsAttacking = false;
     }
 }

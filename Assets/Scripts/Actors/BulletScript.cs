@@ -11,9 +11,9 @@ public class BulletScript : MonoBehaviour
     [HideInInspector] public GameObject Shooter;
 
     /// should the bullet also damage other game objects with the same tag as the shooter (parent)?
-    public bool damageShootersWithSameTag = false;
+    public bool DamageShootersWithSameTag = false;
 
-    [SerializeField] private bool _correctRotation;
+    [SerializeField] public bool _correctRotation;
 
 
     private void Awake()
@@ -22,7 +22,7 @@ public class BulletScript : MonoBehaviour
         Destroy(gameObject, 7);
     }
 
-    public void CorrectRotation()
+    private void CorrectRotation()
     {
         transform.Rotate(Vector3.up, 90);
         transform.Rotate(Vector3.forward, 90);
@@ -46,7 +46,7 @@ public class BulletScript : MonoBehaviour
         if (otherHealth && other.gameObject)
         {
             // if it's the same type as the shooter, do damage
-            if (Shooter == null || !other.gameObject.CompareTag(Shooter.tag) || damageShootersWithSameTag)
+            if (Shooter == null || !other.gameObject.CompareTag(Shooter.tag) || DamageShootersWithSameTag)
                 otherHealth.TakeDamage(damageAmount, transform.rotation.eulerAngles.normalized);
         }
 

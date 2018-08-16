@@ -3,41 +3,41 @@ using System.Security.AccessControl;
 
 public class FlyingDroneEnemy : ShooterEnemy
 {
-    [SerializeField] private float _timeBetweenMissiles = 7;
-    [SerializeField] private GameObject _missilePrefab;
-    private int _timeBetweenHealing = 5;
-    private bool _isHealing;
+    [SerializeField] private float m_timeBetweenMissiles = 7;
+    [SerializeField] private GameObject m_missilePrefab;
+    private readonly int m_timeBetweenHealing = 5;
+    private bool m_isHealing;
 
     protected override void Start()
     {
         base.Start();
-        InvokeRepeating("TryToHeal", 0, _timeBetweenHealing);
-        health.OnTakeDamage += TryToHeal;
-        health.OnTakeDamage += StopHealing;
+        InvokeRepeating("TryToHeal", 0, m_timeBetweenHealing);
+        Health.OnTakeDamage += TryToHeal;
+        Health.OnTakeDamage += StopHealing;
     }
 
     public override void Attack()
     {
-        if (_isHealing) return;
+        if (m_isHealing) return;
 
         base.Attack();
-        Invoke("FireMissile", _timeBetweenMissiles);
-        if (!m_CanAttack)
+        Invoke("FireMissile", m_timeBetweenMissiles);
+        if (!CanAttack)
             return;
     }
 
     private void FireMissile()
     {
-        if (!m_CanAttack)
+        if (!CanAttack)
         {
             Invoke("FireMissile", 1); // try again after 1s 
             return;
         }
         
-        GameObject missile = Instantiate(_missilePrefab, shootTransform.position, Quaternion.identity);
+        GameObject missile = Instantiate(m_missilePrefab, shootTransform.position, Quaternion.identity);
         Missile missileScript = missile.GetComponent<Missile>();
         missileScript.Shooter = this.gameObject;
-        missileScript.Target = targeting.Target;
+        missileScript.Target = Targeting.Target;
         missileScript.IsArmed = false;
     }
 
@@ -46,13 +46,13 @@ public class FlyingDroneEnemy : ShooterEnemy
     /// </summary>
     void TryToHeal()
     {
-        if (health.CurrentHealth < 0.7f * health.MaxHealth && !_isHealing)
+        if (Health.CurrentHealth < 0.7f * Health.MaxHealth && !m_isHealing)
         {
             // move away from player
             Rb.velocity = (transform.position - GameManager.Player.transform.position).normalized * 5;
             Invoke("StopMoving", 2);
             
-            _isHealing = true;
+            m_isHealing = true;
             Heal();
         }
     }
@@ -64,20 +64,20 @@ public class FlyingDroneEnemy : ShooterEnemy
     {
         Rb.velocity = Vector2.zero;
         //disable AI to stop moving
-        ai.enabled = false;
+        Ai.enabled = false;
     }
 
     void Heal()
     {
-        m_CanAttack = false;
+        CanAttack = false;
 
-        if (health.CurrentHealth > health.MaxHealth * 0.99f)
+        if (Health.CurrentHealth > Health.MaxHealth * 0.99f)
             StopHealing();
 
-        _anim.SetBool("Healing", _isHealing);
-        if (_isHealing)
+        Anim.SetBool("Healing", m_isHealing);
+        if (m_isHealing)
         {
-            health.AddHealth(Mathf.RoundToInt(health.MaxHealth * 0.05f));
+            Health.AddHealth(Mathf.RoundToInt(Health.MaxHealth * 0.05f));
             Invoke("Heal", 0.2f);
         }
     }
@@ -85,12 +85,12 @@ public class FlyingDroneEnemy : ShooterEnemy
     void StopHealing()
     {
         CancelInvoke("Heal");
-        if (_isHealing)
+        if (m_isHealing)
         {
-            _isHealing = false;
-            _anim.SetBool("Healing", _isHealing);
-            ai.enabled = true;
-            m_CanAttack = true;
+            m_isHealing = false;
+            Anim.SetBool("Healing", m_isHealing);
+            Ai.enabled = true;
+            CanAttack = true;
         }
     }
 }

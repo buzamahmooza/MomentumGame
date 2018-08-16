@@ -7,17 +7,17 @@ public class EnemyHitbox : MonoBehaviour
 {
     [SerializeField] [Range(0, 1000)] public int damageAmount = 20;
     [SerializeField] private AudioClip hitSound;
-    [HideInInspector] public new Collider2D collider2D;
-    private AudioSource audioSource;
-    private void OnEnable() { collider2D.enabled = true; }
-    private void OnDisable() { collider2D.enabled = false; }
+    [HideInInspector] public Collider2D Collider2D;
+    private AudioSource m_audioSource;
+    private void OnEnable() { Collider2D.enabled = true; }
+    private void OnDisable() { Collider2D.enabled = false; }
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-        if (!audioSource) audioSource = GetComponentInParent<AudioSource>();
-        collider2D = GetComponent<Collider2D>();
-        collider2D.enabled = false;
+        m_audioSource = GetComponent<AudioSource>();
+        if (!m_audioSource) m_audioSource = GetComponentInParent<AudioSource>();
+        Collider2D = GetComponent<Collider2D>();
+        Collider2D.enabled = false;
     }
     private void Start()
     {
@@ -34,7 +34,7 @@ public class EnemyHitbox : MonoBehaviour
         if (otherHealth && !other.CompareTag(transform.parent.tag))
         {
             otherHealth.TakeDamage(damageAmount);
-            if (hitSound) audioSource.PlayOneShot(hitSound);
+            if (hitSound) m_audioSource.PlayOneShot(hitSound);
         }
     }
 }

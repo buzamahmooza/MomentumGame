@@ -11,14 +11,14 @@ public class PortalEditor : MonoBehaviour
     /// <summary> portal </summary>
     [SerializeField] private Portal _portal1, _portal2;
 
-    /// <summary>
-    /// indicates the current status of the portal locations (if there's an error or not)
-    /// </summary>
-    private Color _statusColor = Color.green;
-
     [SerializeField] private bool _flipPortals = false;
     [SerializeField] private bool _autoOrientate = true;
     [SerializeField] private bool _debug = false;
+
+    /// <summary>
+    /// indicates the current status of the portal locations (if there's an error or not)
+    /// </summary>
+    private Color m_statusColor = Color.green;
 
 
     void Start()
@@ -43,7 +43,7 @@ public class PortalEditor : MonoBehaviour
         }
 
         // draw line between them to make it clear for the user
-        Debug.DrawLine(_portal1.transform.position, _portal2.transform.position, _statusColor);
+        Debug.DrawLine(_portal1.transform.position, _portal2.transform.position, m_statusColor);
 
         // draw a line to the spawn position for each portal
         Debug.DrawLine(
@@ -59,11 +59,11 @@ public class PortalEditor : MonoBehaviour
             IsPortalBlockedLeft(_portal1.gameObject) && IsPortalBlockedLeft(_portal2.gameObject) ||
             IsPortalSpawnBlocked(_portal1) || IsPortalSpawnBlocked(_portal2))
         {
-            _statusColor = Color.red;
+            m_statusColor = Color.red;
         }
         else
         {
-            _statusColor = Color.green;
+            m_statusColor = Color.green;
             
             if (_autoOrientate)
                 if (IsPortalBlockedRight(_portal1.gameObject))

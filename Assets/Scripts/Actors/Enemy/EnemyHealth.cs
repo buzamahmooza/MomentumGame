@@ -8,22 +8,23 @@ using Random = System.Random;
 public class EnemyHealth : Health
 {
     [SerializeField] [Range(0, 500)] public int ScoreValue = 0; // assigned in inspector
-    private GameObject player;
-    private EnemyAI enemyAI;
     [SerializeField] private GameObject healthPickup;
     [SerializeField] private bool jumpAndPhaseThroughWhenDead = true;
+    
+    private GameObject m_player;
+    private EnemyAI m_enemyAi;
 
     protected override void Awake()
     {
         base.Awake();
-        player = GameManager.Player;
-        enemyAI = GetComponent<EnemyAI>();
+        m_player = GameManager.Player;
+        m_enemyAi = GetComponent<EnemyAI>();
     }
 
     private void FixedUpdate()
     {
         // just destroy the enemy if he's way too far from the player
-        if (Vector3.Distance(transform.position, player.transform.position) > 300)
+        if (Vector3.Distance(transform.position, m_player.transform.position) > 300)
         {
             Destroy(this.gameObject);
         }
@@ -39,7 +40,7 @@ public class EnemyHealth : Health
 
     public override void Die()
     {
-        if (enemyAI) enemyAI.enabled = false;
+        if (m_enemyAi) m_enemyAi.enabled = false;
 
         // if this is the first time the enemy dies:
         if (!IsDead)
@@ -57,10 +58,10 @@ public class EnemyHealth : Health
             }
 
             // Add force up to give a nice effect
-            if (rb && jumpAndPhaseThroughWhenDead)
+            if (Walker.Rb && jumpAndPhaseThroughWhenDead)
             {
                 gameObject.layer = LayerMask.NameToLayer("EnemyIgnore");
-                rb.AddForce(Vector2.up * 6 * rb.mass, ForceMode2D.Impulse);
+                Walker.Rb.AddForce(Vector2.up * 6 * Walker.Rb.mass, ForceMode2D.Impulse);
             }
             else
             {

@@ -29,7 +29,7 @@ public class Health : MonoBehaviour
     [SerializeField] public GameObject floatingTextPrefab; // assigned in inspector
 
     [SerializeField] [Range(0, 100)] protected float fallDamageModifier = 0.5f;
-    [Range(0, 100)] float fallDamageThreshold = 7;
+    [Range(0, 100)] float m_fallDamageThreshold = 7;
 
     [SerializeField] protected bool autoRegenHealth = false;
     [SerializeField] [Range(0, 100)] float regenPercent = 1f;
@@ -44,14 +44,13 @@ public class Health : MonoBehaviour
 
     [HideInInspector] public bool IsDead = false;
 
-    protected Rigidbody2D rb;
     protected SpriteRenderer SpriteRenderer;
-    protected Slider healthSlider;
-    protected AudioSource audioSource;
-    protected Color originalColor;
-    protected Walker walker;
+    private Slider m_healthSlider;
+    private AudioSource m_audioSource;
+    protected Color OriginalColor;
+    protected Walker Walker;
 
-    protected Animator _anim;
+    protected Animator Anim;
 
     public Action OnTakeDamage;
     public Action OnDeath;
@@ -59,11 +58,10 @@ public class Health : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _anim = GetComponent<Animator>();
-        walker = GetComponent<Walker>();
+        Anim = GetComponent<Animator>();
+        Walker = GetComponent<Walker>();
         SpriteRenderer = GetComponent<SpriteRenderer>();
-        rb = GetComponent<Rigidbody2D>();
-        audioSource = GetComponent<AudioSource>();
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -73,13 +71,13 @@ public class Health : MonoBehaviour
         if (useHealthbar && healthBar != null)
             InitHealthBar();
         // Initializing the healthbar 
-        if (healthSlider && useHealthbar)
+        if (m_healthSlider && useHealthbar)
         {
-            healthSlider.maxValue = MaxHealth;
-            healthSlider.value = CurrentHealth;
+            m_healthSlider.maxValue = MaxHealth;
+            m_healthSlider.value = CurrentHealth;
         }
 
-        originalColor = SpriteRenderer.color;
+        OriginalColor = SpriteRenderer.color;
         if (gameObject.layer == LayerMask.NameToLayer("Object"))
             fallDamageModifier = 0;
         if (autoRegenHealth)
@@ -91,7 +89,7 @@ public class Health : MonoBehaviour
         LerpColor(); //In case the color flashes red, it has to go back to normal
     }
 
-    protected void CreateFloatingDamage(int damageValue)
+    private void CreateFloatingDamage(int damageValue)
     {
         Debug.Assert(this.floatingTextPrefab != null);
         GameObject floatingDamageInstance =
@@ -140,10 +138,10 @@ public class Health : MonoBehaviour
     private void Hurt()
     {
         if (hurtAudioClips.Length > 0)
-            audioSource.PlayOneShot(Utils.GetRandomElement(hurtAudioClips));
+            m_audioSource.PlayOneShot(Utils.GetRandomElement(hurtAudioClips));
 
-        if (_anim != null && !IsDead)
-            _anim.SetTrigger("Hurt");
+        if (Anim != null && !IsDead)
+            Anim.SetTrigger("Hurt");
         SpriteRenderer.color = _damageColor;
     }
 
@@ -154,18 +152,18 @@ public class Health : MonoBehaviour
 
     protected IEnumerator EnumStun(float seconds)
     {
-        if (!walker || !walker.BlockMoveInput)
+        if (!Walker || !Walker.BlockMoveInput)
         {
             yield return null;
         }
         else
         {
             Debug.Log(gameObject.name + ":   Oh no! what's going on? I can't see!");
-            walker.BlockMoveInput = false;
+            Walker.BlockMoveInput = false;
 
             yield return new WaitForSeconds(seconds);
             Debug.Log(gameObject.name + ": Mwahahaha I can see again! Time to die robot!!");
-            walker.BlockMoveInput = true;
+            Walker.BlockMoveInput = true;
         }
     }
 
@@ -182,8 +180,8 @@ public class Health : MonoBehaviour
 
     private void UpdateHealthBar()
     {
-        if (healthSlider != null)
-            healthSlider.value = CurrentHealth;
+        if (m_healthSlider != null)
+            m_healthSlider.value = CurrentHealth;
         else
             Debug.LogWarning("Healthslider not found on " + gameObject.name);
     }
@@ -210,14 +208,14 @@ public class Health : MonoBehaviour
                     _stickyDeathEffects ? transform : null);
             }
 
-            if (_anim)
+            if (Anim)
             {
-                _anim.speed = 1f;
-                _anim.SetTrigger("Die");
+                Anim.speed = 1f;
+                Anim.SetTrigger("Die");
             }
 
             if (deathAudioClips.Length > 0)
-                audioSource.PlayOneShot(Utils.GetRandomElement(deathAudioClips));
+                m_audioSource.PlayOneShot(Utils.GetRandomElement(deathAudioClips));
         }
 
         IsDead = true;
@@ -231,8 +229,8 @@ public class Health : MonoBehaviour
     /// <summary> If not original color, transition back to the original color </summary>
     private void LerpColor()
     {
-        if (!SpriteRenderer.color.Equals(originalColor))
-            SpriteRenderer.color = Color.Lerp(SpriteRenderer.color, originalColor, Time.deltaTime * 10);
+        if (!SpriteRenderer.color.Equals(OriginalColor))
+            SpriteRenderer.color = Color.Lerp(SpriteRenderer.color, OriginalColor, Time.deltaTime * 10);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -247,17 +245,17 @@ public class Health : MonoBehaviour
         if (fallDamageModifier > 0)
         {
             Rigidbody2D otherRb = collision.otherRigidbody;
-            if (rb != null && otherRb != null)
+            if (Walker.Rb != null && otherRb != null)
             {
-                float fallDamage = collision.relativeVelocity.magnitude * otherRb.mass * rb.mass *
+                float fallDamage = collision.relativeVelocity.magnitude * otherRb.mass * Walker.Rb.mass *
                                    fallDamageModifier;
 
-                if (collision.relativeVelocity.magnitude < fallDamageThreshold)
+                if (collision.relativeVelocity.magnitude < m_fallDamageThreshold)
                     fallDamage = 0;
 
                 // only take fallDamage if falldamage is big enough
                 // this check prevents small falls from affecting
-                if (fallDamage > fallDamageThreshold)
+                if (fallDamage > m_fallDamageThreshold)
                     TakeDamage(Mathf.RoundToInt(fallDamage));
             }
         }
@@ -283,7 +281,7 @@ public class Health : MonoBehaviour
     {
         if (!healthBar)
             healthBar = Instantiate(healthBar, transform);
-        healthSlider = healthBar.transform.GetComponentsInChildren<Slider>()[0];
-        healthSlider.maxValue = MaxHealth;
+        m_healthSlider = healthBar.transform.GetComponentsInChildren<Slider>()[0];
+        m_healthSlider.maxValue = MaxHealth;
     }
 }

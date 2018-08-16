@@ -14,22 +14,22 @@ public class AimInput : Targeting
     public bool UsingMouse = false;
 
     [SerializeField] bool _debugMousePosition = false;
-    [SerializeField] float _mouseMoveThreshold = 0.3f,
-        _joystickThreshold = 0.2f;
+    [SerializeField] float _mouseMoveThreshold = 0.3f;
+    [SerializeField] float _joystickThreshold = 0.2f;
 
-    private Vector2 _lastMousePos;
-    private Walker _walker; // playerMove
+    private Vector2 m_lastMousePos;
+    private Walker m_walker; // playerMove
 
 
     private void Awake()
     {
-        _walker = GameManager.Player.GetComponent<Walker>();
+        m_walker = GameManager.Player.GetComponent<Walker>();
     }
     
     private void FixedUpdate()
     {
         RecheckInputDevice();
-        _lastMousePos = MousePos;
+        m_lastMousePos = MousePos;
 #if !(UNITY_IOS || UNITY_ANDROID || UNITY_WP8 || UNITY_IPHONE)
         //switch to mouse if mouse pressed:
         if (Input.GetKey(KeyCode.Mouse0) || Input.GetKey(KeyCode.Mouse1))
@@ -77,7 +77,7 @@ public class AimInput : Targeting
                 // If input is large enough
                 return moveInput.magnitude > 0.1f 
                     ? moveInput.normalized 
-                    : Vector2.right * _walker.FacingSign;
+                    : Vector2.right * m_walker.FacingSign;
             }
         }
     }
@@ -87,7 +87,7 @@ public class AimInput : Targeting
     /// </summary>
     private void RecheckInputDevice()
     {
-        float mouseDisp = Vector3.Distance(MousePos, _lastMousePos);
+        float mouseDisp = Vector3.Distance(MousePos, m_lastMousePos);
         if (_debugMousePosition) Debug.Log("mouseDisp: " + mouseDisp);
 
         if (!UsingMouse)
@@ -146,7 +146,7 @@ public class AimInput : Targeting
     {
         get
         {
-            var inputDevice = InputManager.ActiveDevice;
+            InputDevice inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.RightStickX, inputDevice.RightStickY);
         }
     }
@@ -159,7 +159,7 @@ public class AimInput : Targeting
     {
         get
         {
-            var inputDevice = InputManager.ActiveDevice;
+            InputDevice inputDevice = InputManager.ActiveDevice;
             return new Vector2(inputDevice.LeftStickX, inputDevice.LeftStickY);
             //new Vector2(Input.GetAxisRaw("Horizontal_LS"), Input.GetAxisRaw("Vertical_LS"));
         }

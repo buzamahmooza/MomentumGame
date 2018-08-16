@@ -4,21 +4,22 @@ using UnityEngine;
 
 public class EnvironmentDamage : MonoBehaviour
 {
-    private AudioSource _audioSource;
     [SerializeField] private int _damageAmount = 25;
     [SerializeField] private GameObject _collisionParticles;
-    new Collider2D collider2D;
+    
+    private AudioSource m_audioSource;
+    private Collider2D m_collider2D;
 
     void Awake()
     {
-        _audioSource = GetComponent<AudioSource>();
-        collider2D = GetComponent<Collider2D>();
+        m_audioSource = GetComponent<AudioSource>();
+        m_collider2D = GetComponent<Collider2D>();
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.isTrigger) return;
-        _audioSource.Play();
+        m_audioSource.Play();
 
         Health otherHealth = other.GetComponent<Health>();
         if (otherHealth)
@@ -39,7 +40,7 @@ public class EnvironmentDamage : MonoBehaviour
         {
             Instantiate(
                 _collisionParticles,
-                transform.position + offset.normalized * collider2D.bounds.extents.magnitude,
+                transform.position + offset.normalized * m_collider2D.bounds.extents.magnitude,
                 Quaternion.identity
             );
         }

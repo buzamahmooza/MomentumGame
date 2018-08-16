@@ -23,30 +23,27 @@ public class PlayerMove : Walker
     [SerializeField] private float walljumpForce = 4f;
     [SerializeField] [Range(0f, 5f)] private float k_WallcheckRaduis = 0.3f;
     [SerializeField] protected float wallSlideSpeedMax = 1;
-    [HideInInspector] public bool m_HasDoubleJump = true;
+    [HideInInspector] public bool HasDoubleJump = true;
 
 
-    /// <summary> the minimum horizontal speed that the player should be moving in to perform a dash attack </summary>
-    private float minDashAttackSpeedThr;
 
     //Components
-    private GrappleHook grapple;
-    private PlayerAttack playerAttack;
-    private Text statsText;
-    private MomentumManager _momentumManager;
+    private GrappleHook m_grapple;
+    private PlayerAttack m_playerAttack;
+    private Text m_statsText;
+    private MomentumManager m_momentumManager;
 
 
     protected override void Awake()
     {
         base.Awake();
 
-        grapple = GetComponent<GrappleHook>();
-        playerAttack = GetComponent<PlayerAttack>();
-        _momentumManager = GetComponent<MomentumManager>();
+        m_grapple = GetComponent<GrappleHook>();
+        m_playerAttack = GetComponent<PlayerAttack>();
+        m_momentumManager = GetComponent<MomentumManager>();
 
-        statsText = GameObject.Find("Stats text").GetComponent<Text>();
-        m_DefaultAnimSpeed = _anim.speed;
-        minDashAttackSpeedThr = moveSpeed * 0.5f;
+        m_statsText = GameObject.Find("Stats text").GetComponent<Text>();
+        DefaultAnimSpeed = Anim.speed;
         gameObject.layer = LayerMask.NameToLayer("Player");
 
         if (!arrow) arrow = transform.Find("Arrow").gameObject;
@@ -61,17 +58,17 @@ public class PlayerMove : Walker
     {
         if (Input.GetKeyDown(KeyCode.Delete))
         {
-            health.Die();
+            Health.Die();
         }
 
         //Get jump input
-        if (!m_Jump && !_anim.GetBool("Slamming"))
+        if (!ToJump && !Anim.GetBool("Slamming"))
         {
-            m_Jump = CrossPlatformInputManager.GetButtonDown("Jump");
+            ToJump = CrossPlatformInputManager.GetButtonDown("Jump");
         }
 
         //If not slamming, update where player is facing
-        if (!_anim.GetBool("Slamming"))
+        if (!Anim.GetBool("Slamming"))
         {
             FaceAimDirection();
         }
@@ -83,10 +80,10 @@ public class PlayerMove : Walker
 
         // Recharge the doubleJump once one ground
         if (Grounded)
-            m_HasDoubleJump = true;
+            HasDoubleJump = true;
 
         Move();
-        m_Jump = false;
+        ToJump = false;
     }
 
     void LateUpdate()
@@ -102,8 +99,8 @@ public class PlayerMove : Walker
 
     private void RotateArrow()
     {
-        Vector2 d = targeting.AimDirection * FacingSign;
-        var angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
+        Vector2 d = Targeting.AimDirection * FacingSign;
+        float angle = Mathf.Atan2(d.y, d.x) * Mathf.Rad2Deg;
         arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
 
@@ -112,14 +109,14 @@ public class PlayerMove : Walker
         base.Flip();
 
         // if the player is pulling an object, then flipping will move the grabbedObject to that other side as well
-        if (grapple.m_Pulling && grapple.GrabbedObj != null &&
-            grapple.GrabbedObj.GetComponent<Rigidbody2D>().bodyType != RigidbodyType2D.Static)
+        if (m_grapple.Pulling && m_grapple.GrabbedObj != null &&
+            m_grapple.GrabbedObj.GetComponent<Rigidbody2D>().bodyType != RigidbodyType2D.Static)
         {
             // the offset between the player and the grabbedObj
-            var offsetFromGrabbedObj = (grapple.GrabbedObj.transform.position - transform.position) * FacingSign;
+            Vector3 offsetFromGrabbedObj = (m_grapple.GrabbedObj.transform.position - transform.position) * FacingSign;
             // this check prevents the player from moving enemies that are way too far
             if (offsetFromGrabbedObj.magnitude < 2)
-                grapple.GrabbedObj.transform.position += offsetFromGrabbedObj;
+                m_grapple.GrabbedObj.transform.position += offsetFromGrabbedObj;
         }
     }
 
@@ -155,7 +152,7 @@ public class PlayerMove : Walker
 
     private float momentum
     {
-        get { return _momentumManager.Momentum; }
+        get { return m_momentumManager.Momentum; }
     }
 
     /// <summary>
@@ -163,11 +160,11 @@ public class PlayerMove : Walker
     /// otherwise your changes will be immediately overriden by this method as the velocity is modified directly. </summary>
     private void Move()
     {
-        if (_anim.GetBool("DashAttack"))
+        if (Anim.GetBool("DashAttack"))
             return;
         if (!BlockMoveInput)
             if (control_AirControl || Grounded)
-                _move = MovementInput.x * moveSpeed * momentum;
+                Movement = MovementInput.x * moveSpeed * momentum;
 
         // If reached jump peak
         if (Mathf.Approximately(Rb.velocity.y, 0) && !Grounded)
@@ -175,12 +172,12 @@ public class PlayerMove : Walker
         }
 
         // If on the wall
-        if (!Grounded && Wallcheck && _move * Mathf.Sign(FacingSign) > 0 && !_anim.GetBool("Slamming"))
+        if (!Grounded && Wallcheck && Movement * Mathf.Sign(FacingSign) > 0 && !Anim.GetBool("Slamming"))
         {
             // On wall and falling
             if (Rb.velocity.y < 0)
             {
-                m_HasDoubleJump = true;
+                HasDoubleJump = true;
 
                 // limit wallslide speed
                 if (Rb.velocity.y < -wallSlideSpeedMax)
@@ -197,26 +194,26 @@ public class PlayerMove : Walker
 
         if (Grounded)
         {
-            if (_anim.GetBool("Slamming")) // Stop moving on slam landing
-                _move = 0;
+            if (Anim.GetBool("Slamming")) // Stop moving on slam landing
+                Movement = 0;
         }
         // TODO: on jump buttonUp, if(!m_Jump && Grounded) set rb Y velocity to zero 0
 
         // Move horizontally
-        Rb.velocity = /*grapple.m_Flying? Vector2.zero:*/ new Vector2(_move, Rb.velocity.y);
+        Rb.velocity = /*grapple.m_Flying? Vector2.zero:*/ new Vector2(Movement, Rb.velocity.y);
 
         if (Wallcheck)
-            m_HasDoubleJump = true;
+            HasDoubleJump = true;
 
         //When to jump
-        if (m_Jump)
+        if (ToJump)
         {
-            if (grapple.m_Flying)
-                grapple.EndGrapple();
+            if (m_grapple.Flying)
+                m_grapple.EndGrapple();
 
             if (Grounded)
             {
-                m_lastGroundSpeed = _move; //Updating lastGroundSpeed
+                LastGroundSpeed = Movement; //Updating lastGroundSpeed
                 Jump();
             }
             else if (Wallcheck)
@@ -227,16 +224,16 @@ public class PlayerMove : Walker
                 Rb.AddForce(Vector2.right * -FacingSign * walljumpForce * jumpForce * Rb.mass, ForceMode2D.Impulse);
                 Jump();
                 Flip();
-                m_Jump = false;
+                ToJump = false;
             }
-            else if (control_PlayerCanDoubleJump && m_HasDoubleJump)
+            else if (control_PlayerCanDoubleJump && HasDoubleJump)
             {
                 // Double jump
                 Rb.velocity = new Vector2(0, 0); // Resets vertical speed before doubleJump (prevents glitchy jumping)
                 print("Double jump");
-                if (!grapple.m_Flying
+                if (!m_grapple.Flying
                 ) // if grappling, then the player get's an extra jump, otherwise mark that the doubleJump has been used
-                    m_HasDoubleJump = false;
+                    HasDoubleJump = false;
                 Jump();
             }
 
@@ -253,35 +250,35 @@ public class PlayerMove : Walker
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
     protected override void AdjustAnimationSpeed()
     {
-        String clipName = _anim.GetCurrentAnimatorClipInfo(_anim.layerCount - 1)[_anim.layerCount - 1].clip.name;
+        String clipName = Anim.GetCurrentAnimatorClipInfo(Anim.layerCount - 1)[Anim.layerCount - 1].clip.name;
 
-        if (_anim.GetBool("Slamming") && playerAttack.HasReachedSlamPeak)
+        if (Anim.GetBool("Slamming") && m_playerAttack.HasReachedSlamPeak)
         {
             //Is using slam_attack and reached peak
-            _anim.speed = 0;
+            Anim.speed = 0;
         }
         else if (clipName.Equals("Walk") && Mathf.Abs(Rb.velocity.x) >= 0.1)
         {
             //walking animation and moving
-            _anim.speed = Mathf.Abs(Rb.velocity.x * animationSpeedCoeff);
+            Anim.speed = Mathf.Abs(Rb.velocity.x * AnimationSpeedCoeff);
         }
         else if (clipName.Equals("Air Idle") && Mathf.Abs(Rb.velocity.y) >= 0.1)
         {
             //Airborn animation and moving
-            _anim.speed = Mathf.Abs(Mathf.Log(Mathf.Abs(Rb.velocity.y * animationSpeedCoeff * 5f / 8f)));
+            Anim.speed = Mathf.Abs(Mathf.Log(Mathf.Abs(Rb.velocity.y * AnimationSpeedCoeff * 5f / 8f)));
         }
         else
         {
-            _anim.speed = m_DefaultAnimSpeed; //Go back to default speed
-            playerAttack.HasReachedSlamPeak = false;
+            Anim.speed = DefaultAnimSpeed; //Go back to default speed
+            m_playerAttack.HasReachedSlamPeak = false;
         }
 
-        _anim.speed *= momentum;
+        Anim.speed *= momentum;
     }
 
     public bool CanDashAttack
     {
-        get { return Mathf.Abs(Rb.velocity.x) > minDashAttackSpeedThr * momentum; }
+        get { return Mathf.Abs(Rb.velocity.x) > (moveSpeed * 0.5f) * momentum; }
     }
 
     public bool CeilCheck
@@ -298,23 +295,23 @@ public class PlayerMove : Walker
     {
         get
         {
-            m_Climb = Physics2D.OverlapCircleAll(m_ClimbCheck.position, k_WallcheckRaduis, floorMask)
+            Climbing = Physics2D.OverlapCircleAll(m_ClimbCheck.position, k_WallcheckRaduis, floorMask)
                 .Any(hit => hit.transform != transform && !hit.transform.IsChildOf(this.transform));
-            return m_Climb;
+            return Climbing;
         }
-        set { m_Climb = value; }
+        set { Climbing = value; }
     }
 
-    public override void UpdateAnimatorParams()
+    protected override void UpdateAnimatorParams()
     {
         base.UpdateAnimatorParams();
-        _anim.SetBool("Grappling", grapple.m_Flying);
-        _anim.SetFloat("VSpeed", Mathf.Abs(Rb.velocity.y));
-        _anim.SetBool("Grounded", Grounded);
+        Anim.SetBool("Grappling", m_grapple.Flying);
+        Anim.SetFloat("VSpeed", Mathf.Abs(Rb.velocity.y));
+        Anim.SetBool("Grounded", Grounded);
 
-        if (!_anim.GetCurrentAnimatorStateInfo(0).IsName("Attack Dash"))
+        if (!Anim.GetCurrentAnimatorStateInfo(0).IsName("Attack Dash"))
         {
-            playerAttack.DashAttackClose();
+            m_playerAttack.DashAttackClose();
         }
     }
 
@@ -326,33 +323,33 @@ public class PlayerMove : Walker
             Color.green);
         if (Physics2D.Raycast(m_GroundCheck.position, Vector2.down, landingHeight) && !Grounded && Rb.velocity.y < 0)
         {
-            _anim.SetBool("Landing", true);
+            Anim.SetBool("Landing", true);
             Debug.Log("Landing");
         }
         else
         {
-            _anim.SetBool("Landing", false);
+            Anim.SetBool("Landing", false);
         }
     }
 
     private void Debug_UpdateStats()
     {
-        statsText.text = string.Join("\n", new[]
+        m_statsText.text = string.Join("\n", new[]
         {
             "timeScale: " + Time.timeScale,
             "fixedDeltaTime: " + Time.fixedDeltaTime,
             "velocity: " + Rb.velocity,
-            "HSpeed(Anim): " + _anim.GetFloat("Speed"),
-            "VSpeed(Anim): " + _anim.GetFloat("VSpeed"),
-            "lastGroundSpeed: " + m_lastGroundSpeed,
+            "HSpeed(Anim): " + Anim.GetFloat("Speed"),
+            "VSpeed(Anim): " + Anim.GetFloat("VSpeed"),
+            "lastGroundSpeed: " + LastGroundSpeed,
             "BlockInput: " + BlockMoveInput,
-            "Doublejump available? " + m_HasDoubleJump,
+            "Doublejump available? " + HasDoubleJump,
             "Wallcheck: " + Wallcheck,
             "Grounded: " + Grounded,
-            "Jump: " + m_Jump,
+            "Jump: " + ToJump,
             "Grappling: " + (
-                grapple.m_Flying ? "flying" :
-                grapple.m_Pulling ? "pulling" :
+                m_grapple.Flying ? "flying" :
+                m_grapple.Pulling ? "pulling" :
                 "none"
             )
         });

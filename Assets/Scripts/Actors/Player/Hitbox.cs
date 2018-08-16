@@ -5,11 +5,14 @@ using System.Runtime.Remoting.Messaging;
 using UnityEngine;
 
 /// <summary>
-/// The hitbox class works by enabling and disabling the Collider2D
-/// (disabling/enabling the script will also enable/disable the collider).
-/// Rather than using OnTriggerEnter(), OnTriggerStay() is used,
-/// and a list of objects that have already been damaged this hitbox session (the session that it was active).
+/// The hitbox class works by disabling and reenabling the script,
+/// When active, it's damaging opponents on OnTriggerStay(), rather than using OnTriggerEnter(),
+/// and the set of objects damaged by this hitbox session (the session that it was active) will not be hurt again.
 /// This prevents from doing damage everysingle active frame.
+///
+/// The reason OnTriggerEnter can't be used is because it's faulty in the following situation:
+/// If the hitbox was activated and then deactivated and the apponent is still overlapping with the hitbox the entire time,
+/// then OnTriggerEnter will NOT be called the session even when deactivating and reactivating the hitbox.
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class Hitbox : MonoBehaviour
@@ -29,7 +32,6 @@ public class Hitbox : MonoBehaviour
     [SerializeField] AudioClip attackSound;
     [SerializeField] [Range(1, 1000)] int damageAmount = 25;
 
-    [SerializeField] bool _deactivateOnContact = false;
     [SerializeField] bool _explosive = false;
 
     [SerializeField] [Range(0, 1)] float hitStop = 0.25f;
@@ -50,68 +52,57 @@ public class Hitbox : MonoBehaviour
     [SerializeField] private LayerMask layerMask;
 
     //components
-    public new Collider2D collider2D;
-    AudioSource audioSource;
-    PlayerAttack playerAttack;
-    private Walker walker;
-
-    private static bool _guiSlidersEnabled = false;
-    private static int _guiCount = 0;
-    private int _guiIndex;
+    public Collider2D Collider2D;
+    
+    private AudioSource m_audioSource;
+    private PlayerAttack m_playerAttack;
+    private Walker m_walker;
 
     /// <summary>
-    /// the list of objects that have been already damaged in this hitbox session
+    /// The objects that have been already damaged in this hitbox session.
+    /// This is helpful to know to prevent hurting the same object more than once 
     /// </summary>
-    private readonly HashSet<Collider2D> _hitsInSession = new HashSet<Collider2D>();
+    private readonly HashSet<Collider2D> m_hitsInSession = new HashSet<Collider2D>();
 
-
-    void OnEnable()
-    {
-        collider2D.enabled = true;
-    }
-
+    
     void OnDisable()
     {
-//        collider2D.enabled = false;
-        _hitsInSession.Clear(); // clear the list when ending the session
+        m_hitsInSession.Clear(); // clear the list when ending the session
     }
 
     void Awake()
     {
-        _guiIndex = _guiCount++;
-
         if (layerMask.value == 0)
             layerMask = LayerMask.GetMask("Enemy", "EnemyIgnore", "Object"); //value of 6144
-        playerAttack = GetComponentInParent<PlayerAttack>();
-        collider2D = GetComponent<Collider2D>();
-        audioSource = GetComponent<AudioSource>();
-        walker = GetComponentInParent<Walker>();
-        collider2D.enabled = true;
-    }
+        m_playerAttack = GetComponentInParent<PlayerAttack>();
+        Collider2D = GetComponent<Collider2D>();
+        
+        m_audioSource = GetComponent<AudioSource>();
+        if (!m_audioSource) 
+            m_audioSource = gameObject.AddComponent<AudioSource>();
 
-    void Start()
-    {
-        if (!audioSource) audioSource = gameObject.AddComponent<AudioSource>();
+        m_walker = GetComponentInParent<Walker>();
+        Collider2D.enabled = true;
     }
 
     void Update()
     {
         Collider2D[] hits = Physics2D.OverlapBoxAll(
-            collider2D.bounds.center,
-            collider2D.bounds.size,
+            Collider2D.bounds.center,
+            Collider2D.bounds.size,
             angle: 0,
             layerMask: layerMask
         );
         foreach (Collider2D other in hits)
         {
             // skip self
-            if (other.transform.root == this.transform.root)
+            if (other.transform == this.transform)
                 continue;
 
-            if (_hitsInSession.Contains(other))
+            if (m_hitsInSession.Contains(other))
                 break;
 
-            _hitsInSession.Add(other);
+            m_hitsInSession.Add(other);
 
             DamageOther(other);
         }
@@ -130,16 +121,17 @@ public class Hitbox : MonoBehaviour
             attackDirection.x *= Mathf.Sign(toTarget.x);
             other.attachedRigidbody.AddForce(toTarget + attackDirection, ForceMode2D.Impulse);
 
-            Vector2 moveDirection = walker.Rb.velocity.magnitude > 0
-                ? walker.Rb.velocity
+            Vector2 moveDirection = m_walker.Rb.velocity.magnitude > 0
+                ? m_walker.Rb.velocity
                 : attackDirection;
+            
             /**a multiplier that depends on the speed at which the attacker hit*/
             float speedMult = Mathf.Log(
                 Utils.FilterMultiplier(Vector2.Dot(moveDirection, attackDirection), 50f)
             );
 
-            if (playerAttack.CurrentComboInstance != null)
-                speedMult = speedMult * (1 + Mathf.Log(playerAttack.CurrentComboInstance.Count));
+            if (m_playerAttack.CurrentComboInstance != null)
+                speedMult = speedMult * (1 + Mathf.Log(m_playerAttack.CurrentComboInstance.Count));
 
             // do attack stuff
             if (otherHealth)
@@ -154,7 +146,7 @@ public class Hitbox : MonoBehaviour
 
 
             if (attackSound)
-                audioSource.PlayOneShot(attackSound);
+                m_audioSource.PlayOneShot(attackSound);
 
             if (hitStop > 0)
             {
@@ -177,26 +169,9 @@ public class Hitbox : MonoBehaviour
             }
 
             if (_explosive)
-                playerAttack.CreateSlamExplosion();
+                m_playerAttack.CreateSlamExplosion();
 
             GameManager.CameraShake.DoJitter(jitter.x * Mathf.Log(speedMult), jitter.y);
         }
-
-        if (_deactivateOnContact && otherHealth)
-        {
-            collider2D.enabled = false;
-//            Debug.Log("Punch trigger disabled because it came in contact with " + other.gameObject.name);
-        }
     }
-
-    /*void OnGUI()
-    {
-        if (GUI.Button(new Rect(100, 20, 80, 20), "Sliders")) _guiSlidersEnabled = !_guiSlidersEnabled;
-        if (!_guiSlidersEnabled)
-            return;
-
-        hitStop = GameManager.AddGUISlider(gameObject.name + " hitStop", hitStop, 35 * (1 + _guiIndex));
-        slomoFactor = GameManager.AddGUISlider(gameObject.name + " slomoFactor", slomoFactor,
-            Mathf.RoundToInt(35 * (1.5f + _guiIndex)));
-    }*/
 }

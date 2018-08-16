@@ -16,15 +16,15 @@ public class MomentumManager : MonoBehaviour
     /// <summary> the maximum amount the momentum multiplier can reach </summary>
     [SerializeField] [Range(0, 5f)] public float MaxMomentum = 2.5f;
 
+    [SerializeField] [Range(0, 100)] private float minimumMomentumPercentForTrail = 70f;
+
     /// <summary>
     /// In the beginning of the game, you won't loose momentum.
     /// It's only when you start fighting, then the momentum begins to decay.
     /// This is set to true on the first call of AddMomentum()
     /// </summary>
-    private bool _startedGame = false;
-
-    private TrailGenerator _trailGenerator;
-    [SerializeField] [Range(0, 100)] private float minimumMomentumPercentForTrail = 70f;
+    private bool m_startedGame = false;
+    private TrailGenerator m_trailGenerator;
 
 
     public MomentumManager()
@@ -43,7 +43,7 @@ public class MomentumManager : MonoBehaviour
             momentumSlider.maxValue = MaxMomentum;
         }
 
-        _trailGenerator = GetComponent<TrailGenerator>();
+        m_trailGenerator = GetComponent<TrailGenerator>();
 
         UpdateText();
     }
@@ -51,7 +51,7 @@ public class MomentumManager : MonoBehaviour
     void Update()
     {
         // enable when over 50%
-        _trailGenerator.SampleLifetime = Momentum > MaxMomentum * minimumMomentumPercentForTrail / 100 ? 1 : 0;
+        m_trailGenerator.SampleLifetime = Momentum > MaxMomentum * minimumMomentumPercentForTrail / 100 ? 1 : 0;
     }
 
     public float Momentum { get; private set; }
@@ -59,10 +59,10 @@ public class MomentumManager : MonoBehaviour
     public void AddMomentum(float momentumAdded)
     {
         // if not yet started counting, the counting starts now.
-        if (!_startedGame)
+        if (!m_startedGame)
         {
             StartCoroutine(WaitAndDecayMomentum());
-            _startedGame = true;
+            m_startedGame = true;
         }
 
 

@@ -11,10 +11,12 @@ public class ComboInstance
 {
     /// indicates if the combo has already ended
     public bool HasEnded { get; private set; }
+
     /// <summary>
     /// The combo count of the current instance (each hit in the combo increments the count by one).
     /// </summary>
     public int Count { get; private set; }
+
     /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
     public float TimeSinceLastAttack { get; private set; }
 
@@ -24,26 +26,20 @@ public class ComboInstance
         HasEnded = false;
         TimeSinceLastAttack = 0;
     }
+
     // defaults to 2f
-    public ComboInstance() : this(2f) { }
+    public ComboInstance() : this(2f)
+    {
+    }
 
 
     /// <summary> the maximum time between each consecutive hit without dropping the combo (in seconds) </summary>
-    public float MaxTimeBetweenAttacks
-    {
-        get;
-        private set;
-    }
+    public float MaxTimeBetweenAttacks { get; private set; }
+
     public float TimeRemainingBeforeTimeout
     {
-        get
-        {
-            return TimeSinceLastAttack < MaxTimeBetweenAttacks ?
-               MaxTimeBetweenAttacks - TimeSinceLastAttack :
-              0;
-        }
+        get { return TimeSinceLastAttack < MaxTimeBetweenAttacks ? MaxTimeBetweenAttacks - TimeSinceLastAttack : 0; }
     }
-
 
 
     /// <summary> Use this method in Update() and pass Time.deltaTime
@@ -69,7 +65,8 @@ public class ComboInstance
         {
             HasEnded = true;
             TimeSinceLastAttack = 0;
-            Debug.Log("ComboInstance ended cuz no attacks have been registered for longer than " + MaxTimeBetweenAttacks + " seconds.");
+            Debug.Log("ComboInstance ended cuz no attacks have been registered for longer than " +
+                      MaxTimeBetweenAttacks + " seconds.");
         }
     }
 
@@ -79,7 +76,12 @@ public class ComboInstance
     /// </summary>
     public void IncrementCount()
     {
-        if (HasEnded) { Debug.LogWarning("ComboInstance has already ended, you can't change it after that."); return; }
+        if (HasEnded)
+        {
+            Debug.LogWarning("ComboInstance has already ended, you can't change it after that.");
+            return;
+        }
+
         Count++;
 
         // reset the timer

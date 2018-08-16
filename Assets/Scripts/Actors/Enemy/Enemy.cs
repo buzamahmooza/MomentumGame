@@ -14,15 +14,13 @@ public class Enemy : Walker
     [SerializeField] [Range(30, 360)] public float visionAngle = 100;
     [SerializeField] [Range(0, 100)] protected float timeBetweenAttacks = 2f; // in seconds
 
-    [HideInInspector] public bool m_Attacking = false;
-    protected float timeSinceLastAttack = -float.NegativeInfinity;
-    protected bool m_CanAttack = true;
-
-    protected bool m_InAttackRange = false;
+    [HideInInspector] public bool IsAttacking = false;
+    protected float TimeSinceLastAttack = -float.NegativeInfinity;
+    protected bool CanAttack = true;
 
     // Components
-    GrappleHook playerGrappleScript;
-    protected EnemyAI ai;
+    private GrappleHook m_grapple;
+    protected EnemyAI Ai;
 
     /// <summary>
     /// Never override Awake without invoking base.Awake()
@@ -30,41 +28,41 @@ public class Enemy : Walker
     protected override void Awake()
     {
         base.Awake();
-        ai = GetComponent<EnemyAI>();
-        playerGrappleScript = GameManager.Player.GetComponent<GrappleHook>();
+        Ai = GetComponent<EnemyAI>();
+        m_grapple = GameManager.Player.GetComponent<GrappleHook>();
         gameObject.layer = LayerMask.NameToLayer("Enemy");
 
-        if (!targeting.Target)
-            targeting.Target = GameManager.Player.transform;
+        if (!Targeting.Target)
+            Targeting.Target = GameManager.Player.transform;
     }
 
     protected virtual void Start()
     {
-        m_CanAttack = false;
+        CanAttack = false;
         // wait a random delay until allowed to attack
         Invoke("AllowAttack", Random.Range(0.5f, 2));
     }
 
     protected virtual void Update()
     {
-        if (health.IsDead)
+        if (Health.IsDead)
             return;
         Debug.Assert(Rb != null);
 
-        timeSinceLastAttack += Time.deltaTime;
+        TimeSinceLastAttack += Time.deltaTime;
     }
 
     protected virtual void FixedUpdate()
     {
-        if (!health.IsDead && IsAware)
+        if (!Health.IsDead && IsAware)
         {
-            _anim.SetTrigger("Aware");
-            FaceDirection(targeting.Target.transform.position.x - transform.position.x);
+            Anim.SetTrigger("Aware");
+            FaceDirection(Targeting.Target.transform.position.x - transform.position.x);
 
-            if (timeBetweenAttacks < timeSinceLastAttack && InAttackRange && !TargetIsDead && !IsGrappled)
+            if (timeBetweenAttacks < TimeSinceLastAttack && IsInAttackRange && !TargetIsDead && !IsGrappled)
             {
                 Attack();
-                timeSinceLastAttack = 0;
+                TimeSinceLastAttack = 0;
             }
 
             MoveToTarget();
@@ -84,68 +82,65 @@ public class Enemy : Walker
     /// </summary>
     private void AllowAttack()
     {
-        m_CanAttack = true;
+        CanAttack = true;
     }
 
 
     public virtual void Attack()
     {
-        if (!m_CanAttack)
+        if (!CanAttack)
         {
             Invoke("Attack", 0.5f);
             return;
         }
 
         if (attackSound)
-            audioSource.PlayOneShot(attackSound);
+            AudioSource.PlayOneShot(attackSound);
 
-        m_Attacking = true;
-        _anim.SetTrigger("Attack");
+        IsAttacking = true;
+        Anim.SetTrigger("Attack");
     }
 
     private void MoveToTarget()
     {
-        if (ai != null && ai.enabled)
+        if (Ai != null && Ai.enabled)
         {
             UpdateAnimatorParams();
-            ai.MoveAlongPath();
+            Ai.MoveAlongPath();
         }
     }
 
     private void UpdateAnimParams()
     {
-        _anim.SetFloat("Speed", Mathf.Abs(Rb.velocity.x));
+        Anim.SetFloat("Speed", Mathf.Abs(Rb.velocity.x));
     }
 
 
-    public bool InAttackRange
+    public bool IsInAttackRange
     {
         get
         {
-            m_InAttackRange = false;
-            float angle = Vector3.Angle(transform.right * FacingSign, targeting.AimDirection);
+            float angle = Vector3.Angle(transform.right * FacingSign, Targeting.AimDirection);
 
             //Checks distance and angle
-            m_InAttackRange = targeting.AimDirection.magnitude < attackRange && Mathf.Abs(angle) < visionAngle ||
-                              targeting.AimDirection.magnitude < (attackRange * 0.4f); // the small circlular raduis
-            return m_InAttackRange;
+            return Targeting.AimDirection.magnitude < attackRange && Mathf.Abs(angle) < visionAngle ||
+                              Targeting.AimDirection.magnitude < (attackRange * 0.4f); // the small circlular raduis
         }
-        set { m_InAttackRange = value; }
     }
 
     public bool IsGrappled
     {
-        get { return playerGrappleScript != null && gameObject == playerGrappleScript.GrabbedObj; }
+        get { return m_grapple != null && gameObject == m_grapple.GrabbedObj; }
     }
 
     public bool IsAware
     {
-        get { return targeting.Target && targeting.AimDirection.magnitude < awarenessRadius; }
+        get { return Targeting.Target && Targeting.AimDirection.magnitude < awarenessRadius; }
     }
 
     public bool TargetIsDead
     {
-        get { return targeting.Target && targeting.Target.GetComponent<Health>().IsDead; }
+        get { return Targeting.Target && Targeting.Target.GetComponent<Health>().IsDead; }
     }
 
     // used in animations

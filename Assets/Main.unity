@@ -2948,7 +2948,8 @@ Prefab:
       propertyPath: fallDamageModifier
       value: 0.1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 114984777739380634, guid: 30739ea4707f4d849a67a3e48d696c35, type: 2}
   m_SourcePrefab: {fileID: 100100000, guid: 30739ea4707f4d849a67a3e48d696c35, type: 2}
   m_IsPrefabAsset: 0
 --- !u!1 &900962828
@@ -3864,7 +3865,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1399284953}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.9060931, y: -0.49999827, z: 0}
+  m_LocalPosition: {x: 1.1829743, y: -0.4999926, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1941668517}
@@ -4390,7 +4391,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4743990411712268, guid: 64bb888fe26456943b0e090f73292170, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1.2256455
+      value: 2.4301357
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 64bb888fe26456943b0e090f73292170, type: 2}
@@ -5781,7 +5782,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4743990411712268, guid: 64bb888fe26456943b0e090f73292170, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 1.2256455
+      value: 2.4301357
       objectReference: {fileID: 0}
     - target: {fileID: 4743990411712268, guid: 64bb888fe26456943b0e090f73292170, type: 2}
       propertyPath: m_LocalPosition.x

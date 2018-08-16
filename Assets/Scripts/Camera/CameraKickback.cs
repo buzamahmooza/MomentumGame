@@ -2,23 +2,24 @@
 
 public class CameraKickback : MonoBehaviour
 {
-    private Vector3 m_TargetPos,
-        m_KickbackDirection = Vector3.zero;
     [SerializeField] float DefaultKickbackDuration = 0.2f;
     [SerializeField] [Range(0, 1)] float smooth = 0.3f;
     [SerializeField] float m_KickbackDuration = 0.2f; //
 
-    bool m_Kickback = false;
-    Vector3 startingLocalPosition;
+    private Vector3 m_TargetPos,
+        m_KickbackDirection = Vector3.zero;
+
+    private bool m_kickback = false;
+    private Vector3 m_startingLocalPosition;
 
     private void Start()
     {
-        startingLocalPosition = transform.localPosition;
+        m_startingLocalPosition = transform.localPosition;
     }
 
     private void LateUpdate()
     {
-        if (m_Kickback)
+        if (m_kickback)
         {
             Kickback();
         }
@@ -50,21 +51,21 @@ public class CameraKickback : MonoBehaviour
 
     private void ResetFields()
     {
-        m_Kickback = false;
+        m_kickback = false;
         m_KickbackDuration = 0;
         m_KickbackDirection = Vector3.zero;
-        m_TargetPos = startingLocalPosition;
+        m_TargetPos = m_startingLocalPosition;
     }
 
     public void DoKickback(Vector3 kickbackDir)
     {
-        if (m_Kickback)
+        if (m_kickback)
         {
             //ResetFields();
         }
         else
         {
-            m_Kickback = true;
+            m_kickback = true;
 
             // Random vector to add to the current position   
             m_KickbackDirection = kickbackDir;

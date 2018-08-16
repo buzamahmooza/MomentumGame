@@ -85,14 +85,12 @@ public class PingPong : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        // connect the lines
+        // draw a point on each node
+        foreach (Transform node in nodes)
+            Gizmos.DrawSphere(node.transform.position, radius: 0.1f);
+        
+        // connect the dots with lines
         for (int i = 0; i < nodes.Length - 1; i++)
-        {
             Gizmos.DrawLine(nodes[i].transform.position, nodes[i + 1].transform.position);
-        }
-
-        // draw points
-        for (int i = 0; i < nodes.Length; i++)
-            Gizmos.DrawSphere(nodes[i].transform.position, 0.1f);
     }
 }

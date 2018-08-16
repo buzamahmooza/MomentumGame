@@ -20,10 +20,10 @@ public class GrappleHookDJ : GrappleHook
     private void Awake()
     {
         if (mask == 0) mask = LayerMask.GetMask("Default", "Floor", "Enemy", "Object");
-        lr = GetComponent<LineRenderer>();
-        _aimInput = GetComponent<AimInput>();
-        playerMove = GetComponent<PlayerMove>();
-        m_Anim = GetComponent<Animator>();
+        LineRenderer = GetComponent<LineRenderer>();
+        AimInput = GetComponent<AimInput>();
+        PlayerMove = GetComponent<PlayerMove>();
+        Anim = GetComponent<Animator>();
 
         Joint = GetComponent<DistanceJoint2D>() ?? gameObject.AddComponent<DistanceJoint2D>();
         Joint.maxDistanceOnly = true;
@@ -33,15 +33,15 @@ public class GrappleHookDJ : GrappleHook
 
     private void Update()
     {
-        if (InputPressed && !m_Flying)
+        if (InputPressed && !Flying)
             FindTarget();
 
-        if (m_Flying)
+        if (Flying)
         {
             Fly();
             Debug.DrawLine(AnchorVec3, Joint.connectedAnchor, Color.red);
         }
-        else if (m_Pulling)
+        else if (Pulling)
         {
             Pull();
             Debug.DrawLine(AnchorVec3, Joint.connectedBody.gameObject.transform.position, Color.blue);
@@ -52,7 +52,7 @@ public class GrappleHookDJ : GrappleHook
         }
 
         //If reached Target
-        if (!m_Pulling && Vector2.Distance(transform.position, Target) < 0.5f)
+        if (!Pulling && Vector2.Distance(transform.position, Target) < 0.5f)
             EndGrapple();
         // if released input
         if (InputReleased && releaseGrappleOnInputRelease)
@@ -77,18 +77,18 @@ public class GrappleHookDJ : GrappleHook
         get
         {
             return Input.GetMouseButtonUp(1) || Input.GetKeyUp(KeyCode.LeftShift) ||
-                   _aimInput.UsingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
+                   AimInput.UsingJoystick && Input.GetAxisRaw("LeftTrigger") < 0.3f;
         }
     }
 
     private void FindTarget()
     {
         // use mouse direction if using mouse
-        Vector2 direction = _aimInput.UsingMouse
-            ? _aimInput.AimDirection
-            : playerMove.MovementInput.magnitude > 0.1f // if no movement input
-                ? playerMove.MovementInput // use movement input 
-                : Vector2.right * playerMove.FacingSign; // otherwise just use player facingSign
+        Vector2 direction = AimInput.UsingMouse
+            ? AimInput.AimDirection
+            : PlayerMove.MovementInput.magnitude > 0.1f // if no movement input
+                ? PlayerMove.MovementInput // use movement input 
+                : Vector2.right * PlayerMove.FacingSign; // otherwise just use player facingSign
 
         foreach (RaycastHit2D hit in Physics2D.RaycastAll(gun.position, direction, maxGrappleRange, mask))
         {
@@ -97,9 +97,9 @@ public class GrappleHookDJ : GrappleHook
             bool pullConditions = hit.collider.gameObject.GetComponent<Health>() != null &&
                                   hit.collider.attachedRigidbody != null;
 
-            if (m_Anim.GetBool("Slamming")) continue; //  not allowed to grapple while slamming
+            if (Anim.GetBool("Slamming")) continue; //  not allowed to grapple while slamming
 
-            lr.enabled = true;
+            LineRenderer.enabled = true;
             Target = hit.point;
             RenderLine();
             ConfigureDistance();
@@ -109,18 +109,18 @@ public class GrappleHookDJ : GrappleHook
              * without this, grabbing will always grab the origin position of the other object,  
              * but we want the grabbed position, grabbed position = other_position + targetPointOffset
              */
-            _targetPointOffset = hit.point - (Vector2) GrabbedObj.transform.position;
+            TargetPointOffset = hit.point - (Vector2) GrabbedObj.transform.position;
 
             if (pullConditions)
             {
-                m_Pulling = true;
-                Joint.connectedAnchor = _targetPointOffset;
+                Pulling = true;
+                Joint.connectedAnchor = TargetPointOffset;
                 return;
             }
             else if (grappleConditions)
             {
                 Joint.connectedAnchor = hit.point /*+ (Vector2)targetPointOffset*/;
-                m_Flying = true;
+                Flying = true;
                 return;
             }
         }
@@ -128,10 +128,10 @@ public class GrappleHookDJ : GrappleHook
 
     private void RenderLine()
     {
-        lr.SetPosition(0, gun.position);
+        LineRenderer.SetPosition(0, gun.position);
         Vector2 endVec =
-            m_Pulling ? (Vector2) (GrabbedObj.transform.position + _targetPointOffset) : Joint.connectedAnchor;
-        lr.SetPosition(1, endVec);
+            Pulling ? (Vector2) (GrabbedObj.transform.position + TargetPointOffset) : Joint.connectedAnchor;
+        LineRenderer.SetPosition(1, endVec);
     }
 
     private void CloseDistance()
@@ -139,22 +139,22 @@ public class GrappleHookDJ : GrappleHook
         Vector2 inputVec = new Vector2(CrossPlatformInputManager.GetAxis("Horizontal"),
             CrossPlatformInputManager.GetAxis("Vertical"));
 
-        Vector2 grappleDir = (m_Flying ? Joint.connectedAnchor :
-                                 m_Pulling ? (Vector2) (Joint.connectedBody.gameObject.transform.position) :
+        Vector2 grappleDir = (Flying ? Joint.connectedAnchor :
+                                 Pulling ? (Vector2) (Joint.connectedBody.gameObject.transform.position) :
                                  Vector2.zero) - (Vector2) AnchorVec3;
 
         float dot = Vector2.Dot(grappleDir.normalized, inputVec.normalized);
 
         float smoother = speed * Time.deltaTime / Vector2.Distance(AnchorVec3, Target);
 
-        float newDistance = m_Flying
+        float newDistance = Flying
                 ? // if flying, make the newDistance depend on the input
-                Mathf.Lerp(Joint.distance - dot * speed * Time.deltaTime * (m_Pulling ? -1 : 1), 0, smoother)
+                Mathf.Lerp(Joint.distance - dot * speed * Time.deltaTime * (Pulling ? -1 : 1), 0, smoother)
                 : /*invert controls if pulling objects*/
                 Mathf.Lerp(Joint.distance, 0, smoother) // else if pulling, always pull (keep decreasing the distance)
             ;
 
-        Joint.distance = Mathf.Clamp(newDistance, 0, maxDistance);
+        Joint.distance = Mathf.Clamp(newDistance, 0, MaxDistance);
     }
 
     private void Fly()
@@ -173,16 +173,16 @@ public class GrappleHookDJ : GrappleHook
     {
         Joint.enabled = true;
 
-        var otherRigidbody = GrabbedObj ? GrabbedObj.GetComponent<Rigidbody2D>() : null;
+        Rigidbody2D otherRigidbody = GrabbedObj ? GrabbedObj.GetComponent<Rigidbody2D>() : null;
         Joint.connectedBody = otherRigidbody;
 
         if (otherRigidbody && !otherRigidbody.bodyType.Equals(RigidbodyType2D.Static))
         {
             // if player is facing a direction other than that of the otherRigidbody, Flip()
             bool otherIsToTheRight = otherRigidbody.gameObject.transform.position.x > transform.position.x;
-            if (otherIsToTheRight ^ playerMove.FacingRight)
+            if (otherIsToTheRight ^ PlayerMove.FacingRight)
             {
-                playerMove.Flip();
+                PlayerMove.Flip();
             }
 
             CloseDistance();
@@ -199,7 +199,7 @@ public class GrappleHookDJ : GrappleHook
     private void ConfigureDistance()
     {
         Joint.distance = Vector3.Distance(AnchorVec3, Target);
-        maxDistance = Joint.distance;
+        MaxDistance = Joint.distance;
     }
 
     public override void EndGrapple()
@@ -209,10 +209,10 @@ public class GrappleHookDJ : GrappleHook
             Joint.connectedBody = null;
             Joint.enabled = false;
         }
-        lr.enabled = false;
-        m_Flying = false;
-        m_Pulling = false;
-        playerMove.BlockMoveInput = false;
+        LineRenderer.enabled = false;
+        Flying = false;
+        Pulling = false;
+        PlayerMove.BlockMoveInput = false;
         Target = transform.position;
         GrabbedObj = null;
     }

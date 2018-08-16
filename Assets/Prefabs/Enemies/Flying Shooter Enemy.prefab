@@ -438,12 +438,9 @@ MonoBehaviour:
   moveSpeed: 40
   jumpForce: 0
   k_GroundedRadius: 0.2
-  animationSpeedCoeff: 0.8
+  AnimationSpeedCoeff: 0.8
   FacingRight: 1
-  m_Grounded: 1
-  m_Jump: 0
-  _move: 0
-  health: {fileID: 0}
+  ToJump: 0
   footstepSound: {fileID: 0}
   m_GroundCheck: {fileID: 0}
   attackSound: {fileID: 0}
@@ -451,11 +448,11 @@ MonoBehaviour:
   attackRange: 8.76
   visionAngle: 40.4
   timeBetweenAttacks: 7.5
-  m_Attacking: 0
+  IsAttacking: 0
   shootTransform: {fileID: 4288608041395246}
   burstSize: 4
-  _timeBetweenMissiles: 6
-  _missilePrefab: {fileID: 1314123691622566, guid: 6bab473c7388de141b879666a91a3569,
+  m_timeBetweenMissiles: 7
+  m_missilePrefab: {fileID: 1314123691622566, guid: 6bab473c7388de141b879666a91a3569,
     type: 2}
 --- !u!114 &114297184521390244
 MonoBehaviour:
@@ -536,11 +533,10 @@ MonoBehaviour:
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}
   fallDamageModifier: 0
-  fallDamageThreshold: 10
   autoRegenHealth: 0
   regenPercent: 1
-  hurtEffectsDamageThreshold: 10
-  stunThreshold: 10
+  _minDamageForHurtEffects: 10
+  minDamageForStun: 10
   IsDead: 0
   ScoreValue: 50
   healthPickup: {fileID: 1489743543842948, guid: 3e7273d083b03f8468eed2e04b3d2134,
@@ -562,7 +558,7 @@ MonoBehaviour:
   stopDist: 4
   followOnGround: 0
   _debugLevel: 0
-  nextWaypointDistance: 2
+  nextWaypointDistance: 3
   heightToJump: 1
   angleToJump: 45
 --- !u!114 &114899766187712048

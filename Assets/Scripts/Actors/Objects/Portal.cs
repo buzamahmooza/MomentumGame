@@ -18,28 +18,28 @@ public class Portal : MonoBehaviour
     /// </summary>
     public Transform SpawnTransform;
 
-    private AudioSource _audioSource;
-    private Collider2D _collider2D;
-    private SpriteRenderer _spriteRenderer;
-    private Color _originalColor;
+    private AudioSource m_audioSource;
+    private Collider2D m_collider2D;
+    private SpriteRenderer m_spriteRenderer;
+    private Color m_originalColor;
 
 
     // Use this for initialization
     private void Awake()
     {
-        _collider2D = GetComponent<Collider2D>();
+        m_collider2D = GetComponent<Collider2D>();
 
-        _audioSource = GetComponent<AudioSource>();
-        _audioSource.playOnAwake = false;
+        m_audioSource = GetComponent<AudioSource>();
+        m_audioSource.playOnAwake = false;
 
 
         if (SpawnTransform == null) SpawnTransform = transform.Find("Spawn Position");
         if (SpawnTransform == null) SpawnTransform = transform;
 
-        _spriteRenderer = GetComponent<SpriteRenderer>();
-        if (!_spriteRenderer) _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        m_spriteRenderer = GetComponent<SpriteRenderer>();
+        if (!m_spriteRenderer) m_spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
-        _originalColor = _spriteRenderer.color;
+        m_originalColor = m_spriteRenderer.color;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -64,22 +64,22 @@ public class Portal : MonoBehaviour
     private void TeleportObject(Collider2D col)
     {
         col.gameObject.transform.position = this.SpawnTransform.position;
-        _audioSource.Play();
+        m_audioSource.Play();
         DisableTemporarily();
     }
 
     /// <summary> disables the portal for 1 second (disables collider and changes color to dark grey) </summary>
-    public void DisableTemporarily(int time = 2)
+    private void DisableTemporarily(int time = 2)
     {
-        _collider2D.enabled = false;
-        _spriteRenderer.color = new Color(0.2f, 0.2f, 0.2f, _originalColor.a);
+        m_collider2D.enabled = false;
+        m_spriteRenderer.color = new Color(0.2f, 0.2f, 0.2f, m_originalColor.a);
         Invoke("ReEnable", time);
     }
 
     /// <summary> enables the portal (enables collider and changes color to original) </summary>
     void ReEnable()
     {
-        _spriteRenderer.color = _originalColor;
-        _collider2D.enabled = true;
+        m_spriteRenderer.color = m_originalColor;
+        m_collider2D.enabled = true;
     }
 }

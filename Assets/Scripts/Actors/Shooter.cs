@@ -161,8 +161,8 @@ public class Shooter : MonoBehaviour
     {
         // draw the randomShootAngle lines
         if (!targeting) return;
-        var shootDirection = targeting.AimDirection.normalized;
-        var positionWithWiggle = new Vector3(-shootDirection.y, shootDirection.x).normalized *
+        Vector2 shootDirection = targeting.AimDirection.normalized;
+        Vector3 positionWithWiggle = new Vector3(-shootDirection.y, shootDirection.x).normalized *
                                  CurrentWeaponStats.wiggleShootOffset;
         Vector3 shootPos = shootTransform.position;
         Gizmos.DrawLine(shootPos - positionWithWiggle,

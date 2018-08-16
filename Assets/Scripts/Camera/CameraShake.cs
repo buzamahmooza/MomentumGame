@@ -6,28 +6,28 @@ using Random = UnityEngine.Random;
 
 public class CameraShake : MonoBehaviour
 {
-    private Vector3 m_TargetPos;
     public float smooth = 1.0f;
 
     public float m_JitterRange = 5; // fallbacks
     public float m_JitterDuration = 1; //
 
-    private bool m_Jitter = false;
-    private Vector3 startingLocalPosition;
+    private bool m_jitter = false;
+    private Vector3 m_startingLocalPosition;
+    private Vector3 m_targetPos;
 
     private void Start()
     {
-        startingLocalPosition = transform.localPosition;
+        m_startingLocalPosition = transform.localPosition;
     }
 
-    public Vector3 RandomVec
+    private Vector3 RandomVec
     {
         get { return new Vector3(Random.Range(-m_JitterRange, m_JitterRange), Random.Range(-m_JitterRange, m_JitterRange), 0); }
     }
 
     private void LateUpdate()
     {
-        if (m_Jitter)
+        if (m_jitter)
         {
             Jitter(RandomVec);
         }
@@ -47,9 +47,9 @@ public class CameraShake : MonoBehaviour
         }
 
         // Create a target position to aim for
-        m_TargetPos = Vector3.ClampMagnitude(influenctVec, 100);
+        m_targetPos = Vector3.ClampMagnitude(influenctVec, 100);
         // Smoothly go to this target position
-        transform.localPosition = Vector3.Lerp(transform.localPosition, m_TargetPos, smooth / m_JitterDuration);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, m_targetPos, smooth / m_JitterDuration);
         // Decrease jitterFactor over time
         m_JitterDuration -= Time.deltaTime;
         // Make sure jitterFactor reaches zero
@@ -59,8 +59,8 @@ public class CameraShake : MonoBehaviour
     private void ResetFields()
     {
         m_JitterDuration = 0;
-        m_Jitter = false;
-        transform.localPosition = startingLocalPosition;
+        m_jitter = false;
+        transform.localPosition = m_startingLocalPosition;
     }
 
     public void DoJitter(float newJitterDuration, float jitterFactor)
@@ -70,14 +70,14 @@ public class CameraShake : MonoBehaviour
             newJitterDuration = 0.15f;
             Debug.LogError("jitterDuration passed isNaN, defaulting to a value of " + newJitterDuration);
         }
-        if (m_Jitter)
+        if (m_jitter)
         {
             // ResetFields();
         }
         else
         {
             //Debug.Log("Sart jittering");
-            m_Jitter = true;
+            m_jitter = true;
             m_JitterDuration = newJitterDuration;
             m_JitterRange = jitterFactor;
         }

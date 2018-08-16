@@ -10,15 +10,15 @@ public class HealthPickup : Pickup
     /// <inheritdoc />
     protected override void OnPickup(GameObject picker)
     {
-        var health = picker.GetComponent<Health>() ?? picker.GetComponentInParent<Health>();
+        Health health = picker.GetComponent<Health>() ?? picker.GetComponentInParent<Health>();
         if (health)
             health.AddHealth(regenAmount);
         else
             Debug.LogWarning("Pickup picker does not contain a Health script: " + picker.name);
         if (floatingHealthText)
         {
-            var floatingTextInstance = Instantiate(floatingHealthText, transform.position, Quaternion.identity);
-            var floatingText = floatingTextInstance.GetComponent<FloatingText>();
+            GameObject floatingTextInstance = Instantiate(floatingHealthText, transform.position, Quaternion.identity);
+            FloatingText floatingText = floatingTextInstance.GetComponent<FloatingText>();
             floatingText.Init(string.Format("+{0}HP", regenAmount), Vector3.up*5, false);
             floatingText.text.color = Color.red;
             floatingText.text.fontSize -= 3;
