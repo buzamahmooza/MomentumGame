@@ -21,6 +21,11 @@ public class GameManager : MonoBehaviour
         get { return GameObject.FindWithTag("Player"); }
     }
 
+    public static GameManager Instance
+    {
+        get { return FindObjectOfType<GameManager>(); }
+    }
+
     public static Rigidbody2D PlayerRb
     {
         get { return Player.GetComponent<Rigidbody2D>(); }
@@ -47,67 +52,83 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static EnemySpawner EnemySpawner
+    {
+        get { return FindObjectOfType<EnemySpawner>(); }
+    }
+
     public static TimeManager TimeManager
     {
         get
         {
-            return timeManager =
-                timeManager ? timeManager : GameObject.Find("Game Controller").GetComponent<TimeManager>();
+            timeManager = timeManager ? timeManager : FindObjectOfType<TimeManager>();
+            return timeManager;
         }
     }
 
+    public static AstarPath AstarPath
+    {
+        get { return FindObjectOfType<AstarPath>(); }
+    }
+    
     public static ComboManager ComboManager
     {
-        get { return GameObject.Find("ComboManager").GetComponent<ComboManager>(); }
+        get { return FindObjectOfType<ComboManager>(); }
     }
 
     public static ScoreManager ScoreManager
     {
         get
         {
-            return scoreManager = scoreManager
+            scoreManager = scoreManager
                 ? scoreManager
-                : GameObject.Find("Game Controller").GetComponent<ScoreManager>();
+                : FindObjectOfType<ScoreManager>();
+            return scoreManager;
         }
     }
 
     public static AudioSource AudioSource
     {
-        get { return GameObject.Find("Game Controller").GetComponent<AudioSource>(); }
+        get { return GameManager.Instance.GetComponent<AudioSource>(); }
+    }
+
+    public static RoomBuilder RoomBuilder
+    {
+        get { return FindObjectOfType<RoomBuilder>(); }
     }
 
 
     private void OnEnable()
     {
-        PlayerHealth.OnDeath += OnPlayerDeath;
-    }
-
-    private void OnPlayerDeath()
-    {
-        music.audioSource.Stop();
-        if (missionFailedClip) 
-            AudioSource.PlayOneShot(missionFailedClip);
+        PlayerHealth.OnDeath += () =>
+        {
+            music.GetComponent<AudioSource>().Stop();
+            if (missionFailedClip)
+                AudioSource.PlayOneShot(missionFailedClip);
+        };
     }
 
     private void Awake()
     {
         cameraController = Camera.main.gameObject.transform.parent.GetComponent<CameraController>();
         music = FindObjectOfType<Music>();
+        if (!timeManager) timeManager = GetComponent<TimeManager>();
     }
 
     private void Start()
     {
-        if (!timeManager) timeManager = GetComponent<TimeManager>();
+        TimeManager.ResetTimeScale();
     }
 
     private void Update()
     {
         //restart level
-        if (Input.GetButton("Restart"))
+        if (Input.GetButtonDown("Restart"))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             Time.timeScale = 1f;
             Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
+            TimeManager.ResetTimeScale();
         }
 
         if (Input.GetKeyDown(KeyCode.RightBracket))
@@ -115,7 +136,6 @@ public class GameManager : MonoBehaviour
             music.PlayNext();
         }
     }
-
 
     private void OnGUI()
     {

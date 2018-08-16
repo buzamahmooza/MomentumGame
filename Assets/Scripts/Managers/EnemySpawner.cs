@@ -7,9 +7,8 @@ using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] private GameObject _spawnPointsParent;
+    [SerializeField] public Transform SpawnPointsParent;
     [SerializeField] private GameObject[] _enemies;
-    [SerializeField] private bool _useSpawnPointsParent = false;
 
     /// <summary> Maximum allowed number of enemies to be active in the scene at one time </summary>
     [SerializeField] private int _maxAllowedActiveEnemies = 8;
@@ -18,106 +17,166 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private Vector2 _delayBetweenSpawns = new Vector2(0.5f, 2f);
 
     /// <summary> An interactable that will trigger spawning enemies </summary>
-    [SerializeField] private Interactable _interactable;
+    [SerializeField] public Interactable Interactable;
 
     [SerializeField] private int _defaultWaveSize = 10;
 
-    private Transform[] _spawnPoints;
     private GameObject _player;
     private AudioSource _audioSource;
 
     /// <summary> the number of enemies that still need to be spawned in this wave </summary>
     private int _remainingInWave = 0;
 
-    private int _totalSpawnedFromStart = 0;
+    public readonly HashSet<GameObject> EnemySet = new HashSet<GameObject>();
+
+    public EnemySpawner()
+    {
+        TotalSpawnedFromStart = 0;
+    }
+
+    /// <summary>
+    /// An ActionEvent that is fired when an enemy is spawned, with the enemy passed with it.
+    /// </summary>
+    public static Action<Enemy> OnEnemySpawn;
+
+    public Action OnWaveEnd;
 
 
     // subscribe / unsubscribe to the interaction event
     private void OnEnable()
     {
-        if (_interactable != null)
-            _interactable.InteractEvent += SpawnWave;
+        if (Interactable != null)
+            Interactable.InteractEvent += TryToSpawnWave;
     }
 
     private void OnDisable()
     {
-        if (_interactable != null)
-            _interactable.InteractEvent -= SpawnWave;
+        if (Interactable != null)
+            Interactable.InteractEvent -= TryToSpawnWave;
     }
 
     private void Awake()
     {
         _player = GameObject.FindGameObjectWithTag("Player");
-        if (_useSpawnPointsParent)
-            _spawnPoints = _spawnPointsParent.GetComponentsInChildren<Transform>();
 
         _audioSource = GetComponent<AudioSource>();
     }
 
-    private void Start()
+    /// <summary>
+    /// This method should be called when the player enters the room
+    /// </summary>
+    public void InitializeSpawner()
     {
+        EndWave();
+        CancelInvoke("SpawnEnemyIfPossible");
         // if no wave controller exists, automatically start spawning, othwerise just wait for the event
-        if (_interactable == null)
-            Invoke("SpawnEnemy", SpawnDelay);
+        if (Interactable != null)
+        {
+            Interactable.InteractEvent += SpawnWave;
+        }
+        else
+        {
+            print("Spawning wave");
+            SpawnWave();
+        }
     }
 
-    private void SpawnEnemy()
+    private void Start()
+    {
+        InitializeSpawner();
+    }
+
+    /// <summary>
+    /// spawns an enemy if the conditions are met, also increments all the spawn counters and decrements _remainingWaveSize
+    /// </summary>
+    private void SpawnEnemyIfPossible()
     {
         // if player is dead or too many enemies exist
         if (_player == null || GameManager.PlayerHealth.IsDead || _maxAllowedActiveEnemies <= LivingEnemies)
         {
             print("Not gonna spawn cuz too many enemies are active, or player is dead");
-            Invoke("SpawnEnemy", SpawnDelay);
+            Invoke("SpawnEnemyIfPossible", SpawnDelay);
             return;
         }
 
         // the actual spawn part
-        GameObject enemy = _enemies[Random.Range(0, _enemies.Length)]; //choose random enemy type
-        Transform spawnTransform = _spawnPoints[Random.Range(0, _spawnPoints.Length)]; //choose random spawnpoint
-        Instantiate(enemy, spawnTransform.position, Quaternion.identity);
-        _audioSource.Play();
+        GameObject enemy = CreateEnemy();
+        if (OnEnemySpawn != null)
+            OnEnemySpawn(enemy.GetComponent<Enemy>());
 
-        _totalSpawnedFromStart++;
+        TotalSpawnedFromStart++;
         _remainingInWave--;
 
         if (_remainingInWave > 0)
         {
-            Invoke("SpawnEnemy", SpawnDelay);
+            Invoke("SpawnEnemyIfPossible", SpawnDelay);
         }
         else
         {
-            WaveEnd();
+            EndWave();
         }
     }
 
-    private void WaveEnd()
+    private GameObject CreateEnemy()
+    {
+        // TODO: make this lograithmic (less likely to  spawn from the top) and put hardest enemies at the end of the array
+        GameObject enemyPrefab = _enemies[Random.Range(0, _enemies.Length)]; //choose random enemy type
+
+        if (enemyPrefab == null)
+            throw new NullReferenceException("EnemySpawner: A slot in the enemy list contians a null enemy.");
+
+        //choose random spawnpoint
+        Transform spawnTransform = Utils.GetRandomElement(SpawnPointsParent.GetComponentsInChildren<Transform>());
+
+        GameObject enemy = Instantiate(enemyPrefab, spawnTransform.position, Quaternion.identity);
+        EnemySet.Add(enemy);
+
+        _audioSource.Play();
+        return enemyPrefab;
+    }
+
+    private void EndWave()
     {
         print("WaveEnd()");
+        
         // re-enable the interactable
-        if (_interactable)
-            _interactable.enabled = true;
+        if (Interactable)
+            Interactable.enabled = true;
+        else
+            TryToSpawnWave();
+        
+        if (OnWaveEnd != null) 
+            OnWaveEnd();
+    }
+
+    /// <summary>
+    /// Spawns a wave IF the conditions are met: That the current wave is over
+    /// </summary>
+    public void TryToSpawnWave()
+    {
+        // do not spawn next wave until current wave is over
+        if (_remainingInWave > 0 && LivingEnemies > 0)
+            return;
+
+        SpawnWave();
     }
 
     public void SpawnWave()
     {
-        // do not spawn next wave until current wave is over
-        int enemiesAlive = LivingEnemies;
-        print("enemies alive = " + enemiesAlive);
-        if (_remainingInWave > 0 && enemiesAlive > 0)
-            return;
         SpawnWave(_defaultWaveSize, _maxAllowedActiveEnemies);
     }
-
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies)
     {
+        
         // disable the interactable so the player won't be able to spam it
-        _interactable.enabled = false;
+        if (Interactable != null)
+            Interactable.enabled = false;
 
         Debug.Log(string.Format("SpawnEnemy(waveSize = {0}, newMaxSpawnedEnemies = {1})", waveSize,
             newMaxSpawnedEnemies));
         this._maxAllowedActiveEnemies = newMaxSpawnedEnemies;
         this._remainingInWave = waveSize;
-        Invoke("SpawnEnemy", 0);
+        Invoke("SpawnEnemyIfPossible", 0);
     }
 
     private static int LivingEnemies
@@ -133,5 +192,16 @@ public class EnemySpawner : MonoBehaviour
     private float SpawnDelay
     {
         get { return Random.Range(_delayBetweenSpawns.x, _delayBetweenSpawns.y); }
+    }
+
+    public int TotalSpawnedFromStart { get; private set; }
+
+
+    private void OnGUI()
+    {
+        if (GUI.Button(new Rect(x: 100, y: 100, width: 100, height: 20), "SpawnWave"))
+            SpawnWave();
+        if (GUI.Button(new Rect(x: 100, y: 120, width: 100, height: 20), "TryToSpawnWave"))
+            TryToSpawnWave();
     }
 }
