@@ -1009,7 +1009,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useHealthbar: 1
   healthBar: {fileID: 1287926828942094}
-  hurtEffects: {fileID: 0}
+  hurtEffects: {fileID: 1000011945391522, guid: 5f99061ab436a7145b8a654f866374ab,
+    type: 2}
   _stickyHurtEffects: 1
   deathEffects: {fileID: 1000011797152326, guid: acf39d9f4addf294d93fa56fa373961b,
     type: 2}
@@ -1018,9 +1019,10 @@ MonoBehaviour:
   hurtAudioClips:
   - {fileID: 8300000, guid: f99fe350510a0e044850236ec4549f24, type: 3}
   - {fileID: 8300000, guid: 0d8ed7295ee31e941b71d5062c595edb, type: 3}
-  deathAudioClip: {fileID: 8300000, guid: 880d6624d11a3074e886d305acd9916a, type: 3}
+  deathAudioClips:
+  - {fileID: 8300000, guid: 880d6624d11a3074e886d305acd9916a, type: 3}
   destroyOnDeath: 0
-  MaxHealth: 200
+  MaxHealth: 500
   CurrentHealth: 0
   floatingTextPrefab: {fileID: 1516574293292074, guid: 3b04bb21e24092f43a8d3271fe965618,
     type: 2}

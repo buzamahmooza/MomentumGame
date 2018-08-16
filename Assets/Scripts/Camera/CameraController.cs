@@ -7,17 +7,16 @@ using UnityStandardAssets.ImageEffects;
 public class CameraController : MonoBehaviour
 {
     public Transform target;
-    public bool bounds;
+    [SerializeField] bool boundsX, boundsY;
     public Vector2 minCamPos, maxCamPos;
 
 
-    [SerializeField]
-    [Range(0, 1)]
-    private float smooth = 0.5f;
+    [SerializeField] [Range(0.01f, 1f)] private float _smooth = 0.15f;
 
     private Vector3 offset;
+
     private float zDist;
-    // 
+
     private Fisheye fisheye;
     [SerializeField] private float fisheyeValue = 0.0f;
     [SerializeField] [Range(0, 20)] float fisheyeSmooth = 0.3f;
@@ -45,12 +44,13 @@ public class CameraController : MonoBehaviour
     {
         ApproachTarget();
 
-        if (bounds)
-            transform.position = new Vector3(
-                    Mathf.Clamp(transform.position.x, minCamPos.x, maxCamPos.x),
-                    Mathf.Clamp(transform.position.y, minCamPos.y, maxCamPos.y),
-                    zDist
-                );
+        transform.position =
+            new Vector3(
+                !boundsX ? transform.position.x : Mathf.Clamp(transform.position.x, minCamPos.x, maxCamPos.x),
+                !boundsY ? transform.position.y : Mathf.Clamp(transform.position.y, minCamPos.y, maxCamPos.y),
+                zDist
+            );
+
         //UpdateFisheye();
     }
 
@@ -69,14 +69,18 @@ public class CameraController : MonoBehaviour
             // decrease fisheyeValue
             fisheyeValue -= Time.deltaTime;
         }
+
         fisheye.strengthX = fisheyeValue;
         fisheye.strengthY = fisheyeValue;
-
     }
 
     public void DoFisheye(float intensity)
     {
-        if (!fisheye) { Debug.LogError("Fisheye is null"); return; }
+        if (!fisheye)
+        {
+            Debug.LogError("Fisheye is null");
+            return;
+        }
         //animator.SetTrigger("Fisheye");
         //return;
 
@@ -93,16 +97,11 @@ public class CameraController : MonoBehaviour
         Vector3 offset2D = new Vector3(offset.x, offset.y, 0);
         Vector3 targetPos2D = new Vector3(target.position.x, target.position.y, zDist);
 
-        float verExtent = Camera.main.orthographicSize;
-        //float horExtent = Camera.main.orthographicSize*Screen.width/Screen.height;
-
         // Transition to this new position
         transform.position = Vector3.Lerp(
-                transform.position,
-                (targetPos2D + offset2D),
-                Vector2.Distance(targetPos2D, transform.position) * smooth *
-                    Mathf.Abs(target.position.x - (Mathf.Abs(transform.position.x) - Mathf.Abs(verExtent))
-            )
+            transform.position,
+            targetPos2D + offset2D,
+            _smooth * Mathf.Exp(Vector2.Distance(targetPos2D, transform.position))
         );
     }
 

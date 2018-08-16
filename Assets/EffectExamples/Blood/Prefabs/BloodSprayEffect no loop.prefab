@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 4000013488956786}
   - component: {fileID: 198000011254678926}
   - component: {fileID: 199000010223498802}
+  - component: {fileID: 114062490830890412}
   m_Layer: 0
   m_Name: BloodSprayEffect no loop
   m_TagString: Untagged
@@ -65,13 +66,26 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1000012909287652}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -4.0470614, y: 2.7006578, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4000010553517452}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!114 &114062490830890412
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000012909287652}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29014cd42b6d273408e0ceefd336c0b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minDuration: 0.3
+  maxDuration: 1
 --- !u!198 &198000011254678926
 ParticleSystem:
   m_ObjectHideFlags: 1
@@ -82,7 +96,7 @@ ParticleSystem:
   lengthInSec: 1
   simulationSpeed: 3
   stopAction: 0
-  looping: 0
+  looping: 1
   prewarm: 0
   playOnAwake: 1
   useUnscaledTime: 0
@@ -132,7 +146,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 563509736
+  randomSeed: -397761219
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -2322,10 +2336,10 @@ ParticleSystem:
         m_NumAlphaKeys: 2
     range: {x: 0, y: 1}
   CollisionModule:
-    enabled: 0
+    enabled: 1
     serializedVersion: 3
     type: 1
-    collisionMode: 0
+    collisionMode: 1
     colliderForce: 0
     multiplyColliderForceByParticleSize: 0
     multiplyColliderForceByParticleSpeed: 0
@@ -2464,7 +2478,7 @@ ParticleSystem:
     radiusScale: 2
     collidesWith:
       serializedVersion: 2
-      m_Bits: 4294967295
+      m_Bits: 4294950875
     maxCollisionShapes: 256
     quality: 1
     voxelSize: 2
