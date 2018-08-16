@@ -37,7 +37,7 @@ public class TrailGenerator : MonoBehaviour
         GameObject go = new GameObject("Trail Instance", typeof(TrailSample));
         TrailSample trailSample = go.GetComponent<TrailSample>();
         trailSample.SampleLifetime = this.SampleLifetime;
-        
+
         return go;
     }
 
@@ -54,5 +54,30 @@ public class TrailGenerator : MonoBehaviour
         trailSpriteRenderer.sprite = _spriteRenderer.sprite;
         trailSpriteRenderer.color = _color;
         return trailInstance;
+    }
+}
+
+class TrailSample : MonoBehaviour
+{
+    private SpriteRenderer _spriteRenderer;
+    public float SampleLifetime = 0.5f;
+    private float _timer = 0;
+
+    private void Awake()
+    {
+        _spriteRenderer = GetComponent<SpriteRenderer>();
+        if (_spriteRenderer == null)
+            _spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
+    }
+
+    void LateUpdate()
+    {
+        _timer += Time.deltaTime;
+
+        _spriteRenderer.color = Color.Lerp(_spriteRenderer.color, Color.clear, _timer / SampleLifetime);
+        if (_spriteRenderer.color.a <= 0)
+        {
+            Destroy(gameObject);
+        }
     }
 }
