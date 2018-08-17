@@ -18,21 +18,6 @@ public class TimeManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonDown("Menu"))
-        {
-            if (Math.Abs(Time.timeScale) < 0.01F) // if timescale == 0 (paused)
-            {
-                // unpause
-                Time.timeScale = _lastTimescale;
-            }
-            else
-            {
-                // pause
-                _lastTimescale = Time.timeScale;
-                Time.timeScale = 0;
-            }
-        }
-
         if (m_SloMo)
         {
             if (Math.Abs(Time.timeScale - 1) < 0.01f)
@@ -42,6 +27,21 @@ public class TimeManager : MonoBehaviour
 
             Time.timeScale = Mathf.Clamp(Time.timeScale + 1 / slowDownLength * Time.unscaledDeltaTime, 0f, 1f);
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
+        }
+    }
+
+    public void TogglePause()
+    {
+        if (Math.Abs(Time.timeScale) < 0.01F) // if timescale == 0 (paused)
+        {
+            // unpause
+            Time.timeScale = _lastTimescale;
+        }
+        else
+        {
+            // pause
+            _lastTimescale = Time.timeScale;
+            Time.timeScale = 0;
         }
     }
 

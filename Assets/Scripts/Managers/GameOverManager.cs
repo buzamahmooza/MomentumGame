@@ -10,23 +10,6 @@ public class GameOverManager : MonoBehaviour
         GameComponents.TimeManager.ResetTimeScale();
     }
 
-    private void Update()
-    {
-        //restart level
-        if (Input.GetButtonDown("Restart"))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = Time.fixedUnscaledDeltaTime;
-            GameComponents.TimeManager.ResetTimeScale();
-        }
-
-        if (Input.GetKeyDown(KeyCode.RightBracket))
-        {
-            GameComponents.Music.PlayNext();
-        }
-    }    
- 
     private void OnEnable()
     {
         GameComponents.PlayerHealth.OnDeath += () =>
