@@ -97,8 +97,8 @@ public class PlayerAttack : MonoBehaviour
         if (CurrentComboInstance != null)
         {
             // display combo text
-            GameManager.ComboManager.DisplayCombo(CurrentComboInstance.HasEnded ? 0 : CurrentComboInstance.Count);
-            GameManager.ComboManager.comboText.text +=
+            GameComponents.ComboManager.DisplayCombo(CurrentComboInstance.HasEnded ? 0 : CurrentComboInstance.Count);
+            GameComponents.ComboManager.comboText.text +=
                 "\nCombo time left: " + CurrentComboInstance.TimeRemainingBeforeTimeout;
 
             CurrentComboInstance.AddTime(Time.deltaTime);
@@ -245,7 +245,7 @@ public class PlayerAttack : MonoBehaviour
         Instantiate(slamExplosionObj, _hitboxes.slamHitbox.Collider2D.bounds.center + Vector3.back,
             Quaternion.identity);
         float landingSpeed = Mathf.Abs(m_playerMove.Rb.velocity.y);
-        GameManager.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
+        GameComponents.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         Vector3 explosionPos = transform.position;
         foreach (Collider2D hit in Physics2D.OverlapCircleAll(explosionPos, _explosionRadius, _explosionMask))

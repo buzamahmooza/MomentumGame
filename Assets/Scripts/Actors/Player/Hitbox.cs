@@ -153,25 +153,25 @@ public class Hitbox : MonoBehaviour
                 float seconds = hitStop * speedMult;
 
                 if (isFinalBlow) seconds *= killCoeff;
-                GameManager.TimeManager.DoHitStop(seconds);
+                GameComponents.TimeManager.DoHitStop(seconds);
             }
 
             if (fisheye > 0)
             {
-                GameManager.CameraController.DoFisheye(fisheye);
+                GameComponents.CameraController.DoFisheye(fisheye);
             }
 
             if (slomoFactor < 1)
             {
                 float theSlowdownFactor = slomoFactor / speedMult;
                 if (isFinalBlow) theSlowdownFactor /= killCoeff;
-                GameManager.TimeManager.DoSlowMotion(theSlowdownFactor);
+                GameComponents.TimeManager.DoSlowMotion(theSlowdownFactor);
             }
 
             if (_explosive)
                 m_playerAttack.CreateSlamExplosion();
 
-            GameManager.CameraShake.DoJitter(jitter.x * Mathf.Log(speedMult), jitter.y);
+            GameComponents.CameraShake.DoJitter(jitter.x * Mathf.Log(speedMult), jitter.y);
         }
     }
 }

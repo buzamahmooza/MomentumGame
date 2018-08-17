@@ -23,7 +23,7 @@ public class AimInput : Targeting
 
     private void Awake()
     {
-        m_walker = GameManager.Player.GetComponent<Walker>();
+        m_walker = GameComponents.Player.GetComponent<Walker>();
     }
     
     private void FixedUpdate()
@@ -67,7 +67,7 @@ public class AimInput : Targeting
             //Using mouse
             else if (UsingMouse)
             {
-                return (MousePos - (Vector2)GameManager.Player.transform.position).normalized;
+                return (MousePos - (Vector2)GameComponents.Player.transform.position).normalized;
             }
             // Using Movement aiming
             else
@@ -93,7 +93,7 @@ public class AimInput : Targeting
         if (!UsingMouse)
         {
             //Switch to mouse
-            float camDisp = GameManager.CameraController.LookAheadPos.magnitude;
+            float camDisp = GameComponents.CameraController.LookAheadPos.magnitude;
             float compensatedMouseDisp = Mathf.Abs(mouseDisp) - Mathf.Abs(camDisp);
             // If mousespeed is greater than camSpeed (camera movement causes mouse to move, we want to compensate for this)
             if (compensatedMouseDisp > _mouseMoveThreshold || Input.GetMouseButton(0))
@@ -130,8 +130,8 @@ public class AimInput : Targeting
         get
         {
             float depth;
-            if (GameManager.Player)
-                depth = GameManager.Player.transform.position.z - Camera.main.transform.position.z;
+            if (GameComponents.Player)
+                depth = GameComponents.Player.transform.position.z - Camera.main.transform.position.z;
             else
                 depth = Mathf.Abs(Camera.main.transform.position.z);
 

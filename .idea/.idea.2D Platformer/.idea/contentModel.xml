@@ -384,11 +384,6 @@
           </e>
         </e>
         <e p="Scripts" t="Include">
-          <e p="_Prototyping" t="Include">
-            <e p="MovingPlatform.cs" t="Include" />
-            <e p="PauseMovementScript.cs" t="Include" />
-            <e p="PunchRobotMove.cs" t="Include" />
-          </e>
           <e p="Actors" t="Include">
             <e p="BulletScript.cs" t="Include" />
             <e p="Enemy" t="Include">
@@ -447,7 +442,9 @@
           <e p="Managers" t="Include">
             <e p="EnemyManager.cs" t="Include" />
             <e p="EnemySpawner.cs" t="Include" />
+            <e p="GameComponents.cs" t="Include" />
             <e p="GameManager.cs" t="Include" />
+            <e p="GameOverManager.cs" t="Include" />
             <e p="LevelManager" t="Include">
               <e p="KillObjective.cs" t="Include" />
               <e p="RoomBuilder.cs" t="Include" />

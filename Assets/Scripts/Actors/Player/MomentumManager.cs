@@ -129,7 +129,7 @@ public class MomentumManager : MonoBehaviour
                                      (livingEnemyScores.Length < 1
                                          ? 1
                                          : livingEnemyScores.Length) * // the average score
-                                     GameManager.ScoreManager.scoreAdded2MomentumPercent;
+                                     GameComponents.ScoreManager.scoreAdded2MomentumPercent;
         // never go below 1
         if (expectedKillInterval < 1)
             expectedKillInterval = 1;

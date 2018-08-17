@@ -17,7 +17,7 @@ public class EnemyHealth : Health
     protected override void Awake()
     {
         base.Awake();
-        m_player = GameManager.Player;
+        m_player = GameComponents.Player;
         m_enemyAi = GetComponent<EnemyAI>();
     }
 
@@ -48,11 +48,11 @@ public class EnemyHealth : Health
             if (ScoreValue > 0)
             {
                 CreateFloatingScore(ScoreValue);
-                GameManager.ScoreManager.AddScore(ScoreValue, true);
-                GameManager.PlayerHealth.AddHealth();
+                GameComponents.ScoreManager.AddScore(ScoreValue, true);
+                GameComponents.PlayerHealth.AddHealth();
                 
                 // TODO: BAD design, subscribe to the OnDeath Action from the RoomBuilder instead, this is temperary. Remove later!
-                KillObjective killObjective = GameManager.RoomBuilder.CurrentObjective as KillObjective;
+                KillObjective killObjective = GameComponents.RoomBuilder.CurrentObjective as KillObjective;
                 if (killObjective != null)
                     killObjective.OnEnemyKill();
             }

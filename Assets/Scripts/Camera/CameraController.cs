@@ -31,7 +31,7 @@ public class CameraController : MonoBehaviour
     {
         if (!target)
         {
-            target = GameManager.Player.transform;
+            target = GameComponents.Player.transform;
         }
 
 

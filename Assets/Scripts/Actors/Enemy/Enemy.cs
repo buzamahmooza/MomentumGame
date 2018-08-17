@@ -29,11 +29,11 @@ public class Enemy : Walker
     {
         base.Awake();
         Ai = GetComponent<EnemyAI>();
-        m_grapple = GameManager.Player.GetComponent<GrappleHook>();
+        m_grapple = GameComponents.Player.GetComponent<GrappleHook>();
         gameObject.layer = LayerMask.NameToLayer("Enemy");
 
         if (!Targeting.Target)
-            Targeting.Target = GameManager.Player.transform;
+            Targeting.Target = GameComponents.Player.transform;
     }
 
     protected virtual void Start()

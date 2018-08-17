@@ -33,7 +33,7 @@ public class FlyingDroneEnemy : ShooterEnemy
             Invoke("FireMissile", 1); // try again after 1s 
             return;
         }
-        
+
         GameObject missile = Instantiate(m_missilePrefab, shootTransform.position, Quaternion.identity);
         Missile missileScript = missile.GetComponent<Missile>();
         missileScript.Shooter = this.gameObject;
@@ -49,9 +49,9 @@ public class FlyingDroneEnemy : ShooterEnemy
         if (Health.CurrentHealth < 0.7f * Health.MaxHealth && !m_isHealing)
         {
             // move away from player
-            Rb.velocity = (transform.position - GameManager.Player.transform.position).normalized * 5;
+            Rb.velocity = (transform.position - GameComponents.Player.transform.position).normalized * 5;
             Invoke("StopMoving", 2);
-            
+
             m_isHealing = true;
             Heal();
         }

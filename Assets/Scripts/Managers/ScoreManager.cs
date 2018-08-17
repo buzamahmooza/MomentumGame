@@ -13,8 +13,8 @@ public class ScoreManager : MonoBehaviour
 
     void Awake()
     {
-        _playerAttack = GameManager.Player.GetComponent<PlayerAttack>();
-        _momentumManager = GameManager.Player.GetComponent<MomentumManager>();
+        _playerAttack = GameComponents.Player.GetComponent<PlayerAttack>();
+        _momentumManager = GameComponents.Player.GetComponent<MomentumManager>();
     }
 
     // Use this for initialization

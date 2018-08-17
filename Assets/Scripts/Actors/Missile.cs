@@ -115,7 +115,7 @@ public class Missile : BulletScript
     {
         Destroy(gameObject); // delay so that the audio will play
         if (_explosionClip)
-            GameManager.AudioSource.PlayOneShot(_explosionClip);
+            GameComponents.AudioSource.PlayOneShot(_explosionClip);
 
         if (_particleEffects)
             Instantiate(_particleEffects, transform.position, transform.rotation);

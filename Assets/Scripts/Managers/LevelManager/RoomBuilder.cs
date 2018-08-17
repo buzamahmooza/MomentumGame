@@ -55,20 +55,20 @@ public class RoomBuilder : MonoBehaviour
         GameObject thisRoom = _latestRoom;
 
         // kill all enemies inside the previous room
-        foreach (GameObject enemy in GameManager.EnemySpawner.EnemySet)
+        foreach (GameObject enemy in GameComponents.EnemySpawner.EnemySet)
             if (enemy != null)
                 Destroy(enemy);
 
         // disconnect the old interactable
-        GameManager.EnemySpawner.Interactable = null;
+        GameComponents.EnemySpawner.Interactable = null;
 
         // _lastRoom is changed
         BuildRoom();
 
         SetupRoom(_latestRoom);
         
-        ((GridGraph) GameManager.AstarPath.graphs[0]).center.x += GetRoomWidth(thisRoom);
-        GameManager.AstarPath.Scan();
+        ((GridGraph) GameComponents.AstarPath.graphs[0]).center.x += GetRoomWidth(thisRoom);
+        GameComponents.AstarPath.Scan();
 
     }
 
@@ -84,12 +84,12 @@ public class RoomBuilder : MonoBehaviour
         MovePlayerToRoom(room);
 
         // change to the new room's SpawnPoints
-        GameManager.EnemySpawner.SpawnPointsParent = GetSpawnEnemyPointsInRoom(room);
+        GameComponents.EnemySpawner.SpawnPointsParent = GetSpawnEnemyPointsInRoom(room);
 
         // Note: could be null
-        GameManager.EnemySpawner.Interactable = room.GetComponentInChildren<WaveReadyButton>();
+        GameComponents.EnemySpawner.Interactable = room.GetComponentInChildren<WaveReadyButton>();
 
-        GameManager.EnemySpawner.InitializeSpawner();
+        GameComponents.EnemySpawner.InitializeSpawner();
 
 
         // subscribe to new room's Objective
@@ -111,7 +111,7 @@ public class RoomBuilder : MonoBehaviour
     private static void MovePlayerToRoom(GameObject room)
     {
         Vector3 playerSpawnPosition = GetPlayerSpawnInRoom(room);
-        GameManager.Player.transform.position = playerSpawnPosition;
+        GameComponents.Player.transform.position = playerSpawnPosition;
     }
 
     public static Vector3 GetPlayerSpawnInRoom(GameObject room)

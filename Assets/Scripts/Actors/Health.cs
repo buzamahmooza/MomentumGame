@@ -236,7 +236,7 @@ public class Health : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         // if the thing is dead and it falls, just delete it
-        if (IsDead && collision.relativeVelocity.y <= 0.1f && gameObject != GameManager.Player)
+        if (IsDead && collision.relativeVelocity.y <= 0.1f && gameObject != GameComponents.Player)
         {
             Destroy(gameObject, 5f);
         }
@@ -245,7 +245,7 @@ public class Health : MonoBehaviour
         if (fallDamageModifier > 0)
         {
             Rigidbody2D otherRb = collision.otherRigidbody;
-            if (Walker.Rb != null && otherRb != null)
+            if (Walker?.Rb != null && otherRb != null)
             {
                 float fallDamage = collision.relativeVelocity.magnitude * otherRb.mass * Walker.Rb.mass *
                                    fallDamageModifier;

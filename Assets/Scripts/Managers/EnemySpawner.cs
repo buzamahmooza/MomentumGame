@@ -92,7 +92,7 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemyIfPossible()
     {
         // if player is dead or too many enemies exist
-        if (_player == null || GameManager.PlayerHealth.IsDead || _maxAllowedActiveEnemies <= LivingEnemies)
+        if (_player == null || GameComponents.PlayerHealth.IsDead || _maxAllowedActiveEnemies <= LivingEnemies)
         {
             print("Not gonna spawn cuz too many enemies are active, or player is dead");
             Invoke("SpawnEnemyIfPossible", SpawnDelay);

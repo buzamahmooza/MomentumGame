@@ -26,7 +26,7 @@ public class ShooterEnemy : Enemy
 
     private IEnumerator FireBurst()
     {
-        Vector3 shootDirection = GameManager.Player.transform.position - this.transform.position;
+        Vector3 shootDirection = GameComponents.Player.transform.position - this.transform.position;
 
         int i = 0;
         while (i++ < burstSize)
