@@ -450,8 +450,9 @@ MonoBehaviour:
   timeBetweenAttacks: 7.5
   IsAttacking: 0
   shootTransform: {fileID: 4288608041395246}
-  burstSize: 4
-  m_timeBetweenMissiles: 7
+  burstSize: 3
+  m_timeBetweenMissiles: 8
+  m_maxActiveMissiles: 1
   m_missilePrefab: {fileID: 1314123691622566, guid: 6bab473c7388de141b879666a91a3569,
     type: 2}
 --- !u!114 &114297184521390244
