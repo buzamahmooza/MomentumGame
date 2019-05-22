@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\Users\faris\.Rider2018.1\system\resharper-host\Local\Transient\ReSharperHost\v12\SolutionCaches\_2D Platformer.-1065388608.00" t="ExcludeRecursive" />
+    <e p="C:\Users\faris\.Rider2018.2\system\extResources" t="IncludeRecursive" />
+    <e p="C:\Users\faris\.Rider2018.2\system\resharper-host\Local\Transient\ReSharperHost\v182\SolutionCaches\_2D Platformer.-1065388608.00" t="ExcludeRecursive" />
     <e p="D:\Buza\!Projects\Unity Projects\2D Platformer" t="IncludeRecursive">
       <e p="2D Platformer.sln" t="IncludeFlat" />
       <e p="Assembly-CSharp-Editor-firstpass.csproj" t="IncludeRecursive" />
@@ -607,6 +608,7 @@
               </e>
             </e>
             <e p="ImageEffects" t="Include">
+              <e p="Readme.txt" t="Include" />
               <e p="Scripts" t="Include">
                 <e p="AntiAliasing.cs" t="Include" />
                 <e p="Bloom.cs" t="Include" />
