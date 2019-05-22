@@ -16,7 +16,13 @@ public class GameComponents : MonoBehaviour
 
     public static readonly List<string> Logs = new List<string>();
     public static Music Music;
+    [SerializeField] private GameObject pauseMenu;
 
+
+    public static GameObject PauseMenu
+    {
+        get { return GameComponents.Instance.pauseMenu; }
+    }
 
     // todo: add fields that these properties encapsulate, only benefit will be performance
     public static GameObject Player
@@ -106,6 +112,10 @@ public class GameComponents : MonoBehaviour
         cameraController = Camera.main.gameObject.transform.parent.GetComponent<CameraController>();
         Music = FindObjectOfType<Music>();
         if (!timeManager) timeManager = GetComponent<TimeManager>();
+
+        if (pauseMenu == null)
+            Debug.LogError("pauseMenu object is not defined");
+        pauseMenu.SetActive(false);
     }
     
     private void OnGUI()

@@ -39,6 +39,7 @@ public class Walker : MonoBehaviour
     /// <summary> Storing the default animation speed, so that we can go back to it after changing it. </summary>
     protected float DefaultAnimSpeed;
 
+    /// <summary> A float indicating the _intended_ horizontal movement. The player will be trying to move at this speed. </summary>
     [HideInInspector] protected float Movement = 0;
     protected float LastGroundSpeed = 0;
     protected bool Climbing = false;
@@ -86,20 +87,6 @@ public class Walker : MonoBehaviour
         Debug.Assert(Targeting != null, "targeting!=null");
     }
 
-
-    /// <summary>
-    /// If you want to modify any movements or Rigidbody forces/velocity do that here, otherwise your changes will be immediately overriden by this method as the velocity is modified directly
-    /// </summary>
-    public void Move(Vector2 input, bool jump)
-    {
-        Move(new Vector2(input.x, Rb.velocity.y));
-
-        //When to jump
-        if (jump)
-        {
-            CallJump();
-        }
-    }
 
     public void Move(Vector2 input)
     {

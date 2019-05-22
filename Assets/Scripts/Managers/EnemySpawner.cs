@@ -138,14 +138,14 @@ public class EnemySpawner : MonoBehaviour
     private void EndWave()
     {
         print("WaveEnd()");
-        
+
         // re-enable the interactable
         if (Interactable)
             Interactable.enabled = true;
         else
             TryToSpawnWave();
-        
-        if (OnWaveEnd != null) 
+
+        if (OnWaveEnd != null)
             OnWaveEnd();
     }
 
@@ -165,9 +165,9 @@ public class EnemySpawner : MonoBehaviour
     {
         SpawnWave(_defaultWaveSize, _maxAllowedActiveEnemies);
     }
+
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies)
     {
-        
         // disable the interactable so the player won't be able to spam it
         if (Interactable != null)
             Interactable.enabled = false;
@@ -199,9 +199,11 @@ public class EnemySpawner : MonoBehaviour
 
     private void OnGUI()
     {
+#if UNITY_EDITOR
         if (GUI.Button(new Rect(x: 100, y: 100, width: 100, height: 20), "SpawnWave"))
             SpawnWave();
         if (GUI.Button(new Rect(x: 100, y: 120, width: 100, height: 20), "TryToSpawnWave"))
             TryToSpawnWave();
+#endif
     }
 }

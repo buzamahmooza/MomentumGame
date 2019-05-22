@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Linq;
 using UnityEngine;
@@ -166,6 +166,7 @@ public class PlayerMove : Walker
             if (control_AirControl || Grounded)
                 Movement = MovementInput.x * moveSpeed * momentum;
 
+
         // If reached jump peak
         if (Mathf.Approximately(Rb.velocity.y, 0) && !Grounded)
         {
@@ -184,11 +185,6 @@ public class PlayerMove : Walker
                 {
                     Rb.velocity = new Vector2(Rb.velocity.x, -wallSlideSpeedMax);
                 }
-
-//                else if (MovementInput.y > 0.5f)
-//                {
-//                    print("trying to resist wall slide");
-//                }
             }
         }
 
@@ -197,6 +193,7 @@ public class PlayerMove : Walker
             if (Anim.GetBool("Slamming")) // Stop moving on slam landing
                 Movement = 0;
         }
+
         // TODO: on jump buttonUp, if(!m_Jump && Grounded) set rb Y velocity to zero 0
 
         // Move horizontally
@@ -250,7 +247,7 @@ public class PlayerMove : Walker
     /// <summary> Adjusts animation speed when walking, falling, or slamming.</summary>
     protected override void AdjustAnimationSpeed()
     {
-        String clipName = Anim.GetCurrentAnimatorClipInfo(Anim.layerCount - 1)[Anim.layerCount - 1].clip.name;
+        string clipName = Anim.GetCurrentAnimatorClipInfo(Anim.layerCount - 1)[Anim.layerCount - 1].clip.name;
 
         if (Anim.GetBool("Slamming") && m_playerAttack.HasReachedSlamPeak)
         {
@@ -334,25 +331,29 @@ public class PlayerMove : Walker
 
     private void Debug_UpdateStats()
     {
-        m_statsText.text = string.Join("\n", new[]
-        {
-            "timeScale: " + Time.timeScale,
-            "fixedDeltaTime: " + Time.fixedDeltaTime,
-            "velocity: " + Rb.velocity,
-            "HSpeed(Anim): " + Anim.GetFloat("Speed"),
-            "VSpeed(Anim): " + Anim.GetFloat("VSpeed"),
-            "lastGroundSpeed: " + LastGroundSpeed,
-            "BlockInput: " + BlockMoveInput,
+        print("Rb.velocity: " + Rb.velocity);
+#if !UNITY_EDITOR
+        m_statsText.enabled = false;
+#endif
+        m_statsText.text = string.Join("\n",
+            "timeScale: \t" + Time.timeScale,
+            "fixedDeltaTime: \t" + Time.fixedDeltaTime,
+//            "input: \t" + input,
+            "intended movement: \t" + Movement,
+            "Rb.velocity: \t" + Rb.velocity,
+            "(HSpeed, VSpeed): \t" + $"{Anim.GetFloat("Speed")}, {Anim.GetFloat("VSpeed")}",
+            "lastGroundSpeed: \t" + LastGroundSpeed,
+            "BlockInput: \t" + BlockMoveInput,
             "Doublejump available? " + HasDoubleJump,
-            "Wallcheck: " + Wallcheck,
-            "Grounded: " + Grounded,
-            "Jump: " + ToJump,
-            "Grappling: " + (
+            "Wallcheck: \t" + Wallcheck,
+            "Grounded: \t" + Grounded,
+            "Jump: \t" + ToJump,
+            "Grappling: \t" + (
                 m_grapple.Flying ? "flying" :
                 m_grapple.Pulling ? "pulling" :
                 "none"
             )
-        });
+        );
     }
 
 

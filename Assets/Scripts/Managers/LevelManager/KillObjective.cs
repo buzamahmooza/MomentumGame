@@ -18,11 +18,11 @@ public class KillObjective : RoomObjective
     {
         enemy.GetComponent<Health>().OnDeath += OnEnemyKill;
         
-        Debug.Log("Subscribed to spawned enemy: " + enemy.name + " " +
-                  string.Join("\n",
-                      enemy.GetComponent<Health>().OnDeath.GetInvocationList()
-                          .Select(x => x.ToString())
-                  ));
+//        Debug.Log("Subscribed to spawned enemy: " + enemy.name + " " +
+//                  string.Join("\n",
+//                      enemy.GetComponent<Health>().OnDeath.GetInvocationList()
+//                          .Select(x => x.GetInvocationList())
+//                  ));
     }
 
     public void OnEnemyKill()

@@ -50,10 +50,7 @@ public class AimInput : Targeting
 #endif
     }
 
-    /// <summary>
     /// Returns an aimDirection as a normalized Vector2
-    /// </summary>
-    /// <returns>Returns an aimDirection as a normalized Vector2</returns>
     public override Vector2 AimDirection
     {
         get
@@ -64,27 +61,23 @@ public class AimInput : Targeting
             {
                 return (aimDir.normalized);
             }
+            
             //Using mouse
-            else if (UsingMouse)
+            if (UsingMouse)
             {
                 return (MousePos - (Vector2)GameComponents.Player.transform.position).normalized;
             }
+            
             // Using Movement aiming
-            else
-            {
-                Vector2 moveInput = InputGetAxisRawVector;
-                
-                // If input is large enough
-                return moveInput.magnitude > 0.1f 
-                    ? moveInput.normalized 
-                    : Vector2.right * m_walker.FacingSign;
-            }
+            Vector2 moveInput = InputGetAxisRawVector;
+            // If input is large enough
+            return moveInput.magnitude > 0.1f 
+                ? moveInput.normalized 
+                : Vector2.right * m_walker.FacingSign;
         }
     }
 
-    /// <summary>
     /// Checks which device should be used as aim input (Mouse or Joystick) and updates fields
-    /// </summary>
     private void RecheckInputDevice()
     {
         float mouseDisp = Vector3.Distance(MousePos, m_lastMousePos);
@@ -121,10 +114,7 @@ public class AimInput : Targeting
         }
     }
 
-    /// <summary>
     /// Returns mouse position as Vector2 in world space
-    /// </summary>
-    /// <returns>Returns mouse position as Vector2 in world space</returns>
     public static Vector2 MousePos
     {
         get
@@ -138,10 +128,7 @@ public class AimInput : Targeting
             return (Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, depth)));
         }
     }
-    /// <summary>
     /// returns joystick right stick axies as a Vector2
-    /// </summary>
-    /// <returns></returns>
     public static Vector2 RightJoystick
     {
         get
@@ -151,10 +138,7 @@ public class AimInput : Targeting
         }
     }
 
-    /// <summary>
     /// Returns the left stick joystick axies as a Vector2
-    /// </summary>
-    /// <returns></returns>
     public static Vector2 LeftJoystick
     {
         get
@@ -165,10 +149,7 @@ public class AimInput : Targeting
         }
     }
 
-    /// <summary>
     /// Returns Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis
-    /// </summary>
-    /// <returns>Vector2 of Input.GetAxis and Input.GetAxisRaw with Horizontal and Vertical depending on rawAxis</returns>
     public static Vector2 InputGetAxisVector
     {
         get

@@ -159,11 +159,11 @@ public class Health : MonoBehaviour
         else
         {
             Debug.Log(gameObject.name + ":   Oh no! what's going on? I can't see!");
-            Walker.BlockMoveInput = false;
+            Walker.BlockMoveInput = true;
 
             yield return new WaitForSeconds(seconds);
             Debug.Log(gameObject.name + ": Mwahahaha I can see again! Time to die robot!!");
-            Walker.BlockMoveInput = true;
+            Walker.BlockMoveInput = false;
         }
     }
 
@@ -245,7 +245,7 @@ public class Health : MonoBehaviour
         if (fallDamageModifier > 0)
         {
             Rigidbody2D otherRb = collision.otherRigidbody;
-            if (Walker?.Rb != null && otherRb != null)
+            if ((Walker != null ? Walker.Rb : null) != null && otherRb != null) // if (rb and otherRb)
             {
                 float fallDamage = collision.relativeVelocity.magnitude * otherRb.mass * Walker.Rb.mass *
                                    fallDamageModifier;

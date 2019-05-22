@@ -1,0 +1,63 @@
+Moved to https://docs.google.com/document/d/1lo7R6Tm9i7aZGLQGoZOqHxONnwK_Cah274uv1E-WbTo/edit#heading=h.ms1euek305wn
+
+To-do list for 2D platformer:
+
+		done:	bouncing score particles when enemies get damaged
+		done:	fixing distance joint grapple
+		done:	decrease attack force or increase enemy and player masses (the latter is preferred)
+
+		done:	polish camera kickback
+		done:	fix problem where the player animator controller "DashAttack" is stuck at true
+		done:	grappling an enemy forces player to face enemy so he can beet the shiiiiiit 
+		done:	done:	Grapple:	Make it that you have control over your movement (like Duckgame)
+		done:	Use the dot product of the movementInput Vector2 • grappleTarget direction vector and let this product affect the  grapple speed
+		done:	Fix controller mapping
+		done:	Flipping when grappling will also flip the grabbed object if it's close enough
+
+		
+## To add:
+	TODO:	Fix enemy stun
+		:	make a healthbar prefab with a HealthBar script that can be dragged to the Health script, or just instantiated from the Health script (To make the healthbar reusable)
+		:	Make health pickup drop when killing enemies
+	done:	Add direction vector to each hitbox, and make that affect the force direction
+	*make blood splatter particle effects
+	*in slomo: 
+		lighting goes dim
+		make slomo speed lines effect
+		fish-eye lens effect
+
+## Fixing:
+TODO:	make it that moving while grappling will swing the character, rather than move him in a straight line.
+	Combo class and ComboInstance timer dependent on Time.timeScale
+	done:	fix wall-jump
+
+	done:	problem: shooting pickups will destroy them
+	done:	patch slam glitch, sometimes when coming down the player's fall slows down
+	done:	fix healthbar not going down all the way
+fixed >:) heathbar slider at the start, it doesn't show the real value until it's updated
+
+
+
+
+
+
+
+
+## Feedback:
+3amir's feedback
+	TODO:	Combo counter, every n combo you could give an ability like another double jump
+	- Stunnable enemies
+	- after a certain speed/ momentum, you can phase through certain objects
+	- seperate aimDirection from shootDirection, make LS in charge of aimDirection and RS of shoot direction
+	
+
+	// Standing punch and air attack make the screen shake when they hit, dash attack doesn't. that's the only thing I can think of rn
+			The dash attack doesn't provide enough feedback when it hits
+done:	For the air attack, you could make it ignore enemy collisions on the way down so that you hit the ground instead of stopping on top of them
+	and make it so that enemies hit get pushed away to either side
+	
+	5, done:	change input controls
+
+Yazeed: Enemies should have blood splatter and limbs flying around when they die
+		When enemies are grabbed and are close enough to the player, the player should start punching him automatically
+Saeed:	Enemies should use raycasting for player detection, that way the player can hide behind objects

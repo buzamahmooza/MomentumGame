@@ -32,16 +32,19 @@ public class TimeManager : MonoBehaviour
 
     public void TogglePause()
     {
-        if (Math.Abs(Time.timeScale) < 0.01F) // if timescale == 0 (paused)
+        // if timescale == 0 (paused)
+        if (Math.Abs(Time.timeScale) < 0.01F) 
         {
             // unpause
             Time.timeScale = _lastTimescale;
+            GameComponents.PauseMenu.SetActive(false);
         }
         else
         {
             // pause
             _lastTimescale = Time.timeScale;
             Time.timeScale = 0;
+            GameComponents.PauseMenu.SetActive(true);
         }
     }
 

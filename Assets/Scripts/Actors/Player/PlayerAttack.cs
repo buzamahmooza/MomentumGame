@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Timers;
@@ -10,10 +10,12 @@ using UnityStandardAssets.CrossPlatformInput;
 public class PlayerAttack : MonoBehaviour
 {
     [HideInInspector] public bool HasReachedSlamPeak = false;
+
     /// <summary>
     /// The combo timer, combos are canceled if there are no attacks for longer than this time in seconds
     /// </summary>
     [SerializeField] [Range(0, 5f)] float m_maxTimeBetweenAttacks = 3f;
+
     public ComboInstance CurrentComboInstance = null;
 
     [SerializeField] AudioClip dashAttackSound, slamAttackSound;
@@ -27,25 +29,25 @@ public class PlayerAttack : MonoBehaviour
     }
 
     [SerializeField] Hitboxes _hitboxes;
-    [SerializeField] [Range(0.5f, 10f)] float _explosionRadius = 2;
+    [SerializeField] [Range(0.5f, 10f)] float _explosionRadius = 2f;
     [SerializeField] [Range(0f, 10f)] float _upwardModifier = 1.7f;
     [SerializeField] LayerMask _explosionMask; // enemy, object
 
     [SerializeField] float _dashAttackSpeedFactor = 20f;
     [SerializeField] float _uppercutJumpForce = 1f;
 
-    /// <summary>
     /// these booleans control
-    /// </summary>
-    bool m_slam,
-        m_punch,
-        m_uppercut;
+    bool m_slam = false,
+        m_punch = false,
+        m_uppercut = false;
 
     float m_animSpeed = 1;
 
     // components
     Animator m_anim;
     PlayerMove m_playerMove;
+    [SerializeField] [Range(0, 50)] private float m_attackLunge = 1f;
+    [SerializeField] private float hitSettleMult = 5f;
 
 
     void Awake()
@@ -59,7 +61,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
-        print("explosionMask = " + _explosionMask.value);
         _hitboxes.slamHitbox.enabled = false;
         _hitboxes.dashAttackHitbox.enabled = false;
         _hitboxes.punchHitbox.enabled = false;
@@ -110,7 +111,7 @@ public class PlayerAttack : MonoBehaviour
             m_uppercut = m_punch = m_slam = false;
             Vector2 input = new Vector2(CrossPlatformInputManager.GetAxisRaw("Horizontal"),
                 CrossPlatformInputManager.GetAxisRaw("Vertical"));
-            bool attackDown = Input.GetKeyDown(KeyCode.F) || InputManager.ActiveDevice.Action3.IsPressed;
+            bool isAttackInputDown = Input.GetKeyDown(KeyCode.F) || InputManager.ActiveDevice.Action3.IsPressed;
 
             if (!m_anim.GetBool("DashAttack"))
             {
@@ -122,10 +123,11 @@ public class PlayerAttack : MonoBehaviour
                     m_slam = true;
                 }
                 // If DashAttack conditions are met, DashAttack!
-                else if (attackDown && m_playerMove.Grounded && m_playerMove.CanDashAttack && Mathf.Abs(input.x) > 0.1f &&
-                         !m_anim.GetBool("DashAttack"))
+                else if (isAttackInputDown && m_playerMove.Grounded && m_playerMove.CanDashAttack &&
+                         Mathf.Abs(input.x) > 0.1f && !m_anim.GetBool("DashAttack"))
                 {
-                    m_playerMove.Rb.AddForce(Vector2.right * m_playerMove.Rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor,
+                    m_playerMove.Rb.AddForce(
+                        Vector2.right * m_playerMove.Rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor,
                         ForceMode2D.Impulse);
                     m_anim.SetBool("DashAttack", true);
                     // Block input for dashattack animation length
@@ -137,15 +139,13 @@ public class PlayerAttack : MonoBehaviour
                     m_uppercut = true;
                     m_anim.SetTrigger("Uppercut");
                 }
-                else if (AttackInput)
+                else if (isAttackInputDown)
                 {
                     // otherwise just do a boring-ass punch...
                     m_punch = true;
                 }
             }
         }
-
-        UpdateAnimatorParams();
 
         //When landing a slam on the ground, go back to normal animation speed
         if (m_anim.GetBool("Slamming") && m_playerMove.Grounded)
@@ -183,7 +183,7 @@ public class PlayerAttack : MonoBehaviour
     /// <summary>
     /// Opens the punch interval (the active frames where the hitbox is on)
     /// </summary>
-    public void Attack_PunchStart()
+    public void PunchOpenHitbox()
     {
         _hitboxes.punchHitbox.enabled = true;
     }
@@ -191,7 +191,7 @@ public class PlayerAttack : MonoBehaviour
     /// <summary>
     /// Closes the punch interval
     /// </summary>
-    public void Attack_PunchEnd()
+    public void PunchCloseHitbox()
     {
         m_punch = false;
         _hitboxes.punchHitbox.enabled = false;

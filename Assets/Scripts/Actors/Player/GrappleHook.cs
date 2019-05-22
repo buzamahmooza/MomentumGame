@@ -43,6 +43,7 @@ public abstract class GrappleHook : MonoBehaviour
 
     public virtual void EndGrapple()
     {
+        print("EndGrapple()");
         LineRenderer.enabled = false;
         Flying = false;
         Pulling = false;

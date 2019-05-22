@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Pathfinding;
+using UnityEditor;
 using UnityEngine;
 
 public class RoomBuilder : MonoBehaviour
@@ -66,10 +67,9 @@ public class RoomBuilder : MonoBehaviour
         BuildRoom();
 
         SetupRoom(_latestRoom);
-        
+
         ((GridGraph) GameComponents.AstarPath.graphs[0]).center.x += GetRoomWidth(thisRoom);
         GameComponents.AstarPath.Scan();
-
     }
 
     /// <summary>
@@ -127,6 +127,7 @@ public class RoomBuilder : MonoBehaviour
 
     private void OnGUI()
     {
+#if UNITY_EDITOR
         if (GUI.Button(new Rect(x: 100, y: 20, width: 100, height: 20), "Build Room"))
             BuildRoom();
 
@@ -135,5 +136,6 @@ public class RoomBuilder : MonoBehaviour
 
         if (GUI.Button(new Rect(x: 100, y: 60, width: 100, height: 20), "Build Room"))
             BuildRoom();
+#endif
     }
 }

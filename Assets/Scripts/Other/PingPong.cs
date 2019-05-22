@@ -35,12 +35,12 @@ public class PingPong : MonoBehaviour
         transform.position = Vector3.Lerp(
             transform.position,
             nodes[current].position,
-            t * speed * Time.deltaTime / distance
+            t * speed * Time.deltaTime
         );
 
         t += Time.deltaTime;
 
-        if (distance <= 0.15f)
+        if (distance <= 0.1f)
         {
             t = 0;
             IncrementTarget();

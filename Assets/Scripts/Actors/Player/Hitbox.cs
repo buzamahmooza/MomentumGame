@@ -100,7 +100,7 @@ public class Hitbox : MonoBehaviour
                 continue;
 
             if (m_hitsInSession.Contains(other))
-                break;
+                continue;
 
             m_hitsInSession.Add(other);
 
@@ -117,9 +117,9 @@ public class Hitbox : MonoBehaviour
 
         if (isInLayerMask && other.attachedRigidbody != null)
         {
-            Vector2 toTarget = (other.transform.position - transform.parent.transform.position).normalized;
+            Vector2 toTarget = (other.transform.position - this.transform.position).normalized;
             attackDirection.x *= Mathf.Sign(toTarget.x);
-            other.attachedRigidbody.AddForce(toTarget + attackDirection, ForceMode2D.Impulse);
+            other.attachedRigidbody.AddForce(attackDirection, ForceMode2D.Impulse);
 
             Vector2 moveDirection = m_walker.Rb.velocity.magnitude > 0
                 ? m_walker.Rb.velocity

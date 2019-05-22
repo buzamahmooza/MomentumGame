@@ -17,6 +17,13 @@ public class GameOverManager : MonoBehaviour
             GameComponents.Music.GetComponent<AudioSource>().Stop();
             if (missionFailedClip)
                 GameComponents.AudioSource.PlayOneShot(missionFailedClip);
+            
+            Invoke("Restart", 5);
         };
+    }
+
+    void Restart()
+    {
+        GameManager.RestartScene();
     }
 }

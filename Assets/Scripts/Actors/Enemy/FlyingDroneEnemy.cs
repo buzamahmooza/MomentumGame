@@ -1,12 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 using System.Security.AccessControl;
 
 public class FlyingDroneEnemy : ShooterEnemy
 {
-    [SerializeField] private float m_timeBetweenMissiles = 7;
+    [SerializeField] [Range(0, 20)] private float m_timeBetweenMissiles = 7;
+    [SerializeField] [Range(0, 20)] private int m_maxActiveMissiles = 1;
     [SerializeField] private GameObject m_missilePrefab;
+
     private readonly int m_timeBetweenHealing = 5;
     private bool m_isHealing;
+    private readonly HashSet<GameObject> m_missilesFired = new HashSet<GameObject>();
+    private float m_lastMissileTime;
 
     protected override void Start()
     {
@@ -28,8 +35,9 @@ public class FlyingDroneEnemy : ShooterEnemy
 
     private void FireMissile()
     {
-        if (!CanAttack)
+        if ((Time.time - m_lastMissileTime) < m_timeBetweenMissiles || !CanAttack)
         {
+            print("Gonna try FireMissile later, reason: " + (!CanAttack ? "!CanAttack" : "m_timeBetweenMissiles"));
             Invoke("FireMissile", 1); // try again after 1s 
             return;
         }
@@ -39,11 +47,16 @@ public class FlyingDroneEnemy : ShooterEnemy
         missileScript.Shooter = this.gameObject;
         missileScript.Target = Targeting.Target;
         missileScript.IsArmed = false;
+        m_missilesFired.Add(missile);
+        m_lastMissileTime = Time.time;
     }
 
-    /// <summary>
+    private GameObject[] ActiveMissiles
+    {
+        get { return m_missilesFired.ToArray().Where(m => m != null).ToArray(); }
+    }
+
     /// starts healing IF health is low enough and not already healing
-    /// </summary>
     void TryToHeal()
     {
         if (Health.CurrentHealth < 0.7f * Health.MaxHealth && !m_isHealing)
