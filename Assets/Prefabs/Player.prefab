@@ -750,7 +750,6 @@ MonoBehaviour:
   walljumpForce: 1
   k_WallcheckRaduis: 0.23
   wallSlideSpeedMax: 1
-  HasDoubleJump: 1
   m_gravityScaleLerp: 0.8
 --- !u!114 &114309661591157806
 MonoBehaviour:
