@@ -1,96 +1,132 @@
 ﻿using System.Linq;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [ExecuteInEditMode]
 public class PingPong : MonoBehaviour
 {
-    [SerializeField] private Transform[] nodes = new Transform[2];
-    [SerializeField] private float speed = 3;
+    [FormerlySerializedAs("nodes")] [SerializeField]
+    private Transform[] m_nodes = new Transform[2];
+
+    [SerializeField] [Range(0, 5)] private float m_speed = 0.5f;
+
+    // how many seconds to wait at each node when reached
+    [SerializeField] [Header("how many seconds to wait at each node when reached")] [Range(0, 5)]
+    private float m_stopTimeOnNodes = 0.5f; //TODO: not yet implemented
 
     /// <summary>
     /// if set to true, objects colliding will become children
-    /// (they'll get stuck and will move witht the platform)
+    /// (they'll get stuck and will move with the platform)
     /// </summary>
-    [SerializeField] private bool isPlatform = true;
+    [SerializeField]
+    [Header("objects colliding will become children (they'll get stuck and will move with the platform)")]
+    private bool m_isPlatform = true;
 
-    private int currentNode = 0;
-    private bool incrementingUp = true;
-    private float t = 0;
+    private bool m_incrementingUp = true;
+    private float m_t = 0;
 
-    /// <summary>
-    /// the current node that the object is chasing 
-    /// </summary>
-    private int current;
+    /// the current node that the object is chasing
+    private int m_current;
 
+    private bool m_moving = true;
+
+
+    private float DistanceToTarget => Vector3.Distance(transform.position, m_nodes[m_current].position);
 
     void Start()
     {
-        nodes = nodes.Where(node => node != null).ToArray();
-        current = 0;
+        m_nodes = m_nodes.Where(node => node != null).ToArray();
+        m_current = 0;
     }
+
 
     private void LateUpdate()
     {
-        float distance = Vector3.Distance(transform.position, nodes[current].position);
+        m_t += Time.deltaTime;
+
+        ApproachTarget();
+    }
+
+    private void ApproachTarget()
+    {
+        if (!m_moving) return;
+
+        var distanceToTarget = DistanceToTarget;
+
         transform.position = Vector3.Lerp(
             transform.position,
-            nodes[current].position,
-            t * speed * Time.deltaTime
+            m_nodes[m_current].position,
+            m_t * m_speed * Time.deltaTime / (distanceToTarget + 1)
         );
 
-        t += Time.deltaTime;
 
-        if (distance <= 0.1f)
+        if (distanceToTarget <= 0.1f) // when target reached
         {
-            t = 0;
-            IncrementTarget();
+            m_t = 0;
+            m_moving = false;
+            Invoke(nameof(IncrementTarget), m_stopTimeOnNodes);
         }
     }
 
     private void IncrementTarget()
     {
+        m_moving = true;
         // if reached the end, reverse
-        if (current >= nodes.Length - 1)
+        if (m_current >= m_nodes.Length - 1)
         {
-            incrementingUp = false;
+            m_incrementingUp = false;
         }
-        else if (current <= 0)
+        else if (m_current <= 0)
         {
-            incrementingUp = true;
+            m_incrementingUp = true;
         }
 
 
-        if (incrementingUp)
+        if (m_incrementingUp)
         {
-            current++;
+            m_current++;
         }
         else
         {
-            current--;
+            m_current--;
         }
     }
 
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (!isPlatform) return;
+        if (!m_isPlatform) return;
         other.transform.parent = this.transform;
     }
 
     private void OnCollisionExit2D(Collision2D other)
     {
-        if (!isPlatform) return;
+        if (!m_isPlatform) return;
         other.transform.parent = null;
     }
 
     private void OnDrawGizmos()
     {
         // draw a point on each node
-        foreach (Transform node in nodes)
+        foreach (Transform node in m_nodes)
             Gizmos.DrawSphere(node.transform.position, radius: 0.1f);
-        
+
         // connect the dots with lines
-        for (int i = 0; i < nodes.Length - 1; i++)
-            Gizmos.DrawLine(nodes[i].transform.position, nodes[i + 1].transform.position);
+        for (int i = 0; i < m_nodes.Length - 1; i++)
+            Gizmos.DrawLine(m_nodes[i].transform.position, m_nodes[i + 1].transform.position);
     }
+
+// makes it animate the inspector
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        InvokeRepeating(nameof(FakeUpdate), 0, Time.deltaTime);
+    }
+
+    private void FakeUpdate()
+    {
+        m_t += Time.deltaTime;
+        ApproachTarget();
+    }
+#endif
 }
