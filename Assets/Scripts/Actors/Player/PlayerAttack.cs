@@ -1,9 +1,10 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Timers;
 using InControl;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityStandardAssets.CrossPlatformInput;
 
 [RequireComponent(typeof(PlayerMove))]
@@ -18,23 +19,27 @@ public class PlayerAttack : MonoBehaviour
 
     public ComboInstance CurrentComboInstance = null;
 
-    [SerializeField] AudioClip dashAttackSound, slamAttackSound;
-    [SerializeField] GameObject slamExplosionObj = null;
+    [FormerlySerializedAs("dashAttackSound")] [SerializeField] AudioClip m_dashAttackSound;
+    [FormerlySerializedAs("slamAttackSound")] [SerializeField] AudioClip m_slamAttackSound;
+    [FormerlySerializedAs("slamExplosionObj")] [SerializeField] GameObject m_slamExplosionObj = null;
 
     // This is just to make the members collapsable in the inspector
     [System.Serializable]
     struct Hitboxes
     {
-        public Hitbox punchHitbox, slamHitbox, dashAttackHitbox, uppercutHitbox;
+        [FormerlySerializedAs("punchHitbox")] public Hitbox PunchHitbox;
+        [FormerlySerializedAs("slamHitbox")] public Hitbox SlamHitbox;
+        [FormerlySerializedAs("dashAttackHitbox")] public Hitbox DashAttackHitbox;
+        [FormerlySerializedAs("uppercutHitbox")] public Hitbox UppercutHitbox;
     }
 
-    [SerializeField] Hitboxes _hitboxes;
-    [SerializeField] [Range(0.5f, 10f)] float _explosionRadius = 2f;
-    [SerializeField] [Range(0f, 10f)] float _upwardModifier = 1.7f;
-    [SerializeField] LayerMask _explosionMask; // enemy, object
+    [FormerlySerializedAs("_hitboxes")] [SerializeField] Hitboxes m_hitboxes;
+    [FormerlySerializedAs("_explosionRadius")] [SerializeField] [Range(0.5f, 10f)] float m_explosionRadius = 2f;
+    [FormerlySerializedAs("_upwardModifier")] [SerializeField] [Range(0f, 10f)] float m_upwardModifier = 1.7f;
+    [FormerlySerializedAs("_explosionMask")] [SerializeField] LayerMask m_explosionMask; // enemy, object
 
-    [SerializeField] float _dashAttackSpeedFactor = 20f;
-    [SerializeField] float _uppercutJumpForce = 1f;
+    [FormerlySerializedAs("_dashAttackSpeedFactor")] [SerializeField] float m_dashAttackSpeedFactor = 20f;
+    [FormerlySerializedAs("_uppercutJumpForce")] [SerializeField] float m_uppercutJumpForce = 1f;
 
     /// these booleans control
     bool m_slam = false,
@@ -47,7 +52,7 @@ public class PlayerAttack : MonoBehaviour
     Animator m_anim;
     PlayerMove m_playerMove;
     [SerializeField] [Range(0, 50)] private float m_attackLunge = 1f;
-    [SerializeField] private float hitSettleMult = 5f;
+    [FormerlySerializedAs("hitSettleMult")] [SerializeField] private float m_hitSettleMult = 5f;
 
 
     void Awake()
@@ -56,19 +61,19 @@ public class PlayerAttack : MonoBehaviour
         GetComponent<AudioSource>();
         m_anim = GetComponent<Animator>();
 
-        if (_explosionMask == 0) _explosionMask = LayerMask.GetMask("Enemy", "Object");
+        if (m_explosionMask == 0) m_explosionMask = LayerMask.GetMask("Enemy", "Object");
     }
 
     void Start()
     {
-        _hitboxes.slamHitbox.enabled = false;
-        _hitboxes.dashAttackHitbox.enabled = false;
-        _hitboxes.punchHitbox.enabled = false;
-        _hitboxes.dashAttackHitbox.enabled = false;
-        _hitboxes.uppercutHitbox.enabled = false;
+        m_hitboxes.SlamHitbox.enabled = false;
+        m_hitboxes.DashAttackHitbox.enabled = false;
+        m_hitboxes.PunchHitbox.enabled = false;
+        m_hitboxes.DashAttackHitbox.enabled = false;
+        m_hitboxes.UppercutHitbox.enabled = false;
 
         m_animSpeed = m_anim.speed;
-        Debug.Assert(_hitboxes.slamHitbox && _hitboxes.punchHitbox);
+        Debug.Assert(m_hitboxes.SlamHitbox && m_hitboxes.PunchHitbox);
 
         SubscribeToHitEvents();
     }
@@ -76,10 +81,10 @@ public class PlayerAttack : MonoBehaviour
     // TODO: call the effects (screenshake, hitStop and slomo) here rather than having it in Hitbox
     void SubscribeToHitEvents()
     {
-        _hitboxes.uppercutHitbox.OnHitEvent += OnHitHandler;
-        _hitboxes.dashAttackHitbox.OnHitEvent += OnHitHandler;
-        _hitboxes.punchHitbox.OnHitEvent += OnHitHandler;
-        _hitboxes.slamHitbox.OnHitEvent += OnHitHandler;
+        m_hitboxes.UppercutHitbox.OnHitEvent += OnHitHandler;
+        m_hitboxes.DashAttackHitbox.OnHitEvent += OnHitHandler;
+        m_hitboxes.PunchHitbox.OnHitEvent += OnHitHandler;
+        m_hitboxes.SlamHitbox.OnHitEvent += OnHitHandler;
     }
 
     void OnHitHandler(GameObject go, float speedMult, bool isFinalBlow)
@@ -90,6 +95,9 @@ public class PlayerAttack : MonoBehaviour
         }
 
         CurrentComboInstance.IncrementCount();
+
+
+        FreezeFall();
     }
 
 
@@ -121,28 +129,45 @@ public class PlayerAttack : MonoBehaviour
                     if (m_playerMove.Grounded) // if not in the air, Jump()
                         m_playerMove.Jump();
                     m_slam = true;
+                    UpdateAnimatorParams();
                 }
                 // If DashAttack conditions are met, DashAttack!
                 else if (isAttackInputDown && m_playerMove.Grounded && m_playerMove.CanDashAttack &&
                          Mathf.Abs(input.x) > 0.1f && !m_anim.GetBool("DashAttack"))
                 {
                     m_playerMove.Rb.AddForce(
-                        Vector2.right * m_playerMove.Rb.velocity.x * Time.deltaTime * _dashAttackSpeedFactor,
+                        Vector2.right * m_playerMove.Rb.velocity.x * Time.deltaTime * m_dashAttackSpeedFactor,
                         ForceMode2D.Impulse);
                     m_anim.SetBool("DashAttack", true);
                     // Block input for dashattack animation length
                     StartCoroutine(BlockInput(m_anim.GetCurrentAnimatorClipInfo(0).GetLength(0)));
+                    UpdateAnimatorParams();
+
+                    if (m_playerMove.Rb.velocity.y < 1)
+                        FreezeFall();
                 }
+                // uppercut
                 else if (AttackInput && input.y >= 0.5f && Mathf.Abs(input.x) <= 0.5)
                 {
-                    //uppercut
                     m_uppercut = true;
                     m_anim.SetTrigger("Uppercut");
+                    UpdateAnimatorParams();
+
+                    FreezeFall();
+                    m_playerMove.Rb.AddForce(Vector2.up);
                 }
                 else if (isAttackInputDown)
                 {
                     // otherwise just do a boring-ass punch...
                     m_punch = true;
+                    StartCoroutine(BlockInput(1f));
+                    UpdateAnimatorParams();
+
+                    if (m_playerMove.Rb.velocity.y < 1)
+                    {
+//                        FreezeFall();
+//                        Invoke("UnfreezeFall", 1f);
+                    }
                 }
             }
         }
@@ -152,6 +177,19 @@ public class PlayerAttack : MonoBehaviour
         {
             m_anim.speed = m_animSpeed;
         }
+    }
+
+    /// stops the player from falling and floats in the air for a bit
+    private void FreezeFall()
+    {
+        // stop the player from falling, (just like dishwasher vampire and Salt&Sanctuary)
+        m_playerMove.Rb.gravityScale = 0;
+        m_playerMove.Rb.velocity = new Vector2(m_playerMove.Rb.velocity.x, 0);
+    }
+    private void UnfreezeFall()
+    {
+        m_playerMove.Rb.gravityScale = 1.2f; // todo: don't hardcode
+        m_playerMove.Rb.velocity = new Vector2(m_playerMove.Rb.velocity.x, 0);
     }
 
     private static bool AttackInput
@@ -185,7 +223,10 @@ public class PlayerAttack : MonoBehaviour
     /// </summary>
     public void PunchOpenHitbox()
     {
-        _hitboxes.punchHitbox.enabled = true;
+        m_hitboxes.PunchHitbox.enabled = true;
+        //todo: fix this, playermove Move() is overriding the speed
+        m_playerMove.Rb.AddForce(Vector2.right * m_playerMove.FacingSign * m_attackLunge,
+            ForceMode2D.Impulse);
     }
 
     /// <summary>
@@ -194,7 +235,7 @@ public class PlayerAttack : MonoBehaviour
     public void PunchCloseHitbox()
     {
         m_punch = false;
-        _hitboxes.punchHitbox.enabled = false;
+        m_hitboxes.PunchHitbox.enabled = false;
     }
 
     public void PunchCompleted()
@@ -207,16 +248,16 @@ public class PlayerAttack : MonoBehaviour
     public void UppercutStart()
     {
         m_uppercut = true;
-        _hitboxes.uppercutHitbox.enabled = true;
+        m_hitboxes.UppercutHitbox.enabled = true;
         Invoke("UppercutCompleted", 1f);
-        m_playerMove.Rb.AddForce(Vector2.up * _uppercutJumpForce, ForceMode2D.Impulse);
+        m_playerMove.Rb.AddForce(Vector2.up * m_uppercutJumpForce, ForceMode2D.Impulse);
     }
 
     public void UppercutCompleted()
     {
         print("UppercutCompleted()");
         m_uppercut = false;
-        _hitboxes.uppercutHitbox.enabled = false;
+        m_hitboxes.UppercutHitbox.enabled = false;
     }
 
     public void ReachedSlamPeak()
@@ -224,31 +265,44 @@ public class PlayerAttack : MonoBehaviour
         HasReachedSlamPeak = true;
         m_anim.speed = 0;
         gameObject.layer = LayerMask.NameToLayer("PlayerIgnore");
+
+        CheckIfLandedAndEndSlam();
     }
 
     public void Attack_Slam()
     {
-        _hitboxes.slamHitbox.enabled = true;
+        m_hitboxes.SlamHitbox.enabled = true;
+    }
+
+    private void CheckIfLandedAndEndSlam()
+    {
+        if (m_playerMove.Grounded)
+        {
+            Attack_Slam();
+            CreateSlamExplosion();
+            SlamEnded();
+        }
+        else Invoke("CheckIfLandedAndEndSlam", 0.5f);
     }
 
     public void SlamEnded()
     {
         m_slam = false;
         m_anim.speed = m_animSpeed;
-        _hitboxes.slamHitbox.enabled = false;
+        m_hitboxes.SlamHitbox.enabled = false;
         gameObject.layer = LayerMask.NameToLayer("Player");
         UpdateAnimatorParams();
     }
 
     public void CreateSlamExplosion()
     {
-        Instantiate(slamExplosionObj, _hitboxes.slamHitbox.Collider2D.bounds.center + Vector3.back,
+        Instantiate(m_slamExplosionObj, m_hitboxes.SlamHitbox.Collider2D.bounds.center + Vector3.back,
             Quaternion.identity);
         float landingSpeed = Mathf.Abs(m_playerMove.Rb.velocity.y);
         GameComponents.CameraShake.DoJitter(0.2f, 0.4f + landingSpeed * 0.3f);
 
         Vector3 explosionPos = transform.position;
-        foreach (Collider2D hit in Physics2D.OverlapCircleAll(explosionPos, _explosionRadius, _explosionMask))
+        foreach (Collider2D hit in Physics2D.OverlapCircleAll(explosionPos, m_explosionRadius, m_explosionMask))
         {
             Health otherHealth = hit.gameObject.GetComponent<Health>();
             if (!otherHealth)
@@ -264,7 +318,7 @@ public class PlayerAttack : MonoBehaviour
 
             if (otherRb)
                 otherRb.AddForce(
-                    new Vector2(m_playerMove.FacingSign, _upwardModifier) * (landingSpeed / distance),
+                    new Vector2(m_playerMove.FacingSign, m_upwardModifier) * (landingSpeed / distance),
                     ForceMode2D.Impulse
                 );
         }
@@ -272,12 +326,12 @@ public class PlayerAttack : MonoBehaviour
 
     public void DashAttackOpen()
     {
-        _hitboxes.dashAttackHitbox.enabled = true;
+        m_hitboxes.DashAttackHitbox.enabled = true;
     }
 
     public void DashAttackClose()
     {
-        _hitboxes.dashAttackHitbox.enabled = false;
+        m_hitboxes.DashAttackHitbox.enabled = false;
         m_anim.SetBool("DashAttack", false);
         m_punch = false;
         m_playerMove.BlockMoveInput = false;

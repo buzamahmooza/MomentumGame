@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityStandardAssets.CrossPlatformInput;
 using InControl;
+using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Targeting))]
@@ -12,6 +13,7 @@ using InControl;
 public class Walker : MonoBehaviour
 {
     [SerializeField] protected LayerMask floorMask;
+    //TODO: put these under a Control struct
     [SerializeField] protected bool control_AirControl = true;
     [SerializeField] protected bool control_facesAimDirection = true;
     [SerializeField] private bool _neverFlip = false;
@@ -20,7 +22,7 @@ public class Walker : MonoBehaviour
     [SerializeField] protected float jumpForce = 8;
 
     [SerializeField] [Range(0f, 5f)]
-    protected float k_GroundedRadius = 0.08f; // Radius of the overlap circle to determine if grounded
+    protected float GroundedRadius = 0.08f; // Radius of the overlap circle to determine if grounded
 
     [SerializeField] protected float AnimationSpeedCoeff = 0.8f;
 
@@ -144,7 +146,7 @@ public class Walker : MonoBehaviour
         get
         {
             m_grounded = false;
-            m_grounded = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, floorMask)
+            m_grounded = Physics2D.OverlapCircleAll(m_GroundCheck.position, GroundedRadius, floorMask)
                 .Any(col => col.gameObject != gameObject && !col.gameObject.transform.IsChildOf(this.transform));
 
             return m_grounded;
@@ -233,7 +235,7 @@ public class Walker : MonoBehaviour
     protected virtual void OnDrawGizmos()
     {
         if (m_GroundCheck != null)
-            Gizmos.DrawWireSphere(m_GroundCheck.position, k_GroundedRadius);
+            Gizmos.DrawWireSphere(m_GroundCheck.position, GroundedRadius);
     }
 }
 //using static Input_AimDirection.AimDirection;
