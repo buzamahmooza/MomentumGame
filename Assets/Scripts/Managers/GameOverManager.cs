@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class GameOverManager : MonoBehaviour
 {
-    [SerializeField] private AudioClip missionFailedClip;
+    [FormerlySerializedAs("missionFailedClip")] [SerializeField] private AudioClip m_missionFailedClip;
     
     private void Start()
     {
@@ -15,10 +16,10 @@ public class GameOverManager : MonoBehaviour
         GameComponents.PlayerHealth.OnDeath += () =>
         {
             GameComponents.Music.GetComponent<AudioSource>().Stop();
-            if (missionFailedClip)
-                GameComponents.AudioSource.PlayOneShot(missionFailedClip);
+            if (m_missionFailedClip)
+                GameComponents.AudioSource.PlayOneShot(m_missionFailedClip);
             
-            Invoke("Restart", 5);
+            Invoke(nameof(Restart), 5);
         };
     }
 

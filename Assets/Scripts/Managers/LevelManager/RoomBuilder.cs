@@ -3,36 +3,37 @@ using System.Collections.Generic;
 using Pathfinding;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class RoomBuilder : MonoBehaviour
 {
-    [SerializeField] private GameObject[] _rooms;
-    [SerializeField] private GameObject _startingRoom;
+    [FormerlySerializedAs("_rooms")] [SerializeField] private GameObject[] m_rooms;
+    [FormerlySerializedAs("_startingRoom")] [SerializeField] private GameObject m_startingRoom;
 
     /// <summary>
     /// the last room that was created, always the furthest
     /// </summary>
-    private GameObject _latestRoom;
+    private GameObject m_latestRoom;
 
     public RoomObjective CurrentObjective { get; private set; }
 
     void Start()
     {
-        Debug.Assert(_rooms.Length > 0);
+        Debug.Assert(m_rooms.Length > 0);
 
-        if (_startingRoom == null)
+        if (m_startingRoom == null)
         {
-            _startingRoom = Instantiate(_rooms[0], transform.position, Quaternion.identity, this.transform);
+            m_startingRoom = Instantiate(m_rooms[0], transform.position, Quaternion.identity, this.transform);
             print("Starting room is null, creating room");
         }
 
-        _latestRoom = _startingRoom;
-        SetupRoom(_latestRoom);
+        m_latestRoom = m_startingRoom;
+        SetupRoom(m_latestRoom);
     }
 
     public GameObject BuildRoom()
     {
-        return BuildRoom(Utils.GetRandomElement(_rooms));
+        return BuildRoom(Utils.GetRandomElement(m_rooms));
     }
 
     /// <summary>
@@ -43,17 +44,17 @@ public class RoomBuilder : MonoBehaviour
     /// <returns></returns>
     public GameObject BuildRoom(GameObject room)
     {
-        float width = GetRoomWidth(_latestRoom);
-        Vector3 position = Vector3.right * width + _latestRoom.transform.position;
+        float width = GetRoomWidth(m_latestRoom);
+        Vector3 position = Vector3.right * width + m_latestRoom.transform.position;
         GameObject newRoom = Instantiate(room, position, Quaternion.identity, this.transform);
 
-        _latestRoom = newRoom;
+        m_latestRoom = newRoom;
         return newRoom;
     }
 
     public void ProgressToNextRoom()
     {
-        GameObject thisRoom = _latestRoom;
+        GameObject thisRoom = m_latestRoom;
 
         // kill all enemies inside the previous room
         foreach (GameObject enemy in GameComponents.EnemySpawner.EnemySet)
@@ -66,7 +67,7 @@ public class RoomBuilder : MonoBehaviour
         // _lastRoom is changed
         BuildRoom();
 
-        SetupRoom(_latestRoom);
+        SetupRoom(m_latestRoom);
 
         ((GridGraph) GameComponents.AstarPath.graphs[0]).center.x += GetRoomWidth(thisRoom);
         GameComponents.AstarPath.Scan();

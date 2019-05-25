@@ -1,19 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Actors.Player
 {
     public class TouchControlsManager : MonoBehaviour
     {
-        private Vector2 _touchOrigin = -Vector2.one;
+        private Vector2 m_touchOrigin = -Vector2.one;
 
-        [SerializeField] [Range(0, 5)] private float _inputSmoother = 0.5f;
+        [FormerlySerializedAs("_inputSmoother")] [SerializeField] [Range(0, 5)] private float m_inputSmoother = 0.5f;
 
         //TODO: multiply the touchjoystickAmplitude by device pixel density
         /// <summary> how much far does the touch have to be to reach max speed? </summary>
-        [SerializeField] [Range(0.1f, 500)] private float _touchJoystickAmplitude = 100f;
+        [FormerlySerializedAs("_touchJoystickAmplitude")] [SerializeField] [Range(0.1f, 500)] private float m_touchJoystickAmplitude = 100f;
 
-        [SerializeField] private GameObject _touchNob1, _touchNob2;
-        [SerializeField] [Range(0f, 1f)] private float _deadZone = 0.1f;
+        [FormerlySerializedAs("_touchNob1")] [SerializeField] private GameObject m_touchNob1;
+        [FormerlySerializedAs("_touchNob2")] [SerializeField] private GameObject m_touchNob2;
+        [FormerlySerializedAs("_deadZone")] [SerializeField] [Range(0f, 1f)] private float m_deadZone = 0.1f;
 
 
         private void Update()

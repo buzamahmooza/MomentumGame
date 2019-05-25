@@ -5,7 +5,7 @@ using UnityEngine;
 
 class Playlist : List<AudioClip>
 {
-    public int current = -1;
+    public int Current = -1;
 
     /// <inheritdoc />
     public Playlist(AudioClip[] tracks)
@@ -23,13 +23,13 @@ class Playlist : List<AudioClip>
         while (true)
         {
             AudioClip next = null;
-            if (current < this.Count - 1)
+            if (Current < this.Count - 1)
             {
-                next = this[++current];
+                next = this[++Current];
             }
-            else if (current == this.Count - 1) // if at the last song, loop
+            else if (Current == this.Count - 1) // if at the last song, loop
             {
-                current = -1;
+                Current = -1;
                 next = Next();
             }
 

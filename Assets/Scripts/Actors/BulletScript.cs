@@ -1,63 +1,69 @@
-﻿using System;
-using System.Linq;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
-public class BulletScript : MonoBehaviour
+namespace Actors
 {
-    [SerializeField] public int damageAmount = 5;
-    [SerializeField] protected LayerMask destroyMask;
-
-    /// <summary> the object that created this bullet, useful for not damaging itself </summary>
-    [HideInInspector] public GameObject Shooter;
-
-    /// should the bullet also damage other game objects with the same tag as the shooter (parent)?
-    public bool DamageShootersWithSameTag = false;
-
-    [SerializeField] public bool _correctRotation;
-
-
-    private void Awake()
+    public class BulletScript : MonoBehaviour
     {
-        if(destroyMask.value == 0) destroyMask = LayerMask.GetMask("Everything");
-        Destroy(gameObject, 7);
-    }
+        [FormerlySerializedAs("damageAmount")] [SerializeField]
+        public int DamageAmount = 5;
 
-    private void CorrectRotation()
-    {
-        transform.Rotate(Vector3.up, 90);
-        transform.Rotate(Vector3.forward, 90);
-    }
+        [FormerlySerializedAs("destroyMask")] [SerializeField]
+        protected LayerMask DestroyMask;
 
-    private void Start()
-    {
-        if (_correctRotation)
-            CorrectRotation();
-    }
+        /// <summary> the object that created this bullet, useful for not damaging itself </summary>
+        [HideInInspector] public GameObject Shooter;
 
-    protected virtual void OnTriggerEnter2D(Collider2D other)
-    {
-        // prevent damaging the attacker
-        if (transform.IsChildOf(other.gameObject.transform))
-            return;
-        if (other.isTrigger) 
-            return;
+        [FormerlySerializedAs("_correctRotation")] [SerializeField]
+        private bool m_correctRotation;
 
-        Health otherHealth = other.gameObject.GetComponent<Health>();
-        if (otherHealth && other.gameObject)
+        /// should the bullet also damage other game objects with the same tag as the shooter (parent)?
+        public bool DamageShootersWithSameTag;
+
+
+        private void Awake()
         {
-            // if it's the same type as the shooter, do damage
-            if (Shooter == null || !other.gameObject.CompareTag(Shooter.tag) || DamageShootersWithSameTag)
-                otherHealth.TakeDamage(damageAmount, transform.rotation.eulerAngles.normalized);
+            if (DestroyMask.value == 0) DestroyMask = LayerMask.GetMask("Everything");
+            Destroy(gameObject, 7);
         }
 
-        if (Utils.IsInLayerMask(destroyMask, other.gameObject.layer))
+        private void CorrectRotation()
         {
-            Destroy(gameObject);
+            transform.Rotate(Vector3.up, 90);
+            transform.Rotate(Vector3.forward, 90);
         }
-    }
 
-    private void OnBecameInvisible()
-    {
-        Destroy(gameObject, 3f);
+        private void Start()
+        {
+            if (m_correctRotation)
+                CorrectRotation();
+        }
+
+        protected virtual void OnTriggerEnter2D(Collider2D other)
+        {
+            // prevent damaging the attacker
+            if (transform.IsChildOf(other.gameObject.transform))
+                return;
+            if (other.isTrigger)
+                return;
+
+            Health otherHealth = other.gameObject.GetComponent<Health>();
+            if (otherHealth && other.gameObject)
+            {
+                // if it's the same type as the shooter, do damage
+                if (Shooter == null || !other.gameObject.CompareTag(Shooter.tag) || DamageShootersWithSameTag)
+                    otherHealth.TakeDamage(DamageAmount, transform.rotation.eulerAngles.normalized);
+            }
+
+            if (Utils.IsInLayerMask(DestroyMask, other.gameObject.layer))
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnBecameInvisible()
+        {
+            Destroy(gameObject, 3f);
+        }
     }
 }

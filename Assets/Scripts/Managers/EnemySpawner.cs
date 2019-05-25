@@ -2,30 +2,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Actors.Enemy;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] public Transform SpawnPointsParent;
-    [SerializeField] private GameObject[] _enemies;
+    [SerializeField] private GameObject[] m_enemies;
 
     /// <summary> Maximum allowed number of enemies to be active in the scene at one time </summary>
-    [SerializeField] private int _maxAllowedActiveEnemies = 8;
+    [SerializeField] private int m_maxAllowedActiveEnemies = 8;
 
     /// <summary> the random range of delay between spawns. X: minimum, Y: maximum </summary>
-    [SerializeField] private Vector2 _delayBetweenSpawns = new Vector2(0.5f, 2f);
+    [SerializeField] private Vector2 m_delayBetweenSpawns = new Vector2(0.5f, 2f);
 
     /// <summary> An interactable that will trigger spawning enemies </summary>
     [SerializeField] public Interactable Interactable;
 
-    [SerializeField] private int _defaultWaveSize = 10;
+    [HideInInspector] public Transform SpawnPointsParent;
 
-    private GameObject _player;
-    private AudioSource _audioSource;
+    [SerializeField] private int m_defaultWaveSize = 10;
+
+    private GameObject m_player;
+    private AudioSource m_audioSource;
 
     /// <summary> the number of enemies that still need to be spawned in this wave </summary>
-    private int _remainingInWave = 0;
+    private int m_remainingInWave = 0;
 
     public readonly HashSet<GameObject> EnemySet = new HashSet<GameObject>();
 
@@ -57,9 +60,9 @@ public class EnemySpawner : MonoBehaviour
 
     private void Awake()
     {
-        _player = GameObject.FindGameObjectWithTag("Player");
+        m_player = GameObject.FindGameObjectWithTag("Player");
 
-        _audioSource = GetComponent<AudioSource>();
+        m_audioSource = GetComponent<AudioSource>();
     }
 
     /// <summary>
@@ -68,7 +71,7 @@ public class EnemySpawner : MonoBehaviour
     public void InitializeSpawner()
     {
         EndWave();
-        CancelInvoke("SpawnEnemyIfPossible");
+        CancelInvoke(nameof(SpawnEnemyIfPossible));
         // if no wave controller exists, automatically start spawning, othwerise just wait for the event
         if (Interactable != null)
         {
@@ -92,10 +95,10 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemyIfPossible()
     {
         // if player is dead or too many enemies exist
-        if (_player == null || GameComponents.PlayerHealth.IsDead || _maxAllowedActiveEnemies <= LivingEnemies)
+        if (m_player == null || GameComponents.PlayerHealth.IsDead || m_maxAllowedActiveEnemies <= LivingEnemies)
         {
             print("Not gonna spawn cuz too many enemies are active, or player is dead");
-            Invoke("SpawnEnemyIfPossible", SpawnDelay);
+            Invoke(nameof(SpawnEnemyIfPossible), SpawnDelay);
             return;
         }
 
@@ -105,11 +108,11 @@ public class EnemySpawner : MonoBehaviour
             OnEnemySpawn(enemy.GetComponent<Enemy>());
 
         TotalSpawnedFromStart++;
-        _remainingInWave--;
+        m_remainingInWave--;
 
-        if (_remainingInWave > 0)
+        if (m_remainingInWave > 0)
         {
-            Invoke("SpawnEnemyIfPossible", SpawnDelay);
+            Invoke(nameof(SpawnEnemyIfPossible), SpawnDelay);
         }
         else
         {
@@ -120,7 +123,7 @@ public class EnemySpawner : MonoBehaviour
     private GameObject CreateEnemy()
     {
         // TODO: make this lograithmic (less likely to  spawn from the top) and put hardest enemies at the end of the array
-        GameObject enemyPrefab = _enemies[Random.Range(0, _enemies.Length)]; //choose random enemy type
+        GameObject enemyPrefab = m_enemies[Random.Range(0, m_enemies.Length)]; //choose random enemy type
 
         if (enemyPrefab == null)
             throw new NullReferenceException("EnemySpawner: A slot in the enemy list contians a null enemy.");
@@ -131,7 +134,7 @@ public class EnemySpawner : MonoBehaviour
         GameObject enemy = Instantiate(enemyPrefab, spawnTransform.position, Quaternion.identity);
         EnemySet.Add(enemy);
 
-        _audioSource.Play();
+        m_audioSource.Play();
         return enemyPrefab;
     }
 
@@ -155,7 +158,7 @@ public class EnemySpawner : MonoBehaviour
     public void TryToSpawnWave()
     {
         // do not spawn next wave until current wave is over
-        if (_remainingInWave > 0 && LivingEnemies > 0)
+        if (m_remainingInWave > 0 && LivingEnemies > 0)
             return;
 
         SpawnWave();
@@ -163,7 +166,7 @@ public class EnemySpawner : MonoBehaviour
 
     public void SpawnWave()
     {
-        SpawnWave(_defaultWaveSize, _maxAllowedActiveEnemies);
+        SpawnWave(m_defaultWaveSize, m_maxAllowedActiveEnemies);
     }
 
     public void SpawnWave(int waveSize, int newMaxSpawnedEnemies)
@@ -174,9 +177,9 @@ public class EnemySpawner : MonoBehaviour
 
         Debug.Log(string.Format("SpawnEnemy(waveSize = {0}, newMaxSpawnedEnemies = {1})", waveSize,
             newMaxSpawnedEnemies));
-        this._maxAllowedActiveEnemies = newMaxSpawnedEnemies;
-        this._remainingInWave = waveSize;
-        Invoke("SpawnEnemyIfPossible", 0);
+        this.m_maxAllowedActiveEnemies = newMaxSpawnedEnemies;
+        this.m_remainingInWave = waveSize;
+        Invoke(nameof(SpawnEnemyIfPossible), 0);
     }
 
     private static int LivingEnemies
@@ -189,10 +192,7 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
-    private float SpawnDelay
-    {
-        get { return Random.Range(_delayBetweenSpawns.x, _delayBetweenSpawns.y); }
-    }
+    private float SpawnDelay => Random.Range(m_delayBetweenSpawns.x, m_delayBetweenSpawns.y);
 
     public int TotalSpawnedFromStart { get; private set; }
 

@@ -1,20 +1,23 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Actors;
+using Actors.Player;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class ScoreManager : MonoBehaviour
 {
-    [SerializeField] private UnityEngine.UI.Text scoreText;
-    private float currentScore = 0;
-    [SerializeField] [Range(0, 100)] public float scoreAdded2MomentumPercent = 0.15f;
+    [FormerlySerializedAs("scoreText")] [SerializeField] private UnityEngine.UI.Text m_scoreText;
+    private float m_currentScore = 0;
+    [FormerlySerializedAs("scoreAdded2MomentumPercent")] [SerializeField] [Range(0, 100)] public float ScoreAdded2MomentumPercent = 0.15f;
 
-    private PlayerAttack _playerAttack;
-    private MomentumManager _momentumManager;
+    private PlayerAttack m_playerAttack;
+    private MomentumManager m_momentumManager;
 
     void Awake()
     {
-        _playerAttack = GameComponents.Player.GetComponent<PlayerAttack>();
-        _momentumManager = GameComponents.Player.GetComponent<MomentumManager>();
+        m_playerAttack = GameComponents.Player.GetComponent<PlayerAttack>();
+        m_momentumManager = GameComponents.Player.GetComponent<MomentumManager>();
     }
 
     // Use this for initialization
@@ -32,24 +35,24 @@ public class ScoreManager : MonoBehaviour
     public void AddScore(float addedScore, bool multiplyByCombo = false)
     {
         if (addedScore < 0) addedScore = 0;
-        _momentumManager.AddMomentum(
-            addedScore * (scoreAdded2MomentumPercent * 0.01f) /
-            Mathf.Clamp(Mathf.Log(_momentumManager.Momentum), 1, _momentumManager.MaxMomentum)
+        m_momentumManager.AddMomentum(
+            addedScore * (ScoreAdded2MomentumPercent * 0.01f) /
+            Mathf.Clamp(Mathf.Log(m_momentumManager.Momentum), 1, m_momentumManager.MaxMomentum)
         );
         // divide by Log(momentum) so that enemies give less momentum the more you have
 
-        if (multiplyByCombo && _playerAttack.CurrentComboInstance != null)
+        if (multiplyByCombo && m_playerAttack.CurrentComboInstance != null)
         {
-            addedScore *= _playerAttack.CurrentComboInstance.Count;
+            addedScore *= m_playerAttack.CurrentComboInstance.Count;
         }
 
-        currentScore += addedScore;
+        m_currentScore += addedScore;
         UpdateScore();
     }
 
     private void UpdateScore()
     {
-        System.Diagnostics.Debug.Assert(scoreText != null, "scoreText != null");
-        if (scoreText) scoreText.text = "Score: " + currentScore;
+        System.Diagnostics.Debug.Assert(m_scoreText != null, "scoreText != null");
+        if (m_scoreText) m_scoreText.text = "Score: " + m_currentScore;
     }
 }

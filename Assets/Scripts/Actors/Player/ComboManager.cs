@@ -1,16 +1,18 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.Serialization;
 
-public class ComboManager : MonoBehaviour
+namespace Actors.Player
 {
-    [SerializeField] public UnityEngine.UI.Text comboText;
+    public class ComboManager : MonoBehaviour
+    {
+        [SerializeField] public UnityEngine.UI.Text ComboText;
 
-    public void DisplayCombo(int comboCount) {
+        public void DisplayCombo(int comboCount) {
         
 #if !UNITY_EDITOR
         comboText.enabled = false;
 #endif
-        comboText.text = comboCount == 0 ? "No combo..." : string.Format("{0} hit combo!", comboCount);
+            ComboText.text = comboCount == 0 ? "No combo..." : string.Format("{0} hit combo!", comboCount);
+        }
     }
 }

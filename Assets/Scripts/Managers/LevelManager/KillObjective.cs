@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using Actors;
+using Actors.Enemy;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class KillObjective : RoomObjective
 {
-    [SerializeField] [Range(0, 100)] private int _requiredKills = 25;
-    private int _killsGotten = 0;
+    [FormerlySerializedAs("_requiredKills")] [SerializeField] [Range(0, 100)] private int m_requiredKills = 25;
+    private int m_killsGotten = 0;
 
 
     void Start()
@@ -27,10 +30,10 @@ public class KillObjective : RoomObjective
 
     public void OnEnemyKill()
     {
-        _killsGotten++;
-        print($"OnEnemyKill(): killsGotten: {_killsGotten}");
+        m_killsGotten++;
+        print($"OnEnemyKill(): killsGotten: {m_killsGotten}");
 
-        if (_killsGotten >= _requiredKills)
+        if (m_killsGotten >= m_requiredKills)
         {
             if (!IsObjectiveComplete)
                 if (OnObjectiveComplete != null)
@@ -43,6 +46,6 @@ public class KillObjective : RoomObjective
 
     public override string GetObjectiveMessage()
     {
-        return string.Format("Eliminate {0} enemies.", _requiredKills);
+        return string.Format("Eliminate {0} enemies.", m_requiredKills);
     }
 }

@@ -1,57 +1,55 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PlayerHealth : Health
+namespace Actors.Player
 {
-    /// <inheritdoc />
-    public override void Die()
+    public class PlayerHealth : Health
     {
-        base.Die();
-        Walker.BlockMoveInput = true;
-
-        Text restartText = GameObject.Find("RestartText").GetComponent<Text>();
-        if (restartText) restartText.enabled = true;
-
-        Debug.Log(gameObject.name + " died");
-        Anim.SetBool("Dead", true);
-
-        //disable all scriptstry 
-        GrappleHook grappleHook = GetComponent<GrappleHook>();
-        if (grappleHook) grappleHook.EndGrapple();
-
-        SpriteRenderer.color = Color.white;
-        
-        
-        
-        // disabling scripts (super buggy)
-        try
+        /// <inheritdoc />
+        public override void Die()
         {
-            Destroy(GetComponent<GrappleHook>());
-            Destroy(GetComponent<PlayerAttack>());
-//            Destroy(GetComponent<PlayerMove>());
-            Destroy(GetComponent<Shooter>());
-//            Destroy(GetComponent<Health>());
-        }
-        catch (Exception e)
-        {
-            Debug.LogError("Caught: " + e);
-        }
+            base.Die();
+            Walker.IsMoveInputBlocked = true;
 
-        foreach (MonoBehaviour script in GetComponents<MonoBehaviour>())
+            Text restartText = GameObject.Find("RestartText").GetComponent<Text>();
+            if (restartText) restartText.enabled = true;
+
+            Debug.Log(gameObject.name + " died");
+            Anim.SetBool("Dead", true);
+
+            //disable all scriptstry 
+            GrappleHook grappleHook = GetComponent<GrappleHook>();
+            if (grappleHook) grappleHook.EndGrapple();
+
+            SpriteRenderer.color = Color.white;
+        
+        
+        
+            // disabling scripts (super buggy)
             try
             {
-                script.enabled = false;
-//                Destroy(script);
+                Destroy(GetComponent<GrappleHook>());
+                Destroy(GetComponent<PlayerAttack>());
+//            Destroy(GetComponent<PlayerMove>());
+                Destroy(GetComponent<Shooter>());
+//            Destroy(GetComponent<Health>());
             }
             catch (Exception e)
             {
                 Debug.LogError("Caught: " + e);
             }
+
+            foreach (MonoBehaviour script in GetComponents<MonoBehaviour>())
+                try
+                {
+                    script.enabled = false;
+//                Destroy(script);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("Caught: " + e);
+                }
+        }
     }
 }

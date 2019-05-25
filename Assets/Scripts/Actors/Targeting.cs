@@ -1,16 +1,13 @@
 ﻿using UnityEngine;
 
-public class Targeting : MonoBehaviour
+namespace Actors
 {
-    [SerializeField] public Transform Target;
-
-    public virtual Vector2 AimDirection
+    public class Targeting : MonoBehaviour
     {
-        get
-        {
-            return Target ?
-                (Vector2)(Target.transform.position - transform.position) :
-                Vector2.right;
-        }
+        [SerializeField] public Transform Target;
+
+        public virtual Vector2 AimDirection => Target ?
+            (Vector2)(Target.transform.position - transform.position) :
+            Vector2.right;
     }
 }

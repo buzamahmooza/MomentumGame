@@ -1,31 +1,34 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class TimeManager : MonoBehaviour
 {
-    [SerializeField] float slowDownLength = 2.0f;
+    [FormerlySerializedAs("slowDownLength")] [SerializeField] float m_slowDownLength = 2.0f;
 
-    [SerializeField] [Range(0.001f, 1)] float
-        slowdownFactor = 0.05f,
-        defaultHitStopDuration = 0.05f;
+    [FormerlySerializedAs("slowdownFactor")] [SerializeField] [Range(0.001f, 1)] float
+        m_slowdownFactor = 0.05f;
 
-    [SerializeField] private GameObject _slomoParticles;
+    [FormerlySerializedAs("defaultHitStopDuration")] [SerializeField] [Range(0.001f, 1)] float
+        m_defaultHitStopDuration = 0.05f;
 
-    private bool m_SloMo = false;
-    private float _lastTimescale = 1;
+    [FormerlySerializedAs("_slomoParticles")] [SerializeField] private GameObject m_slomoParticles;
+
+    private bool m_sloMo = false;
+    private float m_lastTimescale = 1;
 
 
     private void Update()
     {
-        if (m_SloMo)
+        if (m_sloMo)
         {
             if (Math.Abs(Time.timeScale - 1) < 0.01f)
             {
                 ResetTimeScale();
             }
 
-            Time.timeScale = Mathf.Clamp(Time.timeScale + 1 / slowDownLength * Time.unscaledDeltaTime, 0f, 1f);
+            Time.timeScale = Mathf.Clamp(Time.timeScale + 1 / m_slowDownLength * Time.unscaledDeltaTime, 0f, 1f);
             Time.fixedDeltaTime = 0.02f * Time.timeScale;
         }
     }
@@ -36,13 +39,13 @@ public class TimeManager : MonoBehaviour
         if (Math.Abs(Time.timeScale) < 0.01F) 
         {
             // unpause
-            Time.timeScale = _lastTimescale;
+            Time.timeScale = m_lastTimescale;
             GameComponents.PauseMenu.SetActive(false);
         }
         else
         {
             // pause
-            _lastTimescale = Time.timeScale;
+            m_lastTimescale = Time.timeScale;
             Time.timeScale = 0;
             GameComponents.PauseMenu.SetActive(true);
         }
@@ -50,18 +53,18 @@ public class TimeManager : MonoBehaviour
 
     public void DoSlowMotion()
     {
-        DoSlowMotion(slowdownFactor);
+        DoSlowMotion(m_slowdownFactor);
     }
 
     public void DoSlowMotion(float theSlowdownFactor)
     {
         Time.timeScale = Mathf.Clamp(theSlowdownFactor, 0f, 100f);
         Time.fixedDeltaTime = 0.02f * Time.timeScale;
-        m_SloMo = true;
+        m_sloMo = true;
 
         // spawn the particles with the main camera
-        if (_slomoParticles)
-            Instantiate(_slomoParticles, Camera.main.transform.position + Vector3.forward, Quaternion.identity,
+        if (m_slomoParticles)
+            Instantiate(m_slomoParticles, Camera.main.transform.position + Vector3.forward, Quaternion.identity,
                 FindObjectOfType<CameraController>().transform);
     }
 
@@ -70,7 +73,7 @@ public class TimeManager : MonoBehaviour
     /// </summary>
     public void DoHitStop()
     {
-        DoHitStop(defaultHitStopDuration);
+        DoHitStop(m_defaultHitStopDuration);
     }
 
     public void DoHitStop(float seconds)
@@ -88,8 +91,8 @@ public class TimeManager : MonoBehaviour
 
     public void ResetTimeScale()
     {
-        m_SloMo = false;
-        Time.timeScale = _lastTimescale;
+        m_sloMo = false;
+        Time.timeScale = m_lastTimescale;
         Time.fixedDeltaTime = 0.02f;
     }
 }

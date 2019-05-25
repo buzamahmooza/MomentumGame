@@ -27,7 +27,7 @@ public abstract class Pickup : MonoBehaviour
     // rather than being sucked in in an instant
     private void Start()
     {
-        Invoke("AllowToFollow", 0.5f);
+        Invoke(nameof(AllowToFollow), 0.5f);
         Destroy(gameObject, 10);
     }
     // ReSharper disable once UnusedMember.Local

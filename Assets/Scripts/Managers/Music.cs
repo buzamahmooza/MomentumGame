@@ -2,36 +2,37 @@
 using System.Collections;
 using System.Timers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Random = System.Random;
 
 [RequireComponent(typeof(AudioSource))]
 public class Music : MonoBehaviour
 {
-    [SerializeField] private AudioClip[] tracks;
-    [SerializeField] private bool shufflePlaylist = false;
+    [FormerlySerializedAs("tracks")] [SerializeField] private AudioClip[] m_tracks;
+    [FormerlySerializedAs("shufflePlaylist")] [SerializeField] private bool m_shufflePlaylist = false;
 
-    [NonSerialized] public AudioSource audioSource;
-    private Playlist _playlist;
-    private IEnumerator currentCoroutine;
+    [NonSerialized] public AudioSource AudioSource;
+    private Playlist m_playlist;
+    private IEnumerator m_currentCoroutine;
 
     private void Awake()
     {
-        audioSource = GetComponent<AudioSource>();
-        _playlist = new Playlist(tracks);
-        if (audioSource.clip) _playlist.Add(audioSource.clip);
-        audioSource.playOnAwake = false;
-        audioSource.clip = null;
-        audioSource.loop = false;
+        AudioSource = GetComponent<AudioSource>();
+        m_playlist = new Playlist(m_tracks);
+        if (AudioSource.clip) m_playlist.Add(AudioSource.clip);
+        AudioSource.playOnAwake = false;
+        AudioSource.clip = null;
+        AudioSource.loop = false;
     }
 
     // Use this for initialization
     private void Start()
     {
-        if (shufflePlaylist)
-            _playlist.Shuffle();
+        if (m_shufflePlaylist)
+            m_playlist.Shuffle();
         // play the first sound track
-        AudioClip audioClip = _playlist.Next();
-        audioSource.PlayOneShot(audioClip);
+        AudioClip audioClip = m_playlist.Next();
+        AudioSource.PlayOneShot(audioClip);
         QueueClip(audioClip);
     }
 
@@ -42,11 +43,11 @@ public class Music : MonoBehaviour
 
     public void PlayNext()
     {
-        if (currentCoroutine != null)
-            StopCoroutine(currentCoroutine);
-        audioSource.Stop();
-        AudioClip nextAudioClip = _playlist.Next();
-        audioSource.PlayOneShot(nextAudioClip);
+        if (m_currentCoroutine != null)
+            StopCoroutine(m_currentCoroutine);
+        AudioSource.Stop();
+        AudioClip nextAudioClip = m_playlist.Next();
+        AudioSource.PlayOneShot(nextAudioClip);
         QueueClip(nextAudioClip);
     }
 
@@ -63,7 +64,7 @@ public class Music : MonoBehaviour
     /// <param name="audioClip"></param>
     private void QueueClip(AudioClip audioClip)
     {
-        currentCoroutine = PlayAfterTrackIsOver(audioClip);
-        StartCoroutine(currentCoroutine);
+        m_currentCoroutine = PlayAfterTrackIsOver(audioClip);
+        StartCoroutine(m_currentCoroutine);
     }
 }

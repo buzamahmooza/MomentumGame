@@ -1,46 +1,55 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Shooter))]
-public class ShooterEnemy : Enemy
+namespace Actors.Enemy
 {
-    [SerializeField] protected Transform shootTransform;
-    [SerializeField] [Range(1, 50)] private int burstSize = 7;
-    protected Shooter shooter;
-
-
-    protected override void Awake()
+    [RequireComponent(typeof(Shooter))]
+    public class ShooterEnemy : Enemy
     {
-        base.Awake();
-        if (!shooter) shooter = GetComponent<Shooter>();
-        if (!shootTransform) shootTransform = transform.Find("shootPosition");
-    }
+        [SerializeField] protected Transform ShootTransform;
+        [SerializeField] [Range(1, 50)] private int m_burstSize = 7;
+        protected Shooter Shooter;
 
-    public override void Attack()
-    {
-        base.Attack();
-        if (!CanAttack)
-            return;
-        StartCoroutine(FireBurst());
-    }
 
-    private IEnumerator FireBurst()
-    {
-        Vector3 shootDirection = GameComponents.Player.transform.position - this.transform.position;
-
-        int i = 0;
-        while (i++ < burstSize)
+        protected override void Awake()
         {
-            // set x velocity to 0
-            Rb.velocity = new Vector2(0, Rb.velocity.y);
-
-            Anim.SetTrigger("Attack");
-
-            shooter.Shoot(shootDirection);
-            if (!Health.IsDead)
-                yield return new WaitForSeconds(60.0f / shooter.CurrentWeaponStats.rpm);
+            base.Awake();
+            if (!Shooter) Shooter = GetComponent<Shooter>();
+            if (!ShootTransform)
+            {
+                Debug.LogWarning(this.name + ": ShootTransform not assigned");
+                ShootTransform = transform.Find("shootPosition");
+                if(!ShootTransform) 
+                    ShootTransform = transform;
+            }
         }
 
-        IsAttacking = false;
+        public override void Attack()
+        {
+            base.Attack();
+            if (!CanAttack)
+                return;
+            StartCoroutine(FireBurst());
+        }
+
+        private IEnumerator FireBurst()
+        {
+            Vector3 shootDirection = GameComponents.Player.transform.position - this.transform.position;
+
+            int i = 0;
+            while (i++ < m_burstSize)
+            {
+                // set x velocity to 0
+                Rb.velocity = new Vector2(0, Rb.velocity.y);
+
+                Anim.SetTrigger("Attack");
+
+                Shooter.Shoot(shootDirection);
+                if (!Health.IsDead)
+                    yield return new WaitForSeconds(60.0f / Shooter.CurrentWeaponStats.rpm);
+            }
+
+            IsAttacking = false;
+        }
     }
 }
